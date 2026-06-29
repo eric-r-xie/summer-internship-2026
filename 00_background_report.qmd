@@ -96,6 +96,6 @@ Longitudinal/cohort studies, on the other hand, look from the present to the fut
 
 ##### 3. Based on your first look at AI-READI, what kinds of data are collected?
 
-Based on a first look, AI-READI contains many different types of health data and isn't restricted to solely diabetes. In addition to data on glucose levels, there is also data on eye vision, the heart, and miscellaneous environment settings. With this multifaceted nature, perhaps AI-READI provides a more comprehensive insight into diabetes conditions beyond simply glucose monitoring. 
+Based on my first look, AI-READI contains many different types of health data and isn't restricted to solely diabetes. In addition to data on glucose levels, there is also data on eye vision, the heart, and miscellaneous environment settings. With this multifaceted nature, perhaps AI-READI provides a more comprehensive insight into diabetes conditions beyond simply glucose monitoring. 
 
 
