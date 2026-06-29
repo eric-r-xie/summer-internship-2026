@@ -90,7 +90,7 @@ A prospective study starts with a subject and researches its progression forward
 
 ##### 2. What is the difference between case-control and longitudinal/cohort studies?
 
-Case-control studies start by separating participants based on the outcome, into a group of people that have the condition, and another of people who don't. Then, researchers look back to see what factors in the past may have caused this variation, looking from the present to the past. They are retrospective by design. 
+Case-control studies start by separating participants based on the outcome, into a group of people that have the condition, and another of people who do not. Then, researchers look back to see what factors in the past may have caused this variation, looking from the present to the past. They are retrospective by design. 
 
 Longitudinal/cohort studies, on the other hand, look from the present to the future. They start with one group of people, and follow to see what happens. Often, cohort studies are prospective. 
 
