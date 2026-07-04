@@ -1,0 +1,29 @@
+---
+title: "Week 1: Cohort Assembly"
+author: "Eric Xie"
+format: html
+---
+
+## 2.3.4 Building the first AI-READI cohort table
+
+```{r}
+library(tidyverse)
+
+participants <- read_tsv("data/participants.tsv")
+
+cohort_table <- participants %>%
+  transmute(
+    person_id = person_id,
+    age = age,
+    study_group = study_group,
+    clinical_site = clinical_site,
+    recommended_split = recommended_split,
+    cgm_availability = wearable_blood_glucose,
+    wearable_availability = wearable_activity_monitor,
+    clinical_data_availability = clinical_data,
+    average_cgm_glucose = NA_real_,
+    average_daily_steps = NA_real_
+  )
+
+knitr::kable(cohort_table)
+```
