@@ -1,29 +1,100 @@
 ---
 title: "Week 1: Cohort Assembly"
 author: "Eric Xie"
-format: html
+format:
+  html:
+    toc: true
+    toc-location: left
+    number-sections: true
 ---
 
-## 2.3.4 Building the first AI-READI cohort table
+## Building the first AI-READI cohort table
+
+### Setup
 
 ```{r}
 library(tidyverse)
 
-participants <- read_tsv("data/participants.tsv")
+participants <- read_tsv("data/participants.tsv", show_col_types = FALSE)
+cgm_manifest <- read_tsv("data/wearable_blood_glucose.tsv", 
+                         show_col_types = FALSE)
 
 cohort_table <- participants %>%
   transmute(
-    person_id = person_id,
-    age = age,
-    study_group = study_group,
-    clinical_site = clinical_site,
-    recommended_split = recommended_split,
+    person_id,
+    age,
+    study_group,
+    clinical_site,
+    recommended_split,
     cgm_availability = wearable_blood_glucose,
     wearable_availability = wearable_activity_monitor,
-    clinical_data_availability = clinical_data,
-    average_cgm_glucose = NA_real_,
-    average_daily_steps = NA_real_
+    clinical_data_availability = clinical_data
+  ) %>%
+  left_join(
+    cgm_manifest %>% select(person_id, 
+                            average_cgm_glucose = average_glucose_level_mg_dl),
+    by = "person_id"
   )
 
+```
+
+### Cohort Table (v3-mini)
+
+- Combining the data sets of participant.tsv and manifest.tsv (in wearable_blood_glucose)
+- ID variable "person_id" for joins
+
+```{r}
 knitr::kable(cohort_table)
 ```
+
+## Tables and Figures
+
+### Table 1: Participant Counts by Study Group
+```{r}
+table1 <- participants %>%
+  count(study_group)
+
+knitr::kable(table1)
+```
+
+### Table 2: Participant Counts by Study Group and Clinical Site
+```{r}
+table2 <- participants %>%
+  count(study_group, clinical_site)
+
+knitr::kable(table2)
+```
+
+### Table 3: Data Availability Summary
+```{r}
+# Table 3: data availability summary
+table3 <- tibble(
+  category = c(
+    "CGM data",
+    "Wearable data",
+    "Clinical data",
+    "CGM plus wearable data",
+    "CGM plus wearable plus clinical data"
+  ),
+  count = c(
+    sum(participants$wearable_blood_glucose == TRUE),
+    sum(participants$wearable_activity_monitor == TRUE),
+    sum(participants$clinical_data == TRUE),
+    sum(participants$wearable_blood_glucose == TRUE 
+        & participants$wearable_activity_monitor == TRUE),
+    sum(participants$wearable_blood_glucose == TRUE 
+        & participants$wearable_activity_monitor == TRUE 
+        & participants$clinical_data == TRUE)
+  )
+)
+
+knitr::kable(table3)
+```
+
+## Final Questions
+
+1. The meeting notes mentioned an ID variable you use for joins, but I'm unclear on what this is.
+
+
+
+

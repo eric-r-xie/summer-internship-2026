@@ -77,10 +77,31 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 </head>
 
-<body class="fullcontent quarto-light">
+<body class="quarto-light">
 
-<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
-
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article toc-left">
+<div id="quarto-sidebar-toc-left" class="sidebar toc-left">
+  <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#building-the-first-ai-readi-cohort-table" id="toc-building-the-first-ai-readi-cohort-table" class="nav-link active" data-scroll-target="#building-the-first-ai-readi-cohort-table"><span class="header-section-number">1</span> Building the first AI-READI cohort table</a>
+  <ul class="collapse">
+  <li><a href="#setup" id="toc-setup" class="nav-link" data-scroll-target="#setup"><span class="header-section-number">1.1</span> Setup</a></li>
+  <li><a href="#cohort-table-v3-mini" id="toc-cohort-table-v3-mini" class="nav-link" data-scroll-target="#cohort-table-v3-mini"><span class="header-section-number">1.2</span> Cohort Table (v3-mini)</a></li>
+  </ul></li>
+  <li><a href="#tables-and-figures" id="toc-tables-and-figures" class="nav-link" data-scroll-target="#tables-and-figures"><span class="header-section-number">2</span> Tables and Figures</a>
+  <ul class="collapse">
+  <li><a href="#table-1-participant-counts-by-study-group" id="toc-table-1-participant-counts-by-study-group" class="nav-link" data-scroll-target="#table-1-participant-counts-by-study-group"><span class="header-section-number">2.1</span> Table 1: Participant Counts by Study Group</a></li>
+  <li><a href="#table-2-participant-counts-by-study-group-and-clinical-site" id="toc-table-2-participant-counts-by-study-group-and-clinical-site" class="nav-link" data-scroll-target="#table-2-participant-counts-by-study-group-and-clinical-site"><span class="header-section-number">2.2</span> Table 2: Participant Counts by Study Group and Clinical Site</a></li>
+  <li><a href="#table-3-data-availability-summary" id="toc-table-3-data-availability-summary" class="nav-link" data-scroll-target="#table-3-data-availability-summary"><span class="header-section-number">2.3</span> Table 3: Data Availability Summary</a></li>
+  </ul></li>
+  <li><a href="#final-questions" id="toc-final-questions" class="nav-link" data-scroll-target="#final-questions"><span class="header-section-number">3</span> Final Questions</a></li>
+  </ul>
+</nav>
+</div>
+<div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
+</div>
 <main class="content" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
@@ -108,8 +129,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<section id="building-the-first-ai-readi-cohort-table" class="level2">
-<h2 class="anchored" data-anchor-id="building-the-first-ai-readi-cohort-table">2.3.4 Building the first AI-READI cohort table</h2>
+<section id="building-the-first-ai-readi-cohort-table" class="level2" data-number="1">
+<h2 data-number="1" class="anchored" data-anchor-id="building-the-first-ai-readi-cohort-table"><span class="header-section-number">1</span> Building the first AI-READI cohort table</h2>
+<section id="setup" class="level3" data-number="1.1">
+<h3 data-number="1.1" class="anchored" data-anchor-id="setup"><span class="header-section-number">1.1</span> Setup</h3>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stderr">
@@ -130,47 +153,48 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 ✖ dplyr::lag()    masks stats::lag()
 ℹ Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors</code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>participants <span class="ot">&lt;-</span> <span class="fu">read_tsv</span>(<span class="st">"data/participants.tsv"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Rows: 100 Columns: 15
-── Column specification ────────────────────────────────────────────────────────
-Delimiter: "\t"
-chr  (3): clinical_site, study_group, recommended_split
-dbl  (2): person_id, age
-lgl  (9): cardiac_ecg, clinical_data, environment, retinal_flio, retinal_oct...
-date (1): study_visit_date
-
-ℹ Use `spec()` to retrieve the full column specification for this data.
-ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>participants <span class="ot">&lt;-</span> <span class="fu">read_tsv</span>(<span class="st">"data/participants.tsv"</span>, <span class="at">show_col_types =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>cgm_manifest <span class="ot">&lt;-</span> <span class="fu">read_tsv</span>(<span class="st">"data/wearable_blood_glucose.tsv"</span>, </span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>                         <span class="at">show_col_types =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>cohort_table <span class="ot">&lt;-</span> participants <span class="sc">%&gt;%</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">transmute</span>(</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>    person_id,</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>    age,</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>    study_group,</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>    clinical_site,</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>    recommended_split,</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">cgm_availability =</span> wearable_blood_glucose,</span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">wearable_availability =</span> wearable_activity_monitor,</span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">clinical_data_availability =</span> clinical_data</span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(</span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>    cgm_manifest <span class="sc">%&gt;%</span> <span class="fu">select</span>(person_id, </span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>                            <span class="at">average_cgm_glucose =</span> average_glucose_level_mg_dl),</span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">by =</span> <span class="st">"person_id"</span></span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>cohort_table <span class="ot">&lt;-</span> participants <span class="sc">%&gt;%</span></span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">transmute</span>(</span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">person_id =</span> person_id,</span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">age =</span> age,</span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">study_group =</span> study_group,</span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">clinical_site =</span> clinical_site,</span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">recommended_split =</span> recommended_split,</span>
-<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">cgm_availability =</span> wearable_blood_glucose,</span>
-<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">wearable_availability =</span> wearable_activity_monitor,</span>
-<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">clinical_data_availability =</span> clinical_data,</span>
-<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">average_cgm_glucose =</span> <span class="cn">NA_real_</span>,</span>
-<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">average_daily_steps =</span> <span class="cn">NA_real_</span></span>
-<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(cohort_table)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="cohort-table-v3-mini" class="level3" data-number="1.2">
+<h3 data-number="1.2" class="anchored" data-anchor-id="cohort-table-v3-mini"><span class="header-section-number">1.2</span> Cohort Table (v3-mini)</h3>
+<ul>
+<li>Combining the data sets of participant.tsv and manifest.tsv (in wearable_blood_glucose)</li>
+<li>ID variable “person_id” for joins</li>
+</ul>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(cohort_table)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <table class="caption-top table table-sm table-striped small">
 <colgroup>
-<col style="width: 4%">
-<col style="width: 1%">
-<col style="width: 30%">
-<col style="width: 6%">
-<col style="width: 8%">
+<col style="width: 5%">
+<col style="width: 2%">
+<col style="width: 34%">
 <col style="width: 7%">
+<col style="width: 9%">
+<col style="width: 8%">
+<col style="width: 11%">
+<col style="width: 13%">
 <col style="width: 10%">
-<col style="width: 12%">
-<col style="width: 9%">
-<col style="width: 9%">
 </colgroup>
 <thead>
 <tr class="header">
@@ -183,7 +207,6 @@ date (1): study_visit_date
 <th style="text-align: left;">wearable_availability</th>
 <th style="text-align: left;">clinical_data_availability</th>
 <th style="text-align: right;">average_cgm_glucose</th>
-<th style="text-align: right;">average_daily_steps</th>
 </tr>
 </thead>
 <tbody>
@@ -196,8 +219,7 @@ date (1): study_visit_date
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
-<td style="text-align: right;">NA</td>
-<td style="text-align: right;">NA</td>
+<td style="text-align: right;">110.70658</td>
 </tr>
 <tr class="even">
 <td style="text-align: right;">1042</td>
@@ -208,8 +230,7 @@ date (1): study_visit_date
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
-<td style="text-align: right;">NA</td>
-<td style="text-align: right;">NA</td>
+<td style="text-align: right;">113.68576</td>
 </tr>
 <tr class="odd">
 <td style="text-align: right;">1046</td>
@@ -220,8 +241,7 @@ date (1): study_visit_date
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
-<td style="text-align: right;">NA</td>
-<td style="text-align: right;">NA</td>
+<td style="text-align: right;">121.24965</td>
 </tr>
 <tr class="even">
 <td style="text-align: right;">1054</td>
@@ -232,8 +252,7 @@ date (1): study_visit_date
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
-<td style="text-align: right;">NA</td>
-<td style="text-align: right;">NA</td>
+<td style="text-align: right;">129.73651</td>
 </tr>
 <tr class="odd">
 <td style="text-align: right;">1055</td>
@@ -244,8 +263,7 @@ date (1): study_visit_date
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
-<td style="text-align: right;">NA</td>
-<td style="text-align: right;">NA</td>
+<td style="text-align: right;">118.08231</td>
 </tr>
 <tr class="even">
 <td style="text-align: right;">1073</td>
@@ -256,8 +274,7 @@ date (1): study_visit_date
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
-<td style="text-align: right;">NA</td>
-<td style="text-align: right;">NA</td>
+<td style="text-align: right;">198.68382</td>
 </tr>
 <tr class="odd">
 <td style="text-align: right;">1110</td>
@@ -268,8 +285,7 @@ date (1): study_visit_date
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
-<td style="text-align: right;">NA</td>
-<td style="text-align: right;">NA</td>
+<td style="text-align: right;">173.56373</td>
 </tr>
 <tr class="even">
 <td style="text-align: right;">1139</td>
@@ -280,8 +296,7 @@ date (1): study_visit_date
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
-<td style="text-align: right;">NA</td>
-<td style="text-align: right;">NA</td>
+<td style="text-align: right;">157.11973</td>
 </tr>
 <tr class="odd">
 <td style="text-align: right;">1155</td>
@@ -292,8 +307,7 @@ date (1): study_visit_date
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
-<td style="text-align: right;">NA</td>
-<td style="text-align: right;">NA</td>
+<td style="text-align: right;">202.64549</td>
 </tr>
 <tr class="even">
 <td style="text-align: right;">1168</td>
@@ -304,8 +318,7 @@ date (1): study_visit_date
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
-<td style="text-align: right;">NA</td>
-<td style="text-align: right;">NA</td>
+<td style="text-align: right;">160.22444</td>
 </tr>
 <tr class="odd">
 <td style="text-align: right;">1173</td>
@@ -316,8 +329,7 @@ date (1): study_visit_date
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
-<td style="text-align: right;">NA</td>
-<td style="text-align: right;">NA</td>
+<td style="text-align: right;">217.60084</td>
 </tr>
 <tr class="even">
 <td style="text-align: right;">1196</td>
@@ -328,8 +340,7 @@ date (1): study_visit_date
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
-<td style="text-align: right;">NA</td>
-<td style="text-align: right;">NA</td>
+<td style="text-align: right;">165.95833</td>
 </tr>
 <tr class="odd">
 <td style="text-align: right;">1199</td>
@@ -340,8 +351,7 @@ date (1): study_visit_date
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
-<td style="text-align: right;">NA</td>
-<td style="text-align: right;">NA</td>
+<td style="text-align: right;">101.16976</td>
 </tr>
 <tr class="even">
 <td style="text-align: right;">1201</td>
@@ -352,8 +362,7 @@ date (1): study_visit_date
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
-<td style="text-align: right;">NA</td>
-<td style="text-align: right;">NA</td>
+<td style="text-align: right;">151.05835</td>
 </tr>
 <tr class="odd">
 <td style="text-align: right;">1216</td>
@@ -364,8 +373,7 @@ date (1): study_visit_date
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
-<td style="text-align: right;">NA</td>
-<td style="text-align: right;">NA</td>
+<td style="text-align: right;">111.64181</td>
 </tr>
 <tr class="even">
 <td style="text-align: right;">1226</td>
@@ -376,8 +384,7 @@ date (1): study_visit_date
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
-<td style="text-align: right;">NA</td>
-<td style="text-align: right;">NA</td>
+<td style="text-align: right;">106.29856</td>
 </tr>
 <tr class="odd">
 <td style="text-align: right;">1243</td>
@@ -388,8 +395,7 @@ date (1): study_visit_date
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
-<td style="text-align: right;">NA</td>
-<td style="text-align: right;">NA</td>
+<td style="text-align: right;">169.21025</td>
 </tr>
 <tr class="even">
 <td style="text-align: right;">1244</td>
@@ -400,8 +406,7 @@ date (1): study_visit_date
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
-<td style="text-align: right;">NA</td>
-<td style="text-align: right;">NA</td>
+<td style="text-align: right;">138.39881</td>
 </tr>
 <tr class="odd">
 <td style="text-align: right;">1264</td>
@@ -412,8 +417,7 @@ date (1): study_visit_date
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
-<td style="text-align: right;">NA</td>
-<td style="text-align: right;">NA</td>
+<td style="text-align: right;">165.42752</td>
 </tr>
 <tr class="even">
 <td style="text-align: right;">1272</td>
@@ -424,8 +428,7 @@ date (1): study_visit_date
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
-<td style="text-align: right;">NA</td>
-<td style="text-align: right;">NA</td>
+<td style="text-align: right;">105.44374</td>
 </tr>
 <tr class="odd">
 <td style="text-align: right;">1275</td>
@@ -436,8 +439,7 @@ date (1): study_visit_date
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
-<td style="text-align: right;">NA</td>
-<td style="text-align: right;">NA</td>
+<td style="text-align: right;">107.22811</td>
 </tr>
 <tr class="even">
 <td style="text-align: right;">1287</td>
@@ -448,8 +450,7 @@ date (1): study_visit_date
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
-<td style="text-align: right;">NA</td>
-<td style="text-align: right;">NA</td>
+<td style="text-align: right;">144.96569</td>
 </tr>
 <tr class="odd">
 <td style="text-align: right;">1289</td>
@@ -460,8 +461,7 @@ date (1): study_visit_date
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
-<td style="text-align: right;">NA</td>
-<td style="text-align: right;">NA</td>
+<td style="text-align: right;">123.63106</td>
 </tr>
 <tr class="even">
 <td style="text-align: right;">1293</td>
@@ -472,8 +472,7 @@ date (1): study_visit_date
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
-<td style="text-align: right;">NA</td>
-<td style="text-align: right;">NA</td>
+<td style="text-align: right;">148.18768</td>
 </tr>
 <tr class="odd">
 <td style="text-align: right;">1302</td>
@@ -484,8 +483,7 @@ date (1): study_visit_date
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
-<td style="text-align: right;">NA</td>
-<td style="text-align: right;">NA</td>
+<td style="text-align: right;">114.56898</td>
 </tr>
 <tr class="even">
 <td style="text-align: right;">1311</td>
@@ -496,8 +494,7 @@ date (1): study_visit_date
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
-<td style="text-align: right;">NA</td>
-<td style="text-align: right;">NA</td>
+<td style="text-align: right;">188.92256</td>
 </tr>
 <tr class="odd">
 <td style="text-align: right;">1315</td>
@@ -508,8 +505,7 @@ date (1): study_visit_date
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
-<td style="text-align: right;">NA</td>
-<td style="text-align: right;">NA</td>
+<td style="text-align: right;">122.93275</td>
 </tr>
 <tr class="even">
 <td style="text-align: right;">1326</td>
@@ -520,8 +516,7 @@ date (1): study_visit_date
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
-<td style="text-align: right;">NA</td>
-<td style="text-align: right;">NA</td>
+<td style="text-align: right;">162.51506</td>
 </tr>
 <tr class="odd">
 <td style="text-align: right;">1329</td>
@@ -532,8 +527,7 @@ date (1): study_visit_date
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
-<td style="text-align: right;">NA</td>
-<td style="text-align: right;">NA</td>
+<td style="text-align: right;">185.22242</td>
 </tr>
 <tr class="even">
 <td style="text-align: right;">1331</td>
@@ -544,8 +538,7 @@ date (1): study_visit_date
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
-<td style="text-align: right;">NA</td>
-<td style="text-align: right;">NA</td>
+<td style="text-align: right;">121.53116</td>
 </tr>
 <tr class="odd">
 <td style="text-align: right;">1337</td>
@@ -556,8 +549,7 @@ date (1): study_visit_date
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
-<td style="text-align: right;">NA</td>
-<td style="text-align: right;">NA</td>
+<td style="text-align: right;">109.95868</td>
 </tr>
 <tr class="even">
 <td style="text-align: right;">1346</td>
@@ -568,8 +560,7 @@ date (1): study_visit_date
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
-<td style="text-align: right;">NA</td>
-<td style="text-align: right;">NA</td>
+<td style="text-align: right;">134.01190</td>
 </tr>
 <tr class="odd">
 <td style="text-align: right;">1349</td>
@@ -580,8 +571,7 @@ date (1): study_visit_date
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
-<td style="text-align: right;">NA</td>
-<td style="text-align: right;">NA</td>
+<td style="text-align: right;">114.26190</td>
 </tr>
 <tr class="even">
 <td style="text-align: right;">1352</td>
@@ -592,8 +582,7 @@ date (1): study_visit_date
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
-<td style="text-align: right;">NA</td>
-<td style="text-align: right;">NA</td>
+<td style="text-align: right;">122.74125</td>
 </tr>
 <tr class="odd">
 <td style="text-align: right;">1384</td>
@@ -604,8 +593,7 @@ date (1): study_visit_date
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
-<td style="text-align: right;">NA</td>
-<td style="text-align: right;">NA</td>
+<td style="text-align: right;">124.57458</td>
 </tr>
 <tr class="even">
 <td style="text-align: right;">4034</td>
@@ -616,8 +604,7 @@ date (1): study_visit_date
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
-<td style="text-align: right;">NA</td>
-<td style="text-align: right;">NA</td>
+<td style="text-align: right;">108.74157</td>
 </tr>
 <tr class="odd">
 <td style="text-align: right;">4035</td>
@@ -628,8 +615,7 @@ date (1): study_visit_date
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
-<td style="text-align: right;">NA</td>
-<td style="text-align: right;">NA</td>
+<td style="text-align: right;">134.11734</td>
 </tr>
 <tr class="even">
 <td style="text-align: right;">4036</td>
@@ -640,8 +626,7 @@ date (1): study_visit_date
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
-<td style="text-align: right;">NA</td>
-<td style="text-align: right;">NA</td>
+<td style="text-align: right;">121.97584</td>
 </tr>
 <tr class="odd">
 <td style="text-align: right;">4037</td>
@@ -652,8 +637,7 @@ date (1): study_visit_date
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
-<td style="text-align: right;">NA</td>
-<td style="text-align: right;">NA</td>
+<td style="text-align: right;">135.83449</td>
 </tr>
 <tr class="even">
 <td style="text-align: right;">4045</td>
@@ -664,8 +648,7 @@ date (1): study_visit_date
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
-<td style="text-align: right;">NA</td>
-<td style="text-align: right;">NA</td>
+<td style="text-align: right;">121.03792</td>
 </tr>
 <tr class="odd">
 <td style="text-align: right;">4046</td>
@@ -676,8 +659,7 @@ date (1): study_visit_date
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
-<td style="text-align: right;">NA</td>
-<td style="text-align: right;">NA</td>
+<td style="text-align: right;">145.12329</td>
 </tr>
 <tr class="even">
 <td style="text-align: right;">4048</td>
@@ -688,8 +670,7 @@ date (1): study_visit_date
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
-<td style="text-align: right;">NA</td>
-<td style="text-align: right;">NA</td>
+<td style="text-align: right;">137.61471</td>
 </tr>
 <tr class="odd">
 <td style="text-align: right;">4064</td>
@@ -700,8 +681,7 @@ date (1): study_visit_date
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
-<td style="text-align: right;">NA</td>
-<td style="text-align: right;">NA</td>
+<td style="text-align: right;">125.62639</td>
 </tr>
 <tr class="even">
 <td style="text-align: right;">4074</td>
@@ -712,8 +692,7 @@ date (1): study_visit_date
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
-<td style="text-align: right;">NA</td>
-<td style="text-align: right;">NA</td>
+<td style="text-align: right;">119.43996</td>
 </tr>
 <tr class="odd">
 <td style="text-align: right;">4087</td>
@@ -724,8 +703,7 @@ date (1): study_visit_date
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
-<td style="text-align: right;">NA</td>
-<td style="text-align: right;">NA</td>
+<td style="text-align: right;">137.91071</td>
 </tr>
 <tr class="even">
 <td style="text-align: right;">4110</td>
@@ -736,8 +714,7 @@ date (1): study_visit_date
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
-<td style="text-align: right;">NA</td>
-<td style="text-align: right;">NA</td>
+<td style="text-align: right;">193.04799</td>
 </tr>
 <tr class="odd">
 <td style="text-align: right;">4120</td>
@@ -748,8 +725,7 @@ date (1): study_visit_date
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
-<td style="text-align: right;">NA</td>
-<td style="text-align: right;">NA</td>
+<td style="text-align: right;">124.54552</td>
 </tr>
 <tr class="even">
 <td style="text-align: right;">4123</td>
@@ -760,8 +736,7 @@ date (1): study_visit_date
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
-<td style="text-align: right;">NA</td>
-<td style="text-align: right;">NA</td>
+<td style="text-align: right;">102.02583</td>
 </tr>
 <tr class="odd">
 <td style="text-align: right;">4130</td>
@@ -772,8 +747,7 @@ date (1): study_visit_date
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
-<td style="text-align: right;">NA</td>
-<td style="text-align: right;">NA</td>
+<td style="text-align: right;">123.73870</td>
 </tr>
 <tr class="even">
 <td style="text-align: right;">4136</td>
@@ -784,8 +758,7 @@ date (1): study_visit_date
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
-<td style="text-align: right;">NA</td>
-<td style="text-align: right;">NA</td>
+<td style="text-align: right;">131.56364</td>
 </tr>
 <tr class="odd">
 <td style="text-align: right;">4145</td>
@@ -796,8 +769,7 @@ date (1): study_visit_date
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
-<td style="text-align: right;">NA</td>
-<td style="text-align: right;">NA</td>
+<td style="text-align: right;">118.90763</td>
 </tr>
 <tr class="even">
 <td style="text-align: right;">4148</td>
@@ -808,8 +780,7 @@ date (1): study_visit_date
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
-<td style="text-align: right;">NA</td>
-<td style="text-align: right;">NA</td>
+<td style="text-align: right;">103.52381</td>
 </tr>
 <tr class="odd">
 <td style="text-align: right;">4150</td>
@@ -820,8 +791,7 @@ date (1): study_visit_date
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
-<td style="text-align: right;">NA</td>
-<td style="text-align: right;">NA</td>
+<td style="text-align: right;">111.14951</td>
 </tr>
 <tr class="even">
 <td style="text-align: right;">4158</td>
@@ -832,8 +802,7 @@ date (1): study_visit_date
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
-<td style="text-align: right;">NA</td>
-<td style="text-align: right;">NA</td>
+<td style="text-align: right;">121.36665</td>
 </tr>
 <tr class="odd">
 <td style="text-align: right;">4161</td>
@@ -844,8 +813,7 @@ date (1): study_visit_date
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
-<td style="text-align: right;">NA</td>
-<td style="text-align: right;">NA</td>
+<td style="text-align: right;">158.25274</td>
 </tr>
 <tr class="even">
 <td style="text-align: right;">4164</td>
@@ -856,8 +824,7 @@ date (1): study_visit_date
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
-<td style="text-align: right;">NA</td>
-<td style="text-align: right;">NA</td>
+<td style="text-align: right;">130.46464</td>
 </tr>
 <tr class="odd">
 <td style="text-align: right;">4172</td>
@@ -868,8 +835,7 @@ date (1): study_visit_date
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
-<td style="text-align: right;">NA</td>
-<td style="text-align: right;">NA</td>
+<td style="text-align: right;">192.07910</td>
 </tr>
 <tr class="even">
 <td style="text-align: right;">4182</td>
@@ -880,8 +846,7 @@ date (1): study_visit_date
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
-<td style="text-align: right;">NA</td>
-<td style="text-align: right;">NA</td>
+<td style="text-align: right;">104.85464</td>
 </tr>
 <tr class="odd">
 <td style="text-align: right;">4205</td>
@@ -892,8 +857,7 @@ date (1): study_visit_date
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
-<td style="text-align: right;">NA</td>
-<td style="text-align: right;">NA</td>
+<td style="text-align: right;">105.24482</td>
 </tr>
 <tr class="even">
 <td style="text-align: right;">4227</td>
@@ -904,8 +868,7 @@ date (1): study_visit_date
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
-<td style="text-align: right;">NA</td>
-<td style="text-align: right;">NA</td>
+<td style="text-align: right;">142.19013</td>
 </tr>
 <tr class="odd">
 <td style="text-align: right;">4235</td>
@@ -916,8 +879,7 @@ date (1): study_visit_date
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
-<td style="text-align: right;">NA</td>
-<td style="text-align: right;">NA</td>
+<td style="text-align: right;">141.86060</td>
 </tr>
 <tr class="even">
 <td style="text-align: right;">4249</td>
@@ -928,8 +890,7 @@ date (1): study_visit_date
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
-<td style="text-align: right;">NA</td>
-<td style="text-align: right;">NA</td>
+<td style="text-align: right;">110.08581</td>
 </tr>
 <tr class="odd">
 <td style="text-align: right;">4265</td>
@@ -940,8 +901,7 @@ date (1): study_visit_date
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
-<td style="text-align: right;">NA</td>
-<td style="text-align: right;">NA</td>
+<td style="text-align: right;">130.97444</td>
 </tr>
 <tr class="even">
 <td style="text-align: right;">4267</td>
@@ -952,8 +912,7 @@ date (1): study_visit_date
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
-<td style="text-align: right;">NA</td>
-<td style="text-align: right;">NA</td>
+<td style="text-align: right;">114.72856</td>
 </tr>
 <tr class="odd">
 <td style="text-align: right;">4269</td>
@@ -964,8 +923,7 @@ date (1): study_visit_date
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
-<td style="text-align: right;">NA</td>
-<td style="text-align: right;">NA</td>
+<td style="text-align: right;">133.96464</td>
 </tr>
 <tr class="even">
 <td style="text-align: right;">4271</td>
@@ -976,8 +934,7 @@ date (1): study_visit_date
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
-<td style="text-align: right;">NA</td>
-<td style="text-align: right;">NA</td>
+<td style="text-align: right;">206.89268</td>
 </tr>
 <tr class="odd">
 <td style="text-align: right;">4279</td>
@@ -988,8 +945,7 @@ date (1): study_visit_date
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
-<td style="text-align: right;">NA</td>
-<td style="text-align: right;">NA</td>
+<td style="text-align: right;">146.66457</td>
 </tr>
 <tr class="even">
 <td style="text-align: right;">4287</td>
@@ -1000,8 +956,7 @@ date (1): study_visit_date
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
-<td style="text-align: right;">NA</td>
-<td style="text-align: right;">NA</td>
+<td style="text-align: right;">125.83894</td>
 </tr>
 <tr class="odd">
 <td style="text-align: right;">4292</td>
@@ -1012,8 +967,7 @@ date (1): study_visit_date
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
-<td style="text-align: right;">NA</td>
-<td style="text-align: right;">NA</td>
+<td style="text-align: right;">141.72934</td>
 </tr>
 <tr class="even">
 <td style="text-align: right;">4297</td>
@@ -1024,8 +978,7 @@ date (1): study_visit_date
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
-<td style="text-align: right;">NA</td>
-<td style="text-align: right;">NA</td>
+<td style="text-align: right;">114.57578</td>
 </tr>
 <tr class="odd">
 <td style="text-align: right;">7070</td>
@@ -1036,8 +989,7 @@ date (1): study_visit_date
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
-<td style="text-align: right;">NA</td>
-<td style="text-align: right;">NA</td>
+<td style="text-align: right;">164.84340</td>
 </tr>
 <tr class="even">
 <td style="text-align: right;">7077</td>
@@ -1048,8 +1000,7 @@ date (1): study_visit_date
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
-<td style="text-align: right;">NA</td>
-<td style="text-align: right;">NA</td>
+<td style="text-align: right;">137.55591</td>
 </tr>
 <tr class="odd">
 <td style="text-align: right;">7100</td>
@@ -1060,8 +1011,7 @@ date (1): study_visit_date
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
-<td style="text-align: right;">NA</td>
-<td style="text-align: right;">NA</td>
+<td style="text-align: right;">155.09492</td>
 </tr>
 <tr class="even">
 <td style="text-align: right;">7112</td>
@@ -1072,8 +1022,7 @@ date (1): study_visit_date
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
-<td style="text-align: right;">NA</td>
-<td style="text-align: right;">NA</td>
+<td style="text-align: right;">183.80131</td>
 </tr>
 <tr class="odd">
 <td style="text-align: right;">7117</td>
@@ -1084,8 +1033,7 @@ date (1): study_visit_date
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
-<td style="text-align: right;">NA</td>
-<td style="text-align: right;">NA</td>
+<td style="text-align: right;">135.32889</td>
 </tr>
 <tr class="even">
 <td style="text-align: right;">7122</td>
@@ -1096,8 +1044,7 @@ date (1): study_visit_date
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
-<td style="text-align: right;">NA</td>
-<td style="text-align: right;">NA</td>
+<td style="text-align: right;">104.88169</td>
 </tr>
 <tr class="odd">
 <td style="text-align: right;">7129</td>
@@ -1108,8 +1055,7 @@ date (1): study_visit_date
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
-<td style="text-align: right;">NA</td>
-<td style="text-align: right;">NA</td>
+<td style="text-align: right;">121.68912</td>
 </tr>
 <tr class="even">
 <td style="text-align: right;">7130</td>
@@ -1120,8 +1066,7 @@ date (1): study_visit_date
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
-<td style="text-align: right;">NA</td>
-<td style="text-align: right;">NA</td>
+<td style="text-align: right;">122.67997</td>
 </tr>
 <tr class="odd">
 <td style="text-align: right;">7137</td>
@@ -1132,8 +1077,7 @@ date (1): study_visit_date
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
-<td style="text-align: right;">NA</td>
-<td style="text-align: right;">NA</td>
+<td style="text-align: right;">146.99261</td>
 </tr>
 <tr class="even">
 <td style="text-align: right;">7146</td>
@@ -1144,8 +1088,7 @@ date (1): study_visit_date
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
-<td style="text-align: right;">NA</td>
-<td style="text-align: right;">NA</td>
+<td style="text-align: right;">112.93157</td>
 </tr>
 <tr class="odd">
 <td style="text-align: right;">7148</td>
@@ -1156,8 +1099,7 @@ date (1): study_visit_date
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
-<td style="text-align: right;">NA</td>
-<td style="text-align: right;">NA</td>
+<td style="text-align: right;">109.26164</td>
 </tr>
 <tr class="even">
 <td style="text-align: right;">7154</td>
@@ -1168,8 +1110,7 @@ date (1): study_visit_date
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
-<td style="text-align: right;">NA</td>
-<td style="text-align: right;">NA</td>
+<td style="text-align: right;">149.02789</td>
 </tr>
 <tr class="odd">
 <td style="text-align: right;">7162</td>
@@ -1180,8 +1121,7 @@ date (1): study_visit_date
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
-<td style="text-align: right;">NA</td>
-<td style="text-align: right;">NA</td>
+<td style="text-align: right;">121.16001</td>
 </tr>
 <tr class="even">
 <td style="text-align: right;">7165</td>
@@ -1192,8 +1132,7 @@ date (1): study_visit_date
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
-<td style="text-align: right;">NA</td>
-<td style="text-align: right;">NA</td>
+<td style="text-align: right;">121.64868</td>
 </tr>
 <tr class="odd">
 <td style="text-align: right;">7168</td>
@@ -1204,8 +1143,7 @@ date (1): study_visit_date
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
-<td style="text-align: right;">NA</td>
-<td style="text-align: right;">NA</td>
+<td style="text-align: right;">126.69048</td>
 </tr>
 <tr class="even">
 <td style="text-align: right;">7170</td>
@@ -1216,8 +1154,7 @@ date (1): study_visit_date
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
-<td style="text-align: right;">NA</td>
-<td style="text-align: right;">NA</td>
+<td style="text-align: right;">129.77206</td>
 </tr>
 <tr class="odd">
 <td style="text-align: right;">7220</td>
@@ -1228,8 +1165,7 @@ date (1): study_visit_date
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
-<td style="text-align: right;">NA</td>
-<td style="text-align: right;">NA</td>
+<td style="text-align: right;">92.51573</td>
 </tr>
 <tr class="even">
 <td style="text-align: right;">7224</td>
@@ -1240,8 +1176,7 @@ date (1): study_visit_date
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
-<td style="text-align: right;">NA</td>
-<td style="text-align: right;">NA</td>
+<td style="text-align: right;">101.40530</td>
 </tr>
 <tr class="odd">
 <td style="text-align: right;">7230</td>
@@ -1252,8 +1187,7 @@ date (1): study_visit_date
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
-<td style="text-align: right;">NA</td>
-<td style="text-align: right;">NA</td>
+<td style="text-align: right;">176.59769</td>
 </tr>
 <tr class="even">
 <td style="text-align: right;">7232</td>
@@ -1264,8 +1198,7 @@ date (1): study_visit_date
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
-<td style="text-align: right;">NA</td>
-<td style="text-align: right;">NA</td>
+<td style="text-align: right;">128.80982</td>
 </tr>
 <tr class="odd">
 <td style="text-align: right;">7234</td>
@@ -1276,8 +1209,7 @@ date (1): study_visit_date
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
-<td style="text-align: right;">NA</td>
-<td style="text-align: right;">NA</td>
+<td style="text-align: right;">119.62180</td>
 </tr>
 <tr class="even">
 <td style="text-align: right;">7348</td>
@@ -1288,8 +1220,7 @@ date (1): study_visit_date
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
-<td style="text-align: right;">NA</td>
-<td style="text-align: right;">NA</td>
+<td style="text-align: right;">187.29667</td>
 </tr>
 <tr class="odd">
 <td style="text-align: right;">7357</td>
@@ -1300,8 +1231,7 @@ date (1): study_visit_date
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
-<td style="text-align: right;">NA</td>
-<td style="text-align: right;">NA</td>
+<td style="text-align: right;">123.45114</td>
 </tr>
 <tr class="even">
 <td style="text-align: right;">7364</td>
@@ -1312,8 +1242,7 @@ date (1): study_visit_date
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
-<td style="text-align: right;">NA</td>
-<td style="text-align: right;">NA</td>
+<td style="text-align: right;">115.26683</td>
 </tr>
 <tr class="odd">
 <td style="text-align: right;">7371</td>
@@ -1324,8 +1253,7 @@ date (1): study_visit_date
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
-<td style="text-align: right;">NA</td>
-<td style="text-align: right;">NA</td>
+<td style="text-align: right;">120.13114</td>
 </tr>
 <tr class="even">
 <td style="text-align: right;">7382</td>
@@ -1336,8 +1264,7 @@ date (1): study_visit_date
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
-<td style="text-align: right;">NA</td>
-<td style="text-align: right;">NA</td>
+<td style="text-align: right;">123.28862</td>
 </tr>
 <tr class="odd">
 <td style="text-align: right;">7393</td>
@@ -1348,8 +1275,7 @@ date (1): study_visit_date
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
-<td style="text-align: right;">NA</td>
-<td style="text-align: right;">NA</td>
+<td style="text-align: right;">140.04238</td>
 </tr>
 <tr class="even">
 <td style="text-align: right;">7397</td>
@@ -1360,8 +1286,7 @@ date (1): study_visit_date
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
-<td style="text-align: right;">NA</td>
-<td style="text-align: right;">NA</td>
+<td style="text-align: right;">153.24180</td>
 </tr>
 <tr class="odd">
 <td style="text-align: right;">7399</td>
@@ -1372,8 +1297,7 @@ date (1): study_visit_date
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
-<td style="text-align: right;">NA</td>
-<td style="text-align: right;">NA</td>
+<td style="text-align: right;">199.42194</td>
 </tr>
 <tr class="even">
 <td style="text-align: right;">7402</td>
@@ -1384,13 +1308,209 @@ date (1): study_visit_date
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
 <td style="text-align: left;">TRUE</td>
-<td style="text-align: right;">NA</td>
-<td style="text-align: right;">NA</td>
+<td style="text-align: right;">120.59699</td>
 </tr>
 </tbody>
 </table>
 </div>
 </div>
+</section>
+</section>
+<section id="tables-and-figures" class="level2" data-number="2">
+<h2 data-number="2" class="anchored" data-anchor-id="tables-and-figures"><span class="header-section-number">2</span> Tables and Figures</h2>
+<section id="table-1-participant-counts-by-study-group" class="level3" data-number="2.1">
+<h3 data-number="2.1" class="anchored" data-anchor-id="table-1-participant-counts-by-study-group"><span class="header-section-number">2.1</span> Table 1: Participant Counts by Study Group</h3>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>table1 <span class="ot">&lt;-</span> participants <span class="sc">%&gt;%</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(study_group)</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(table1)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<colgroup>
+<col style="width: 95%">
+<col style="width: 4%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">study_group</th>
+<th style="text-align: right;">n</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">healthy</td>
+<td style="text-align: right;">31</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">insulin_dependent</td>
+<td style="text-align: right;">6</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">oral_medication_and_or_non_insulin_injectable_medication_controlled</td>
+<td style="text-align: right;">33</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">pre_diabetes_lifestyle_controlled</td>
+<td style="text-align: right;">30</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+<section id="table-2-participant-counts-by-study-group-and-clinical-site" class="level3" data-number="2.2">
+<h3 data-number="2.2" class="anchored" data-anchor-id="table-2-participant-counts-by-study-group-and-clinical-site"><span class="header-section-number">2.2</span> Table 2: Participant Counts by Study Group and Clinical Site</h3>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>table2 <span class="ot">&lt;-</span> participants <span class="sc">%&gt;%</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(study_group, clinical_site)</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(table2)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<colgroup>
+<col style="width: 80%">
+<col style="width: 16%">
+<col style="width: 3%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">study_group</th>
+<th style="text-align: left;">clinical_site</th>
+<th style="text-align: right;">n</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">healthy</td>
+<td style="text-align: left;">UAB</td>
+<td style="text-align: right;">9</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">healthy</td>
+<td style="text-align: left;">UCSD</td>
+<td style="text-align: right;">8</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">healthy</td>
+<td style="text-align: left;">UW</td>
+<td style="text-align: right;">14</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">insulin_dependent</td>
+<td style="text-align: left;">UAB</td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">insulin_dependent</td>
+<td style="text-align: left;">UCSD</td>
+<td style="text-align: right;">2</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">insulin_dependent</td>
+<td style="text-align: left;">UW</td>
+<td style="text-align: right;">3</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">oral_medication_and_or_non_insulin_injectable_medication_controlled</td>
+<td style="text-align: left;">UAB</td>
+<td style="text-align: right;">12</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">oral_medication_and_or_non_insulin_injectable_medication_controlled</td>
+<td style="text-align: left;">UCSD</td>
+<td style="text-align: right;">11</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">oral_medication_and_or_non_insulin_injectable_medication_controlled</td>
+<td style="text-align: left;">UW</td>
+<td style="text-align: right;">10</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">pre_diabetes_lifestyle_controlled</td>
+<td style="text-align: left;">UAB</td>
+<td style="text-align: right;">8</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">pre_diabetes_lifestyle_controlled</td>
+<td style="text-align: left;">UCSD</td>
+<td style="text-align: right;">14</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">pre_diabetes_lifestyle_controlled</td>
+<td style="text-align: left;">UW</td>
+<td style="text-align: right;">8</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+<section id="table-3-data-availability-summary" class="level3" data-number="2.3">
+<h3 data-number="2.3" class="anchored" data-anchor-id="table-3-data-availability-summary"><span class="header-section-number">2.3</span> Table 3: Data Availability Summary</h3>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Table 3: data availability summary</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>table3 <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">category =</span> <span class="fu">c</span>(</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">"CGM data"</span>,</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Wearable data"</span>,</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Clinical data"</span>,</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">"CGM plus wearable data"</span>,</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">"CGM plus wearable plus clinical data"</span></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>  ),</span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">count =</span> <span class="fu">c</span>(</span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>    <span class="fu">sum</span>(participants<span class="sc">$</span>wearable_blood_glucose <span class="sc">==</span> <span class="cn">TRUE</span>),</span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">sum</span>(participants<span class="sc">$</span>wearable_activity_monitor <span class="sc">==</span> <span class="cn">TRUE</span>),</span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">sum</span>(participants<span class="sc">$</span>clinical_data <span class="sc">==</span> <span class="cn">TRUE</span>),</span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>    <span class="fu">sum</span>(participants<span class="sc">$</span>wearable_blood_glucose <span class="sc">==</span> <span class="cn">TRUE</span> </span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>        <span class="sc">&amp;</span> participants<span class="sc">$</span>wearable_activity_monitor <span class="sc">==</span> <span class="cn">TRUE</span>),</span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>    <span class="fu">sum</span>(participants<span class="sc">$</span>wearable_blood_glucose <span class="sc">==</span> <span class="cn">TRUE</span> </span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a>        <span class="sc">&amp;</span> participants<span class="sc">$</span>wearable_activity_monitor <span class="sc">==</span> <span class="cn">TRUE</span> </span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a>        <span class="sc">&amp;</span> participants<span class="sc">$</span>clinical_data <span class="sc">==</span> <span class="cn">TRUE</span>)</span>
+<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(table3)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;">category</th>
+<th style="text-align: right;">count</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">CGM data</td>
+<td style="text-align: right;">100</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Wearable data</td>
+<td style="text-align: right;">100</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Clinical data</td>
+<td style="text-align: right;">100</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">CGM plus wearable data</td>
+<td style="text-align: right;">100</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">CGM plus wearable plus clinical data</td>
+<td style="text-align: right;">100</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+</section>
+<section id="final-questions" class="level2" data-number="3">
+<h2 data-number="3" class="anchored" data-anchor-id="final-questions"><span class="header-section-number">3</span> Final Questions</h2>
+<ol type="1">
+<li>The meeting notes mentioned an ID variable you use for joins, but I’m unclear on what this is.</li>
+</ol>
 </section>
 
 </main>
