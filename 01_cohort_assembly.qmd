@@ -120,6 +120,28 @@ ggplot(modality_long, aes(x = modality, y = factor(person_id), fill = available)
 
 When visualized, the participants' data is complete across all modalities in this subset. There is no missing modalities to present or analyze.
 
+### Average CGM Glucose by Study Group (Boxplot)
+
+```{r}
+library(tidyverse)
+
+cohort_glucose <- participants %>%
+  select(person_id, study_group) %>%
+  left_join(
+    cgm_manifest %>% select(person_id, average_cgm_glucose = average_glucose_level_mg_dl),
+    by = "person_id"
+  )
+
+ggplot(cohort_glucose, aes(x = study_group, y = average_cgm_glucose, fill = study_group)) +
+  geom_boxplot() +
+  geom_jitter(width = 0.15, alpha = 0.4, size = 1.5) +
+  labs(title = "Average CGM Glucose by Study Group",
+       x = "Study Group", y = "Average CGM Glucose (mg/dL)") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 30, hjust = 1),
+        legend.position = "none")
+```
+
 ## Final Questions
 
 
