@@ -15,8 +15,13 @@ format:
 ```{r}
 library(tidyverse)
 
-participants <- read_tsv("data/participants.tsv", show_col_types = FALSE)
-cgm_manifest <- read_tsv("data/wearable_blood_glucose.tsv", 
+participants <- read_tsv("data/participants_mini.tsv", show_col_types = FALSE)
+participants_full <- read_tsv("data/participants_full.tsv", 
+                              show_col_types = FALSE)
+
+cgm_manifest_full <- read_tsv("data/wearable_blood_glucose_full.tsv", 
+                         show_col_types = FALSE)
+cgm_manifest <- read_tsv("data/wearable_blood_glucose_mini.tsv", 
                          show_col_types = FALSE)
 
 cohort_table <- participants %>%
@@ -47,7 +52,7 @@ cohort_table <- participants %>%
 knitr::kable(cohort_table)
 ```
 
-## Tables and Figures
+## Tables and Figures (mini version)
 
 ### Table 1: Participant Counts by Study Group
 ```{r}
@@ -149,6 +154,153 @@ This boxplot shows the average CGM Glucose levels by study group (and their 25th
 - The group "oral_medication_and_or_non_insulin_injectable_medication_controlled" has the most variation / range of values
 - The insulin-dependent group's values are very clustered towards the median, except two outliers
 - The variations for "healthy" and "pre_diabetes_lifestyle_controlled" are roughly the same
+
+## Tables and Figures (mini version)
+
+### Table 1: Participant Counts by Study Group
+```{r}
+
+```
+
+## Mini Versus Full Dataset Comparison
+
+
+## Join and Data Quality Checks
+
+### Number of rows before and after each join
+
+```{r}
+rows_before_participants <- nrow(participants)
+rows_before_cgm <- nrow(cgm_manifest)
+
+cohort_glucose <- participants %>%
+  left_join(
+    cgm_manifest %>% select(person_id, 
+                            average_cgm_glucose = average_glucose_level_mg_dl),
+    by = "person_id"
+  )
+
+rows_after_join <- nrow(cohort_glucose)
+
+qc_rows <- tibble(
+  step = c("participants.tsv (before join)",
+           "wearable_blood_glucose.tsv (before join)",
+           "after join"),
+  row_count = c(rows_before_participants, rows_before_cgm, rows_after_join)
+)
+
+knitr::kable(qc_rows)
+```
+
+### Number of unique participants before and after each join
+
+```{r}
+unique_before_participants <- n_distinct(participants$person_id)
+unique_before_cgm <- n_distinct(cgm_manifest$person_id)
+
+cohort_glucose <- participants %>%
+  left_join(
+    cgm_manifest %>% select(person_id, 
+                            average_cgm_glucose = average_glucose_level_mg_dl),
+    by = "person_id"
+  )
+
+unique_after_join <- n_distinct(cohort_glucose$person_id)
+
+qc_unique <- tibble(
+  step = c("participants.tsv (before join)",
+           "wearable_blood_glucose.tsv (before join)",
+           "after join"),
+  unique_participants = c(unique_before_participants, 
+                          unique_before_cgm, unique_after_join)
+)
+
+knitr::kable(qc_unique)
+```
+
+### Whether any participant IDs are duplicated
+
+```{r}
+dup_participants <- participants %>%
+  count(person_id) %>%
+  filter(n > 1)
+
+dup_cgm <- cgm_manifest %>%
+  count(person_id) %>%
+  filter(n > 1)
+
+dup_after_join <- cohort_glucose %>%
+  count(person_id) %>%
+  filter(n > 1)
+
+qc_duplicates <- tibble(
+  step = c("participants.tsv", "wearable_blood_glucose.tsv", "after join"),
+  n_duplicated_ids = c(nrow(dup_participants), 
+                       nrow(dup_cgm), nrow(dup_after_join))
+)
+
+knitr::kable(qc_duplicates)
+```
+
+### Whether any participants are lost unexpectedly
+```{r}
+# IDs present in participants.tsv but missing from the CGM manifest
+missing_from_cgm <- setdiff(participants$person_id, cgm_manifest$person_id)
+
+# IDs present in the CGM manifest but missing from participants.tsv
+missing_from_participants <- setdiff(cgm_manifest$person_id, 
+                                     participants$person_id)
+
+# after the join, check for any row where the join produced NA
+# (i.e., a participant with no matching CGM record)
+lost_after_join <- cohort_glucose %>%
+  filter(is.na(average_cgm_glucose)) %>%
+  pull(person_id)
+
+qc_lost <- tibble(
+  check = c("In participants.tsv but not in CGM manifest",
+            "In CGM manifest but not in participants.tsv",
+            "Participants with no CGM match after join"),
+  n_ids = c(length(missing_from_cgm),
+            length(missing_from_participants),
+            length(lost_after_join))
+)
+
+knitr::kable(qc_lost)
+```
+
+### Which variables have the most missing values
+
+```{r}
+missing_summary <- cohort_glucose %>%
+  summarise(across(everything(), ~ sum(is.na(.)))) %>%
+  pivot_longer(everything(), names_to = "variable", values_to = "n_missing") %>%
+  arrange(desc(n_missing))
+
+knitr::kable(missing_summary)
+```
+
+## Analysis Cohort Decisions
+```{r}
+cgm_only_cohort <- participants %>%
+  filter(wearable_blood_glucose == TRUE)
+
+cgm_plus_wearable_cohort <- participants %>%
+  filter(wearable_blood_glucose == TRUE, wearable_activity_monitor == TRUE)
+
+n_cgm_only <- nrow(cgm_only_cohort)
+n_cgm_plus_wearable <- nrow(cgm_plus_wearable_cohort)
+
+tibble(
+  cohort = c("CGM-only", "CGM and wearable"),
+  n_participants = c(n_cgm_only, n_cgm_plus_wearable)
+) %>%
+  knitr::kable()
+```
+
+### CGM-only cohort: participants with usable CGM data
+
+
 
 ## Final Questions
 

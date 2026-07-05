@@ -90,7 +90,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#setup" id="toc-setup" class="nav-link" data-scroll-target="#setup"><span class="header-section-number">1.1</span> Setup</a></li>
   <li><a href="#cohort-table-v3-mini" id="toc-cohort-table-v3-mini" class="nav-link" data-scroll-target="#cohort-table-v3-mini"><span class="header-section-number">1.2</span> Cohort Table (v3-mini)</a></li>
   </ul></li>
-  <li><a href="#tables-and-figures" id="toc-tables-and-figures" class="nav-link" data-scroll-target="#tables-and-figures"><span class="header-section-number">2</span> Tables and Figures</a>
+  <li><a href="#tables-and-figures-mini-version" id="toc-tables-and-figures-mini-version" class="nav-link" data-scroll-target="#tables-and-figures-mini-version"><span class="header-section-number">2</span> Tables and Figures (mini version)</a>
   <ul class="collapse">
   <li><a href="#table-1-participant-counts-by-study-group" id="toc-table-1-participant-counts-by-study-group" class="nav-link" data-scroll-target="#table-1-participant-counts-by-study-group"><span class="header-section-number">2.1</span> Table 1: Participant Counts by Study Group</a></li>
   <li><a href="#table-2-participant-counts-by-study-group-and-clinical-site" id="toc-table-2-participant-counts-by-study-group-and-clinical-site" class="nav-link" data-scroll-target="#table-2-participant-counts-by-study-group-and-clinical-site"><span class="header-section-number">2.2</span> Table 2: Participant Counts by Study Group and Clinical Site</a></li>
@@ -98,7 +98,24 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#modality-availability-heatmap" id="toc-modality-availability-heatmap" class="nav-link" data-scroll-target="#modality-availability-heatmap"><span class="header-section-number">2.4</span> Modality Availability Heatmap</a></li>
   <li><a href="#average-cgm-glucose-by-study-group-boxplot" id="toc-average-cgm-glucose-by-study-group-boxplot" class="nav-link" data-scroll-target="#average-cgm-glucose-by-study-group-boxplot"><span class="header-section-number">2.5</span> Average CGM Glucose by Study Group (Boxplot)</a></li>
   </ul></li>
-  <li><a href="#final-questions" id="toc-final-questions" class="nav-link" data-scroll-target="#final-questions"><span class="header-section-number">3</span> Final Questions</a></li>
+  <li><a href="#tables-and-figures-mini-version-1" id="toc-tables-and-figures-mini-version-1" class="nav-link" data-scroll-target="#tables-and-figures-mini-version-1"><span class="header-section-number">3</span> Tables and Figures (mini version)</a>
+  <ul class="collapse">
+  <li><a href="#table-1-participant-counts-by-study-group-1" id="toc-table-1-participant-counts-by-study-group-1" class="nav-link" data-scroll-target="#table-1-participant-counts-by-study-group-1"><span class="header-section-number">3.1</span> Table 1: Participant Counts by Study Group</a></li>
+  </ul></li>
+  <li><a href="#mini-versus-full-dataset-comparison" id="toc-mini-versus-full-dataset-comparison" class="nav-link" data-scroll-target="#mini-versus-full-dataset-comparison"><span class="header-section-number">4</span> Mini Versus Full Dataset Comparison</a></li>
+  <li><a href="#join-and-data-quality-checks" id="toc-join-and-data-quality-checks" class="nav-link" data-scroll-target="#join-and-data-quality-checks"><span class="header-section-number">5</span> Join and Data Quality Checks</a>
+  <ul class="collapse">
+  <li><a href="#number-of-rows-before-and-after-each-join" id="toc-number-of-rows-before-and-after-each-join" class="nav-link" data-scroll-target="#number-of-rows-before-and-after-each-join"><span class="header-section-number">5.1</span> Number of rows before and after each join</a></li>
+  <li><a href="#number-of-unique-participants-before-and-after-each-join" id="toc-number-of-unique-participants-before-and-after-each-join" class="nav-link" data-scroll-target="#number-of-unique-participants-before-and-after-each-join"><span class="header-section-number">5.2</span> Number of unique participants before and after each join</a></li>
+  <li><a href="#whether-any-participant-ids-are-duplicated" id="toc-whether-any-participant-ids-are-duplicated" class="nav-link" data-scroll-target="#whether-any-participant-ids-are-duplicated"><span class="header-section-number">5.3</span> Whether any participant IDs are duplicated</a></li>
+  <li><a href="#whether-any-participants-are-lost-unexpectedly" id="toc-whether-any-participants-are-lost-unexpectedly" class="nav-link" data-scroll-target="#whether-any-participants-are-lost-unexpectedly"><span class="header-section-number">5.4</span> Whether any participants are lost unexpectedly</a></li>
+  <li><a href="#which-variables-have-the-most-missing-values" id="toc-which-variables-have-the-most-missing-values" class="nav-link" data-scroll-target="#which-variables-have-the-most-missing-values"><span class="header-section-number">5.5</span> Which variables have the most missing values</a></li>
+  </ul></li>
+  <li><a href="#analysis-cohort-decisions" id="toc-analysis-cohort-decisions" class="nav-link" data-scroll-target="#analysis-cohort-decisions"><span class="header-section-number">6</span> Analysis Cohort Decisions</a>
+  <ul class="collapse">
+  <li><a href="#cgm-only-cohort-participants-with-usable-cgm-data" id="toc-cgm-only-cohort-participants-with-usable-cgm-data" class="nav-link" data-scroll-target="#cgm-only-cohort-participants-with-usable-cgm-data"><span class="header-section-number">6.1</span> CGM-only cohort: participants with usable CGM data</a></li>
+  </ul></li>
+  <li><a href="#final-questions" id="toc-final-questions" class="nav-link" data-scroll-target="#final-questions"><span class="header-section-number">7</span> Final Questions</a></li>
   </ul>
 </nav>
 </div>
@@ -155,26 +172,31 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 ✖ dplyr::lag()    masks stats::lag()
 ℹ Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors</code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>participants <span class="ot">&lt;-</span> <span class="fu">read_tsv</span>(<span class="st">"data/participants.tsv"</span>, <span class="at">show_col_types =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>cgm_manifest <span class="ot">&lt;-</span> <span class="fu">read_tsv</span>(<span class="st">"data/wearable_blood_glucose.tsv"</span>, </span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>                         <span class="at">show_col_types =</span> <span class="cn">FALSE</span>)</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>participants <span class="ot">&lt;-</span> <span class="fu">read_tsv</span>(<span class="st">"data/participants_mini.tsv"</span>, <span class="at">show_col_types =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>participants_full <span class="ot">&lt;-</span> <span class="fu">read_tsv</span>(<span class="st">"data/participants_full.tsv"</span>, </span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>                              <span class="at">show_col_types =</span> <span class="cn">FALSE</span>)</span>
 <span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>cohort_table <span class="ot">&lt;-</span> participants <span class="sc">%&gt;%</span></span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">transmute</span>(</span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>    person_id,</span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>    age,</span>
-<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>    study_group,</span>
-<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>    clinical_site,</span>
-<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>    recommended_split,</span>
-<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">cgm_availability =</span> wearable_blood_glucose,</span>
-<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">wearable_availability =</span> wearable_activity_monitor,</span>
-<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">clinical_data_availability =</span> clinical_data</span>
-<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(</span>
-<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>    cgm_manifest <span class="sc">%&gt;%</span> <span class="fu">select</span>(person_id, </span>
-<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>                            <span class="at">average_cgm_glucose =</span> average_glucose_level_mg_dl),</span>
-<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">by =</span> <span class="st">"person_id"</span></span>
-<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>cgm_manifest_full <span class="ot">&lt;-</span> <span class="fu">read_tsv</span>(<span class="st">"data/wearable_blood_glucose_full.tsv"</span>, </span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>                         <span class="at">show_col_types =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>cgm_manifest <span class="ot">&lt;-</span> <span class="fu">read_tsv</span>(<span class="st">"data/wearable_blood_glucose_mini.tsv"</span>, </span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>                         <span class="at">show_col_types =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>cohort_table <span class="ot">&lt;-</span> participants <span class="sc">%&gt;%</span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">transmute</span>(</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>    person_id,</span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>    age,</span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>    study_group,</span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>    clinical_site,</span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>    recommended_split,</span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">cgm_availability =</span> wearable_blood_glucose,</span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">wearable_availability =</span> wearable_activity_monitor,</span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">clinical_data_availability =</span> clinical_data</span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(</span>
+<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a>    cgm_manifest <span class="sc">%&gt;%</span> <span class="fu">select</span>(person_id, </span>
+<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a>                            <span class="at">average_cgm_glucose =</span> average_glucose_level_mg_dl),</span>
+<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a>    <span class="at">by =</span> <span class="st">"person_id"</span></span>
+<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 <section id="cohort-table-v3-mini" class="level3" data-number="1.2">
@@ -1318,8 +1340,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </section>
 </section>
-<section id="tables-and-figures" class="level2" data-number="2">
-<h2 data-number="2" class="anchored" data-anchor-id="tables-and-figures"><span class="header-section-number">2</span> Tables and Figures</h2>
+<section id="tables-and-figures-mini-version" class="level2" data-number="2">
+<h2 data-number="2" class="anchored" data-anchor-id="tables-and-figures-mini-version"><span class="header-section-number">2</span> Tables and Figures (mini version)</h2>
 <section id="table-1-participant-counts-by-study-group" class="level3" data-number="2.1">
 <h3 data-number="2.1" class="anchored" data-anchor-id="table-1-participant-counts-by-study-group"><span class="header-section-number">2.1</span> Table 1: Participant Counts by Study Group</h3>
 <div class="cell">
@@ -1572,8 +1594,348 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>This boxplot shows the average CGM Glucose levels by study group (and their 25th and 75th percentile ranges). - The insulin-dependent study group noticeably has much higher average CGM glucose levels - The group “oral_medication_and_or_non_insulin_injectable_medication_controlled” has the most variation / range of values - The insulin-dependent group’s values are very clustered towards the median, except two outliers - The variations for “healthy” and “pre_diabetes_lifestyle_controlled” are roughly the same</p>
 </section>
 </section>
-<section id="final-questions" class="level2" data-number="3">
-<h2 data-number="3" class="anchored" data-anchor-id="final-questions"><span class="header-section-number">3</span> Final Questions</h2>
+<section id="tables-and-figures-mini-version-1" class="level2" data-number="3">
+<h2 data-number="3" class="anchored" data-anchor-id="tables-and-figures-mini-version-1"><span class="header-section-number">3</span> Tables and Figures (mini version)</h2>
+<section id="table-1-participant-counts-by-study-group-1" class="level3" data-number="3.1">
+<h3 data-number="3.1" class="anchored" data-anchor-id="table-1-participant-counts-by-study-group-1"><span class="header-section-number">3.1</span> Table 1: Participant Counts by Study Group</h3>
+</section>
+</section>
+<section id="mini-versus-full-dataset-comparison" class="level2" data-number="4">
+<h2 data-number="4" class="anchored" data-anchor-id="mini-versus-full-dataset-comparison"><span class="header-section-number">4</span> Mini Versus Full Dataset Comparison</h2>
+</section>
+<section id="join-and-data-quality-checks" class="level2" data-number="5">
+<h2 data-number="5" class="anchored" data-anchor-id="join-and-data-quality-checks"><span class="header-section-number">5</span> Join and Data Quality Checks</h2>
+<section id="number-of-rows-before-and-after-each-join" class="level3" data-number="5.1">
+<h3 data-number="5.1" class="anchored" data-anchor-id="number-of-rows-before-and-after-each-join"><span class="header-section-number">5.1</span> Number of rows before and after each join</h3>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>rows_before_participants <span class="ot">&lt;-</span> <span class="fu">nrow</span>(participants)</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>rows_before_cgm <span class="ot">&lt;-</span> <span class="fu">nrow</span>(cgm_manifest)</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>cohort_glucose <span class="ot">&lt;-</span> participants <span class="sc">%&gt;%</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>    cgm_manifest <span class="sc">%&gt;%</span> <span class="fu">select</span>(person_id, </span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>                            <span class="at">average_cgm_glucose =</span> average_glucose_level_mg_dl),</span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">by =</span> <span class="st">"person_id"</span></span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>rows_after_join <span class="ot">&lt;-</span> <span class="fu">nrow</span>(cohort_glucose)</span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>qc_rows <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">step =</span> <span class="fu">c</span>(<span class="st">"participants.tsv (before join)"</span>,</span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a>           <span class="st">"wearable_blood_glucose.tsv (before join)"</span>,</span>
+<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a>           <span class="st">"after join"</span>),</span>
+<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">row_count =</span> <span class="fu">c</span>(rows_before_participants, rows_before_cgm, rows_after_join)</span>
+<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb12-19"><a href="#cb12-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-20"><a href="#cb12-20" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(qc_rows)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;">step</th>
+<th style="text-align: right;">row_count</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">participants.tsv (before join)</td>
+<td style="text-align: right;">100</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">wearable_blood_glucose.tsv (before join)</td>
+<td style="text-align: right;">100</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">after join</td>
+<td style="text-align: right;">100</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+<section id="number-of-unique-participants-before-and-after-each-join" class="level3" data-number="5.2">
+<h3 data-number="5.2" class="anchored" data-anchor-id="number-of-unique-participants-before-and-after-each-join"><span class="header-section-number">5.2</span> Number of unique participants before and after each join</h3>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>unique_before_participants <span class="ot">&lt;-</span> <span class="fu">n_distinct</span>(participants<span class="sc">$</span>person_id)</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>unique_before_cgm <span class="ot">&lt;-</span> <span class="fu">n_distinct</span>(cgm_manifest<span class="sc">$</span>person_id)</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>cohort_glucose <span class="ot">&lt;-</span> participants <span class="sc">%&gt;%</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>    cgm_manifest <span class="sc">%&gt;%</span> <span class="fu">select</span>(person_id, </span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>                            <span class="at">average_cgm_glucose =</span> average_glucose_level_mg_dl),</span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">by =</span> <span class="st">"person_id"</span></span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>unique_after_join <span class="ot">&lt;-</span> <span class="fu">n_distinct</span>(cohort_glucose<span class="sc">$</span>person_id)</span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a>qc_unique <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
+<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">step =</span> <span class="fu">c</span>(<span class="st">"participants.tsv (before join)"</span>,</span>
+<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a>           <span class="st">"wearable_blood_glucose.tsv (before join)"</span>,</span>
+<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a>           <span class="st">"after join"</span>),</span>
+<span id="cb13-17"><a href="#cb13-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">unique_participants =</span> <span class="fu">c</span>(unique_before_participants, </span>
+<span id="cb13-18"><a href="#cb13-18" aria-hidden="true" tabindex="-1"></a>                          unique_before_cgm, unique_after_join)</span>
+<span id="cb13-19"><a href="#cb13-19" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb13-20"><a href="#cb13-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-21"><a href="#cb13-21" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(qc_unique)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;">step</th>
+<th style="text-align: right;">unique_participants</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">participants.tsv (before join)</td>
+<td style="text-align: right;">100</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">wearable_blood_glucose.tsv (before join)</td>
+<td style="text-align: right;">100</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">after join</td>
+<td style="text-align: right;">100</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+<section id="whether-any-participant-ids-are-duplicated" class="level3" data-number="5.3">
+<h3 data-number="5.3" class="anchored" data-anchor-id="whether-any-participant-ids-are-duplicated"><span class="header-section-number">5.3</span> Whether any participant IDs are duplicated</h3>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>dup_participants <span class="ot">&lt;-</span> participants <span class="sc">%&gt;%</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(person_id) <span class="sc">%&gt;%</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(n <span class="sc">&gt;</span> <span class="dv">1</span>)</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>dup_cgm <span class="ot">&lt;-</span> cgm_manifest <span class="sc">%&gt;%</span></span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(person_id) <span class="sc">%&gt;%</span></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(n <span class="sc">&gt;</span> <span class="dv">1</span>)</span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>dup_after_join <span class="ot">&lt;-</span> cohort_glucose <span class="sc">%&gt;%</span></span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(person_id) <span class="sc">%&gt;%</span></span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(n <span class="sc">&gt;</span> <span class="dv">1</span>)</span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a>qc_duplicates <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
+<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">step =</span> <span class="fu">c</span>(<span class="st">"participants.tsv"</span>, <span class="st">"wearable_blood_glucose.tsv"</span>, <span class="st">"after join"</span>),</span>
+<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">n_duplicated_ids =</span> <span class="fu">c</span>(<span class="fu">nrow</span>(dup_participants), </span>
+<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a>                       <span class="fu">nrow</span>(dup_cgm), <span class="fu">nrow</span>(dup_after_join))</span>
+<span id="cb14-17"><a href="#cb14-17" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb14-18"><a href="#cb14-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-19"><a href="#cb14-19" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(qc_duplicates)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;">step</th>
+<th style="text-align: right;">n_duplicated_ids</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">participants.tsv</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">wearable_blood_glucose.tsv</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">after join</td>
+<td style="text-align: right;">0</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+<section id="whether-any-participants-are-lost-unexpectedly" class="level3" data-number="5.4">
+<h3 data-number="5.4" class="anchored" data-anchor-id="whether-any-participants-are-lost-unexpectedly"><span class="header-section-number">5.4</span> Whether any participants are lost unexpectedly</h3>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># IDs present in participants.tsv but missing from the CGM manifest</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>missing_from_cgm <span class="ot">&lt;-</span> <span class="fu">setdiff</span>(participants<span class="sc">$</span>person_id, cgm_manifest<span class="sc">$</span>person_id)</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a><span class="co"># IDs present in the CGM manifest but missing from participants.tsv</span></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>missing_from_participants <span class="ot">&lt;-</span> <span class="fu">setdiff</span>(cgm_manifest<span class="sc">$</span>person_id, </span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>                                     participants<span class="sc">$</span>person_id)</span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a><span class="co"># after the join, check for any row where the join produced NA</span></span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a><span class="co"># (i.e., a participant with no matching CGM record)</span></span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>lost_after_join <span class="ot">&lt;-</span> cohort_glucose <span class="sc">%&gt;%</span></span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="fu">is.na</span>(average_cgm_glucose)) <span class="sc">%&gt;%</span></span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pull</span>(person_id)</span>
+<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a>qc_lost <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
+<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">check =</span> <span class="fu">c</span>(<span class="st">"In participants.tsv but not in CGM manifest"</span>,</span>
+<span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a>            <span class="st">"In CGM manifest but not in participants.tsv"</span>,</span>
+<span id="cb15-17"><a href="#cb15-17" aria-hidden="true" tabindex="-1"></a>            <span class="st">"Participants with no CGM match after join"</span>),</span>
+<span id="cb15-18"><a href="#cb15-18" aria-hidden="true" tabindex="-1"></a>  <span class="at">n_ids =</span> <span class="fu">c</span>(<span class="fu">length</span>(missing_from_cgm),</span>
+<span id="cb15-19"><a href="#cb15-19" aria-hidden="true" tabindex="-1"></a>            <span class="fu">length</span>(missing_from_participants),</span>
+<span id="cb15-20"><a href="#cb15-20" aria-hidden="true" tabindex="-1"></a>            <span class="fu">length</span>(lost_after_join))</span>
+<span id="cb15-21"><a href="#cb15-21" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb15-22"><a href="#cb15-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-23"><a href="#cb15-23" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(qc_lost)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;">check</th>
+<th style="text-align: right;">n_ids</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">In participants.tsv but not in CGM manifest</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">In CGM manifest but not in participants.tsv</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Participants with no CGM match after join</td>
+<td style="text-align: right;">0</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+<section id="which-variables-have-the-most-missing-values" class="level3" data-number="5.5">
+<h3 data-number="5.5" class="anchored" data-anchor-id="which-variables-have-the-most-missing-values"><span class="header-section-number">5.5</span> Which variables have the most missing values</h3>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>missing_summary <span class="ot">&lt;-</span> cohort_glucose <span class="sc">%&gt;%</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="fu">across</span>(<span class="fu">everything</span>(), <span class="sc">~</span> <span class="fu">sum</span>(<span class="fu">is.na</span>(.)))) <span class="sc">%&gt;%</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="fu">everything</span>(), <span class="at">names_to =</span> <span class="st">"variable"</span>, <span class="at">values_to =</span> <span class="st">"n_missing"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(n_missing))</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(missing_summary)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;">variable</th>
+<th style="text-align: right;">n_missing</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">person_id</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">clinical_site</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">study_group</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">age</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">study_visit_date</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">recommended_split</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">cardiac_ecg</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">clinical_data</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">environment</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">retinal_flio</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">retinal_oct</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">retinal_octa</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">retinal_photography</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">wearable_activity_monitor</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">wearable_blood_glucose</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">average_cgm_glucose</td>
+<td style="text-align: right;">0</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+</section>
+<section id="analysis-cohort-decisions" class="level2" data-number="6">
+<h2 data-number="6" class="anchored" data-anchor-id="analysis-cohort-decisions"><span class="header-section-number">6</span> Analysis Cohort Decisions</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>cgm_only_cohort <span class="ot">&lt;-</span> participants <span class="sc">%&gt;%</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(wearable_blood_glucose <span class="sc">==</span> <span class="cn">TRUE</span>)</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>cgm_plus_wearable_cohort <span class="ot">&lt;-</span> participants <span class="sc">%&gt;%</span></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(wearable_blood_glucose <span class="sc">==</span> <span class="cn">TRUE</span>, wearable_activity_monitor <span class="sc">==</span> <span class="cn">TRUE</span>)</span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>n_cgm_only <span class="ot">&lt;-</span> <span class="fu">nrow</span>(cgm_only_cohort)</span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>n_cgm_plus_wearable <span class="ot">&lt;-</span> <span class="fu">nrow</span>(cgm_plus_wearable_cohort)</span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(</span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">cohort =</span> <span class="fu">c</span>(<span class="st">"CGM-only"</span>, <span class="st">"CGM and wearable"</span>),</span>
+<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">n_participants =</span> <span class="fu">c</span>(n_cgm_only, n_cgm_plus_wearable)</span>
+<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a>) <span class="sc">%&gt;%</span></span>
+<span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a>  knitr<span class="sc">::</span><span class="fu">kable</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;">cohort</th>
+<th style="text-align: right;">n_participants</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">CGM-only</td>
+<td style="text-align: right;">100</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">CGM and wearable</td>
+<td style="text-align: right;">100</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<section id="cgm-only-cohort-participants-with-usable-cgm-data" class="level3" data-number="6.1">
+<h3 data-number="6.1" class="anchored" data-anchor-id="cgm-only-cohort-participants-with-usable-cgm-data"><span class="header-section-number">6.1</span> CGM-only cohort: participants with usable CGM data</h3>
+</section>
+</section>
+<section id="final-questions" class="level2" data-number="7">
+<h2 data-number="7" class="anchored" data-anchor-id="final-questions"><span class="header-section-number">7</span> Final Questions</h2>
 </section>
 
 </main>
