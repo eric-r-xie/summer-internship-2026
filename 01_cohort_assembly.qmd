@@ -128,11 +128,13 @@ library(tidyverse)
 cohort_glucose <- participants %>%
   select(person_id, study_group) %>%
   left_join(
-    cgm_manifest %>% select(person_id, average_cgm_glucose = average_glucose_level_mg_dl),
+    cgm_manifest %>% select(person_id, 
+                            average_cgm_glucose = average_glucose_level_mg_dl),
     by = "person_id"
   )
 
-ggplot(cohort_glucose, aes(x = study_group, y = average_cgm_glucose, fill = study_group)) +
+ggplot(cohort_glucose, 
+       aes(x = study_group, y = average_cgm_glucose, fill = study_group)) +
   geom_boxplot() +
   geom_jitter(width = 0.15, alpha = 0.4, size = 1.5) +
   labs(title = "Average CGM Glucose by Study Group",
@@ -141,6 +143,12 @@ ggplot(cohort_glucose, aes(x = study_group, y = average_cgm_glucose, fill = stud
   theme(axis.text.x = element_text(angle = 30, hjust = 1),
         legend.position = "none")
 ```
+
+This boxplot shows the average CGM Glucose levels by study group (and their 25th and 75th percentile ranges). 
+- The insulin-dependent study group noticeably has much higher average CGM glucose levels 
+- The group "oral_medication_and_or_non_insulin_injectable_medication_controlled" has the most variation / range of values
+- The insulin-dependent group's values are very clustered towards the median, except two outliers
+- The variations for "healthy" and "pre_diabetes_lifestyle_controlled" are roughly the same
 
 ## Final Questions
 
