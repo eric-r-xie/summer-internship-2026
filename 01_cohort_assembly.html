@@ -95,6 +95,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#table-1-participant-counts-by-study-group" id="toc-table-1-participant-counts-by-study-group" class="nav-link" data-scroll-target="#table-1-participant-counts-by-study-group"><span class="header-section-number">2.1</span> Table 1: Participant Counts by Study Group</a></li>
   <li><a href="#table-2-participant-counts-by-study-group-and-clinical-site" id="toc-table-2-participant-counts-by-study-group-and-clinical-site" class="nav-link" data-scroll-target="#table-2-participant-counts-by-study-group-and-clinical-site"><span class="header-section-number">2.2</span> Table 2: Participant Counts by Study Group and Clinical Site</a></li>
   <li><a href="#table-3-data-availability-summary" id="toc-table-3-data-availability-summary" class="nav-link" data-scroll-target="#table-3-data-availability-summary"><span class="header-section-number">2.3</span> Table 3: Data Availability Summary</a></li>
+  <li><a href="#modality-availability-heatmap" id="toc-modality-availability-heatmap" class="nav-link" data-scroll-target="#modality-availability-heatmap"><span class="header-section-number">2.4</span> Modality Availability Heatmap</a></li>
   </ul></li>
   <li><a href="#final-questions" id="toc-final-questions" class="nav-link" data-scroll-target="#final-questions"><span class="header-section-number">3</span> Final Questions</a></li>
   </ul>
@@ -1358,6 +1359,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </table>
 </div>
 </div>
+<p>This produces a summary table of how many participants are in each study group. Participants who are insulin dependent are noticeably less than other categories, within the scope of this data set.</p>
 </section>
 <section id="table-2-participant-counts-by-study-group-and-clinical-site" class="level3" data-number="2.2">
 <h3 data-number="2.2" class="anchored" data-anchor-id="table-2-participant-counts-by-study-group-and-clinical-site"><span class="header-section-number">2.2</span> Table 2: Participant Counts by Study Group and Clinical Site</h3>
@@ -1445,6 +1447,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </table>
 </div>
 </div>
+<p>This produces a summary table of how many participants are in each study group at each different clinical site. The number of participants are spread out relatively uniformly throughout the three clinic sites.</p>
 </section>
 <section id="table-3-data-availability-summary" class="level3" data-number="2.3">
 <h3 data-number="2.3" class="anchored" data-anchor-id="table-3-data-availability-summary"><span class="header-section-number">2.3</span> Table 3: Data Availability Summary</h3>
@@ -1504,13 +1507,40 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </table>
 </div>
 </div>
+<p>The count for each of the categories is the same (100), showing no variation. Therefore, all the participants in the study have complete data across all categories in this subset.</p>
+</section>
+<section id="modality-availability-heatmap" class="level3" data-number="2.4">
+<h3 data-number="2.4" class="anchored" data-anchor-id="modality-availability-heatmap"><span class="header-section-number">2.4</span> Modality Availability Heatmap</h3>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>modality_long <span class="ot">&lt;-</span> participants <span class="sc">%&gt;%</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(person_id, cardiac_ecg, clinical_data, environment,</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>         retinal_flio, retinal_oct, retinal_octa, retinal_photography,</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>         wearable_activity_monitor, wearable_blood_glucose) <span class="sc">%&gt;%</span></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="sc">-</span>person_id, <span class="at">names_to =</span> <span class="st">"modality"</span>, <span class="at">values_to =</span> <span class="st">"available"</span>)</span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(modality_long, <span class="fu">aes</span>(<span class="at">x =</span> modality, <span class="at">y =</span> <span class="fu">factor</span>(person_id), <span class="at">fill =</span> available)) <span class="sc">+</span></span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_tile</span>(<span class="at">color =</span> <span class="st">"white"</span>, <span class="at">linewidth =</span> <span class="fl">0.1</span>) <span class="sc">+</span></span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"TRUE"</span> <span class="ot">=</span> <span class="st">"steelblue"</span>, <span class="st">"FALSE"</span> <span class="ot">=</span> <span class="st">"#f0f0f0"</span>)) <span class="sc">+</span></span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Figure 1: Modality Availability Heatmap"</span>,</span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Modality"</span>, <span class="at">y =</span> <span class="st">"Participant"</span>, <span class="at">fill =</span> <span class="st">"Available"</span>) <span class="sc">+</span></span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">axis.text.y =</span> <span class="fu">element_blank</span>(),   <span class="co"># 100 IDs won't fit legibly on y-axis</span></span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a>        <span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">angle =</span> <span class="dv">45</span>, <span class="at">hjust =</span> <span class="dv">1</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="01_cohort_assembly_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>When visualized, the participants’ data is complete across all modalities in this subset. There is no missing modalities to present or analyze.</p>
 </section>
 </section>
 <section id="final-questions" class="level2" data-number="3">
 <h2 data-number="3" class="anchored" data-anchor-id="final-questions"><span class="header-section-number">3</span> Final Questions</h2>
-<ol type="1">
-<li>The meeting notes mentioned an ID variable you use for joins, but I’m unclear on what this is.</li>
-</ol>
 </section>
 
 </main>

@@ -57,6 +57,8 @@ table1 <- participants %>%
 knitr::kable(table1)
 ```
 
+This produces a summary table of how many participants are in each study group. Participants who are insulin dependent are noticeably less than other categories, within the scope of this data set.
+
 ### Table 2: Participant Counts by Study Group and Clinical Site
 ```{r}
 table2 <- participants %>%
@@ -64,6 +66,8 @@ table2 <- participants %>%
 
 knitr::kable(table2)
 ```
+
+This produces a summary table of how many participants are in each study group at each different clinical site. The number of participants are spread out relatively uniformly throughout the three clinic sites. 
 
 ### Table 3: Data Availability Summary
 ```{r}
@@ -91,9 +95,33 @@ table3 <- tibble(
 knitr::kable(table3)
 ```
 
+The count for each of the categories is the same (100), showing no variation. Therefore, all the participants in the study have complete data across all categories in this subset.
+
+### Modality Availability Heatmap
+
+```{r}
+library(tidyverse)
+
+modality_long <- participants %>%
+  select(person_id, cardiac_ecg, clinical_data, environment,
+         retinal_flio, retinal_oct, retinal_octa, retinal_photography,
+         wearable_activity_monitor, wearable_blood_glucose) %>%
+  pivot_longer(-person_id, names_to = "modality", values_to = "available")
+
+ggplot(modality_long, aes(x = modality, y = factor(person_id), fill = available)) +
+  geom_tile(color = "white", linewidth = 0.1) +
+  scale_fill_manual(values = c("TRUE" = "steelblue", "FALSE" = "#f0f0f0")) +
+  labs(title = "Figure 1: Modality Availability Heatmap",
+       x = "Modality", y = "Participant", fill = "Available") +
+  theme_minimal() +
+  theme(axis.text.y = element_blank(),   # 100 IDs won't fit legibly on y-axis
+        axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+When visualized, the participants' data is complete across all modalities in this subset. There is no missing modalities to present or analyze.
+
 ## Final Questions
 
-1. The meeting notes mentioned an ID variable you use for joins, but I'm unclear on what this is.
 
 
 
