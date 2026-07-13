@@ -76,7 +76,6 @@ This produces a summary table of how many participants are in each study group a
 
 ### Table 3: Data Availability Summary
 ```{r}
-# Table 3: data availability summary
 table3 <- tibble(
   category = c(
     "CGM data",
@@ -150,22 +149,122 @@ ggplot(cohort_glucose,
 ```
 
 This boxplot shows the average CGM Glucose levels by study group (and their 25th and 75th percentile ranges). 
+
 - The insulin-dependent study group noticeably has much higher average CGM glucose levels 
 - The group "oral_medication_and_or_non_insulin_injectable_medication_controlled" has the most variation / range of values
 - The insulin-dependent group's values are very clustered towards the median, except two outliers
 - The variations for "healthy" and "pre_diabetes_lifestyle_controlled" are roughly the same
 
-## Tables and Figures (mini version)
+Note: In geom_boxplot(),the whisker extends to the most extreme data point that still falls within 1.5 × IQR of the box edge, where IQR is the height of the box itself (Q3 − Q1). Anything past that boundary is classified as an outlier.
+
+## Tables and Figures (full v3 version)
 
 ### Table 1: Participant Counts by Study Group
 ```{r}
+table1_full <- participants_full %>%
+  count(study_group)
 
+knitr::kable(table1_full)
+```
+
+### Table 2: Participant Counts by Study Group and Clinical Site
+```{r}
+table2_full <- participants_full %>%
+  count(study_group, clinical_site)
+
+knitr::kable(table2_full)
+```
+
+### Table 3: Data Availability Summary
+```{r}
+table3_full <- tibble(
+  category = c(
+    "CGM data",
+    "Wearable data",
+    "Clinical data",
+    "CGM plus wearable data",
+    "CGM plus wearable plus clinical data"
+  ),
+  count = c(
+    sum(participants_full$wearable_blood_glucose == TRUE),
+    sum(participants_full$wearable_activity_monitor == TRUE),
+    sum(participants_full$clinical_data == TRUE),
+    sum(participants_full$wearable_blood_glucose == TRUE 
+        & participants_full$wearable_activity_monitor == TRUE),
+    sum(participants_full$wearable_blood_glucose == TRUE 
+        & participants_full$wearable_activity_monitor == TRUE 
+        & participants_full$clinical_data == TRUE)
+  )
+)
+
+knitr::kable(table3_full)
+```
+
+### Average CGM Glucose by Study Group (Boxplot)
+
+```{r}
+library(tidyverse)
+
+cohort_glucose_full <- participants_full %>%
+  select(person_id, study_group) %>%
+  left_join(
+    cgm_manifest_full %>% select(person_id, 
+                            average_cgm_glucose = average_glucose_level_mg_dl),
+    by = "person_id"
+  )
+
+ggplot(cohort_glucose_full, 
+       aes(x = study_group, y = average_cgm_glucose, fill = study_group)) +
+  geom_boxplot() +
+  geom_jitter(width = 0.15, alpha = 0.4, size = 1.5) +
+  labs(title = "Average CGM Glucose by Study Group",
+       x = "Study Group", y = "Average CGM Glucose (mg/dL)") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 30, hjust = 1),
+        legend.position = "none")
 ```
 
 ## Mini Versus Full Dataset Comparison
 
+### How many participants are in the mini dataset versus the full dataset?
 
-## Join and Data Quality Checks
+```{r}
+library(tidyverse)
+
+dataset_sizes <- tibble(
+  dataset = c("Mini", "Full"),
+  n_participants = c(100, 2280)
+)
+
+ggplot(dataset_sizes, aes(x = dataset, y = n_participants, fill = dataset)) +
+  geom_col(width = 0.5) +
+  geom_text(aes(label = n_participants), vjust = -0.5, size = 5) +
+  scale_fill_manual(values = c("Mini" = "#85B7EB", "Full" = "#185FA5")) +
+  labs(title = "Participants: Mini vs Full Dataset",
+       x = NULL, y = "Number of Participants") +
+  theme_minimal() +
+  theme(legend.position = "none")
+```
+
+The mini dataset has 100 participants, while the full set has 2,280. 
+
+### Are the study groups represented similarly?
+
+The study groups are mostly represented similarly, with the exception of the insulin-dependent group, which has significantly less participants.
+
+### Are the clinical sites represented similarly?
+
+Yes, the clinical sites have roughly equal representation throughout the study.
+
+### Is modality availability similar or different?
+
+The mini dataset has every modality available, however, for the full data set, some are missing (though it's close to 100%).
+
+### Did the same code run on both datasets after changing only the data path?
+
+Yes, they mostly did, with the exception of the heatmap code, whose graphics were blurred by the overly tiny marks due to the large sample population.
+
+## Join and Data Quality Checks (mini dataset)
 
 ### Number of rows before and after each join
 
@@ -281,6 +380,9 @@ knitr::kable(missing_summary)
 ```
 
 ## Analysis Cohort Decisions
+
+### Code
+
 ```{r}
 cgm_only_cohort <- participants %>%
   filter(wearable_blood_glucose == TRUE)
@@ -298,12 +400,21 @@ tibble(
   knitr::kable()
 ```
 
-### CGM-only cohort: participants with usable CGM data
+### CGM-only cohort
 
+In the cohort, 100 participants are included, representing the study groups of oral medication/non-insulin controlled, healthy, pre-diabetes lifestyle-controlled, and insulin-dependent. Since each of the 100 participants have full availability of the modalities, any scientific modality-related question could be asked. However, the cohort is limited in that the mini dataset was selected from the full data set purposefully without any missingness of data, an element that cannot be explained by this cohort. 
 
+### CGM plus wearable cohort
+
+In the CGM plus wearable cohort, 100 participants are included, representing the same study groups as the CGM-only cohort. It's potential scientific inquiries and limitations are also similar, but this cohort might be able to provide more complete insight into daily glucose monitoring.
+
+## Interpretation
+
+### What does the missing-data pattern tell us about which scientific questions are possible in this dataset?
 
 ## Final Questions
 
+### The mini dataset doesn't have any missing data for each participant, but the full dataset does for some. Was the mini data set deliberately constructed this way such that it would be complete, or was it created using another standard or randomness?
 
 
 
