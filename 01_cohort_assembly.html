@@ -129,7 +129,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </ul></li>
   <li><a href="#interpretation" id="toc-interpretation" class="nav-link" data-scroll-target="#interpretation"><span class="header-section-number">7</span> Interpretation</a>
   <ul class="collapse">
-  <li><a href="#what-does-the-missing-data-pattern-tell-us-about-which-scientific-questions-are-possible-in-this-dataset" id="toc-what-does-the-missing-data-pattern-tell-us-about-which-scientific-questions-are-possible-in-this-dataset" class="nav-link" data-scroll-target="#what-does-the-missing-data-pattern-tell-us-about-which-scientific-questions-are-possible-in-this-dataset"><span class="header-section-number">7.1</span> What does the missing-data pattern tell us about which scientific questions are possible in this dataset?</a></li>
+  <li><a href="#missing-data" id="toc-missing-data" class="nav-link" data-scroll-target="#missing-data"><span class="header-section-number">7.1</span> Missing Data</a></li>
+  <li><a href="#what-does-the-missing-data-pattern-tell-us-about-which-scientific-questions-are-possible-in-this-dataset" id="toc-what-does-the-missing-data-pattern-tell-us-about-which-scientific-questions-are-possible-in-this-dataset" class="nav-link" data-scroll-target="#what-does-the-missing-data-pattern-tell-us-about-which-scientific-questions-are-possible-in-this-dataset"><span class="header-section-number">7.2</span> What does the missing-data pattern tell us about which scientific questions are possible in this dataset?</a></li>
+  <li><a href="#why-is-it-useful-to-develop-code-on-the-mini-dataset-but-check-scientific-conclusions-on-the-full-dataset" id="toc-why-is-it-useful-to-develop-code-on-the-mini-dataset-but-check-scientific-conclusions-on-the-full-dataset" class="nav-link" data-scroll-target="#why-is-it-useful-to-develop-code-on-the-mini-dataset-but-check-scientific-conclusions-on-the-full-dataset"><span class="header-section-number">7.3</span> Why is it useful to develop code on the mini dataset but check scientific conclusions on the full dataset?</a></li>
   </ul></li>
   <li><a href="#final-questions" id="toc-final-questions" class="nav-link" data-scroll-target="#final-questions"><span class="header-section-number">8</span> Final Questions</a>
   <ul class="collapse">
@@ -2235,8 +2237,101 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="interpretation" class="level2" data-number="7">
 <h2 data-number="7" class="anchored" data-anchor-id="interpretation"><span class="header-section-number">7</span> Interpretation</h2>
-<section id="what-does-the-missing-data-pattern-tell-us-about-which-scientific-questions-are-possible-in-this-dataset" class="level3" data-number="7.1">
-<h3 data-number="7.1" class="anchored" data-anchor-id="what-does-the-missing-data-pattern-tell-us-about-which-scientific-questions-are-possible-in-this-dataset"><span class="header-section-number">7.1</span> What does the missing-data pattern tell us about which scientific questions are possible in this dataset?</h3>
+<section id="missing-data" class="level3" data-number="7.1">
+<h3 data-number="7.1" class="anchored" data-anchor-id="missing-data"><span class="header-section-number">7.1</span> Missing Data</h3>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>missing_summary_full <span class="ot">&lt;-</span> participants_full <span class="sc">%&gt;%</span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="fu">across</span>(<span class="fu">c</span>(cardiac_ecg, clinical_data, environment,</span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>                      retinal_flio, retinal_oct, retinal_octa,</span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>                      retinal_photography, wearable_activity_monitor,</span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>                      wearable_blood_glucose),</span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a>                    <span class="sc">~</span> <span class="fu">sum</span>(. <span class="sc">==</span> <span class="cn">FALSE</span>))) <span class="sc">%&gt;%</span></span>
+<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="fu">everything</span>(), <span class="at">names_to =</span> <span class="st">"variable"</span>, <span class="at">values_to =</span> <span class="st">"n_missing"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb25-9"><a href="#cb25-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">total =</span> <span class="fu">nrow</span>(participants_full),</span>
+<span id="cb25-10"><a href="#cb25-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">pct_missing =</span> <span class="fu">round</span>(<span class="dv">100</span> <span class="sc">*</span> n_missing <span class="sc">/</span> total, <span class="dv">1</span>)</span>
+<span id="cb25-11"><a href="#cb25-11" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb25-12"><a href="#cb25-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(variable, total, n_missing, pct_missing) <span class="sc">%&gt;%</span></span>
+<span id="cb25-13"><a href="#cb25-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(n_missing))</span>
+<span id="cb25-14"><a href="#cb25-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-15"><a href="#cb25-15" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(missing_summary_full)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;">variable</th>
+<th style="text-align: right;">total</th>
+<th style="text-align: right;">n_missing</th>
+<th style="text-align: right;">pct_missing</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">retinal_flio</td>
+<td style="text-align: right;">2280</td>
+<td style="text-align: right;">433</td>
+<td style="text-align: right;">19.0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">wearable_activity_monitor</td>
+<td style="text-align: right;">2280</td>
+<td style="text-align: right;">96</td>
+<td style="text-align: right;">4.2</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">environment</td>
+<td style="text-align: right;">2280</td>
+<td style="text-align: right;">49</td>
+<td style="text-align: right;">2.1</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">wearable_blood_glucose</td>
+<td style="text-align: right;">2280</td>
+<td style="text-align: right;">35</td>
+<td style="text-align: right;">1.5</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">cardiac_ecg</td>
+<td style="text-align: right;">2280</td>
+<td style="text-align: right;">29</td>
+<td style="text-align: right;">1.3</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">retinal_octa</td>
+<td style="text-align: right;">2280</td>
+<td style="text-align: right;">16</td>
+<td style="text-align: right;">0.7</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">retinal_oct</td>
+<td style="text-align: right;">2280</td>
+<td style="text-align: right;">14</td>
+<td style="text-align: right;">0.6</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">retinal_photography</td>
+<td style="text-align: right;">2280</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">0.2</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">clinical_data</td>
+<td style="text-align: right;">2280</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.0</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+<section id="what-does-the-missing-data-pattern-tell-us-about-which-scientific-questions-are-possible-in-this-dataset" class="level3" data-number="7.2">
+<h3 data-number="7.2" class="anchored" data-anchor-id="what-does-the-missing-data-pattern-tell-us-about-which-scientific-questions-are-possible-in-this-dataset"><span class="header-section-number">7.2</span> What does the missing-data pattern tell us about which scientific questions are possible in this dataset?</h3>
+<p>Overall, the missing data in the full data set limits which modalities can be analyzed, whether it be alone or jointly with other modalities. Noticeably, the variable “retinal_flio” has the most missing data out of all other variables, a specialized retinal imaging technique that is perhaps implemented less than the standard retinal OCT, which has more complete data. Therefore, although the data set could support many other inquiries such as CGM or clinical data, but questions that require FLIO would be limited in what conclusions they could result in. Furthermore, the missing data not only points to the lack of completeness, but also underlying sample biases that could determine how the data set is formed.</p>
+</section>
+<section id="why-is-it-useful-to-develop-code-on-the-mini-dataset-but-check-scientific-conclusions-on-the-full-dataset" class="level3" data-number="7.3">
+<h3 data-number="7.3" class="anchored" data-anchor-id="why-is-it-useful-to-develop-code-on-the-mini-dataset-but-check-scientific-conclusions-on-the-full-dataset"><span class="header-section-number">7.3</span> Why is it useful to develop code on the mini dataset but check scientific conclusions on the full dataset?</h3>
+<p>Developing code on the mini dataset could allow for increased speed and smaller-scale iterations which could aid debugging during the initial code-writing process. The smaller data analysis could point towards potential trends in the entire full data set, but to verify such trends and conclusions the full dataset must be evaluated for completeness and to mitigate sampling bias.</p>
 </section>
 </section>
 <section id="final-questions" class="level2" data-number="8">

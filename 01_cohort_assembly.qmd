@@ -410,7 +410,33 @@ In the CGM plus wearable cohort, 100 participants are included, representing the
 
 ## Interpretation
 
+### Missing Data
+
+```{r}
+missing_summary_full <- participants_full %>%
+  summarise(across(c(cardiac_ecg, clinical_data, environment,
+                      retinal_flio, retinal_oct, retinal_octa,
+                      retinal_photography, wearable_activity_monitor,
+                      wearable_blood_glucose),
+                    ~ sum(. == FALSE))) %>%
+  pivot_longer(everything(), names_to = "variable", values_to = "n_missing") %>%
+  mutate(
+    total = nrow(participants_full),
+    pct_missing = round(100 * n_missing / total, 1)
+  ) %>%
+  select(variable, total, n_missing, pct_missing) %>%
+  arrange(desc(n_missing))
+
+knitr::kable(missing_summary_full)
+```
+
 ### What does the missing-data pattern tell us about which scientific questions are possible in this dataset?
+
+Overall, the missing data in the full data set limits which modalities can be analyzed, whether it be alone or jointly with other modalities. Noticeably, the variable "retinal_flio" has the most missing data out of all other variables, a specialized retinal imaging technique that is perhaps implemented less than the standard retinal OCT, which has more complete data. Therefore, although the data set could support many other inquiries such as CGM or clinical data, but questions that require FLIO would be limited in what conclusions they could result in. Furthermore, the missing data not only points to the lack of completeness, but also underlying sample biases that could determine how the data set is formed. 
+
+### Why is it useful to develop code on the mini dataset but check scientific conclusions on the full dataset?
+
+Developing code on the mini dataset could allow for increased speed and smaller-scale iterations which could aid debugging during the initial code-writing process. The smaller data analysis could point towards potential trends in the entire full data set, but to verify such trends and conclusions the full dataset must be evaluated for completeness and to mitigate sampling bias. 
 
 ## Final Questions
 
