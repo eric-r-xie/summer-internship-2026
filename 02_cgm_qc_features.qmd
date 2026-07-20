@@ -1,0 +1,156 @@
+---
+title: "Week 2: CGM Processing and Individual Glucose Patterns"
+author: "Eric Xie"
+format:
+  html:
+    toc: true
+    toc-location: left
+---
+
+## CGM Cohort
+```{r}
+library(tidyverse)
+
+participants_mini <- read_tsv("data/participants_mini.tsv")
+cgm_cohort <- participants_mini %>%
+  filter(wearable_blood_glucose == TRUE) %>%
+  pull(person_id)
+
+manifest <- read_tsv("data/wearable_blood_glucose_mini.tsv")
+manifest %>% pull(glucose_filepath) %>% head(3)
+```
+
+## Cleaning the CGM Data
+
+##### Keeping Variables
+```{r}
+library(lubridate)
+library(jsonlite)
+
+json_path_1029 <- "data/dexcom_g6/1029/1029_DEX.json"
+raw_1029 <- fromJSON(json_path_1029, simplifyVector = FALSE)
+
+person_id_val   <- raw_1029$header$patient_id
+timezone_abbrev <- raw_1029$header$timezone
+
+cgm_1029 <- map_dfr(raw_1029$body$cgm, function(r) {
+  tibble(
+    person_id             = person_id_val,
+    event_type            = r$event_type,
+    time_utc              = r$effective_time_frame$time_interval$start_date_time,
+    timezone_abbreviation = timezone_abbrev,
+    glucose_value_original = r$blood_glucose$value,
+    glucose_value_numeric  = as.numeric(r$blood_glucose$value),
+    glucose_unit            = r$blood_glucose$unit
+  )
+})
+
+glimpse(cgm_1029)
+nrow(cgm_1029)
+```
+
+##### 1. Keep only estimated glucose value events (event_type == "EGV")
+```{r}
+cgm_1029 <- cgm_1029 %>%
+  filter(event_type == "EGV")
+
+nrow(cgm_1029)
+```
+
+##### 2. Parse timestamps ending in Z as UTC and save them as time_utc
+```{r}
+cgm_1029 <- cgm_1029 %>%
+  mutate(time_utc = ymd_hms(time_utc, tz = "UTC"))
+
+# cgm_1029$person_id is "AIREADI-1029"; participants_mini$person_id is bare 1029
+cgm_1029 <- cgm_1029 %>%
+  mutate(person_id_numeric = as.numeric(str_remove(person_id, "AIREADI-")))
+```
+
+##### 3. Infer the participant/device regional timezone from the JSON timezone label and check that it is consistent with the clinical site.
+```{r}
+tz_map <- tribble(
+  ~timezone_abbreviation, ~iana_zone,           ~expected_region,
+  "pst",                  "America/Los_Angeles", "Pacific",
+  "pdt",                  "America/Los_Angeles", "Pacific",
+  "mst",                  "America/Denver",       "Mountain",
+  "mdt",                  "America/Denver",       "Mountain",
+  "cst",                  "America/Chicago",      "Central",
+  "cdt",                  "America/Chicago",      "Central",
+  "est",                  "America/New_York",     "Eastern",
+  "edt",                  "America/New_York",     "Eastern"
+)
+
+site_region_map <- tribble(
+  ~clinical_site, ~site_region,
+  "UW",           "Pacific",
+  "UCSD",         "Pacific",
+  "UAB",          "Central"
+)
+
+cgm_1029 <- cgm_1029 %>%
+  left_join(tz_map, by = "timezone_abbreviation") %>%
+  left_join(
+    participants_mini %>% select(person_id, clinical_site),
+    by = c("person_id_numeric" = "person_id")
+  ) %>%
+  left_join(site_region_map, by = "clinical_site") %>%
+  mutate(
+    tz_site_consistent = expected_region == site_region,
+    tz_flag_for_review = is.na(iana_zone) | is.na(site_region) | !tz_site_consistent
+  )
+
+cgm_1029 %>%
+  distinct(person_id, timezone_abbreviation, iana_zone, clinical_site, site_region, tz_site_consistent, tz_flag_for_review)
+```
+
+Nothing flagged for participant 1029. 
+
+##### 4. Convert time_utc to time_local with the selected IANA timezone. Create date_local, hour_local, timezone_abbreviation, and is_dst. Let R apply daylight-saving-time rules automatically.
+
+```{r}
+participant_tz <- unique(cgm_1029$iana_zone)
+stopifnot(length(participant_tz) == 1)  # sanity check — should be exactly one zone
+
+cgm_1029 <- cgm_1029 %>%
+  mutate(
+    time_local = with_tz(time_utc, tzone = participant_tz),
+    date_local = as_date(time_local),
+    hour_local = hour(time_local),
+    is_dst     = dst(time_local)
+  )
+
+cgm_1029 %>%
+  select(time_utc, time_local, date_local, hour_local, is_dst) %>%
+  head(10) %>%
+  knitr::kable()
+```
+
+##### 6. Check for missing timestamps and glucose values
+```{r}
+missing_summary <- cgm_1029 %>%
+  summarize(
+    n_total                   = n(),
+    n_missing_time_utc         = sum(is.na(time_utc)),
+    n_missing_glucose_original = sum(is.na(glucose_value_original)),
+    n_missing_glucose_numeric  = sum(is.na(glucose_value_numeric))
+  )
+
+missing_summary %>% knitr::kable()
+```
+
+##### 7. Define a duplicate as the same participant ID and UTC timestamp.
+
+- If duplicate rows have the same glucose value, keep one copy.
+- If duplicate rows have different glucose values, flag them for review and exclude them from the summary calculations.
+
+```{r}
+dup_groups <- cgm_1029 %>%
+  count(person_id, time_utc, name = "n_readings") %>%
+  filter(n_readings > 1)
+
+nrow(dup_groups)
+```
+
+
+

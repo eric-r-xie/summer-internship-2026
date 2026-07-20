@@ -1,0 +1,1720 @@
+{
+    "header": {
+        "uuid": "AIREADI-4034",
+        "creation_date_time": "2025-10-24T23:54:19Z",
+        "patient_id": "AIREADI-4034",
+        "schema_id": {
+            "namespace": "omh",
+            "name": "blood-glucose",
+            "version": 3.0
+        },
+        "modality": "sensed",
+        "acquistion_rate": {
+            "number_of_times": 1,
+            "time_window": {
+                "value": 5,
+                "unit": "min"
+            }
+        },
+        "external_datasheets": {
+            "datasheet_type": "source_device",
+            "datasheet_reference": "iri-of-cgm-device"
+        },
+        "timezone": "pst"
+    },
+    "body": {
+        "cgm": [
+            {
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-06T18:07:48Z",
+                        "end_date_time": "2023-11-06T18:07:48Z"
+                    }
+                },
+                "event_type": "EGV",
+                "source_device_id": "PG15103236",
+                "blood_glucose": {
+                    "unit": "mg/dL",
+                    "value": 138
+                },
+                "transmitter_time": {
+                    "unit": "long integer",
+                    "value": 7573
+                },
+                "transmitter_id": "355CH3"
+            },
+            {
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-06T18:12:48Z",
+                        "end_date_time": "2023-11-06T18:12:48Z"
+                    }
+                },
+                "event_type": "EGV",
+                "source_device_id": "PG15103236",
+                "blood_glucose": {
+                    "unit": "mg/dL",
+                    "value": 134
+                },
+                "transmitter_time": {
+                    "unit": "long integer",
+                    "value": 7873
+                },
+                "transmitter_id": "355CH3"
+            },
+            {
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-06T18:17:48Z",
+                        "end_date_time": "2023-11-06T18:17:48Z"
+                    }
+                },
+                "event_type": "EGV",
+                "source_device_id": "PG15103236",
+                "blood_glucose": {
+                    "unit": "mg/dL",
+                    "value": 131
+                },
+                "transmitter_time": {
+                    "unit": "long integer",
+                    "value": 8173
+                },
+                "transmitter_id": "355CH3"
+            },
+            {
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-06T18:22:48Z",
+                        "end_date_time": "2023-11-06T18:22:48Z"
+                    }
+                },
+                "event_type": "EGV",
+                "source_device_id": "PG15103236",
+                "blood_glucose": {
+                    "unit": "mg/dL",
+                    "value": 131
+                },
+                "transmitter_time": {
+                    "unit": "long integer",
+                    "value": 8473
+                },
+                "transmitter_id": "355CH3"
+            },
+            {
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-06T18:27:48Z",
+                        "end_date_time": "2023-11-06T18:27:48Z"
+                    }
+                },
+                "event_type": "EGV",
+                "source_device_id": "PG15103236",
+                "blood_glucose": {
+                    "unit": "mg/dL",
+                    "value": 129
+                },
+                "transmitter_time": {
+                    "unit": "long integer",
+                    "value": 8773
+                },
+                "transmitter_id": "355CH3"
+            },
+            {
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-06T18:32:48Z",
+                        "end_date_time": "2023-11-06T18:32:48Z"
+                    }
+                },
+                "event_type": "EGV",
+                "source_device_id": "PG15103236",
+                "blood_glucose": {
+                    "unit": "mg/dL",
+                    "value": 128
+                },
+                "transmitter_time": {
+                    "unit": "long integer",
+                    "value": 9073
+                },
+                "transmitter_id": "355CH3"
+            },
+            {
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-06T18:37:48Z",
+                        "end_date_time": "2023-11-06T18:37:48Z"
+                    }
+                },
+                "event_type": "EGV",
+                "source_device_id": "PG15103236",
+                "blood_glucose": {
+                    "unit": "mg/dL",
+                    "value": 127
+                },
+                "transmitter_time": {
+                    "unit": "long integer",
+                    "value": 9373
+                },
+                "transmitter_id": "355CH3"
+            },
+            {
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-06T18:42:48Z",
+                        "end_date_time": "2023-11-06T18:42:48Z"
+                    }
+                },
+                "event_type": "EGV",
+                "source_device_id": "PG15103236",
+                "blood_glucose": {
+                    "unit": "mg/dL",
+                    "value": 124
+                },
+                "transmitter_time": {
+                    "unit": "long integer",
+                    "value": 9673
+                },
+                "transmitter_id": "355CH3"
+            },
+            {
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-06T18:47:48Z",
+                        "end_date_time": "2023-11-06T18:47:48Z"
+                    }
+                },
+                "event_type": "EGV",
+                "source_device_id": "PG15103236",
+                "blood_glucose": {
+                    "unit": "mg/dL",
+                    "value": 122
+                },
+                "transmitter_time": {
+                    "unit": "long integer",
+                    "value": 9973
+                },
+                "transmitter_id": "355CH3"
+            },
+            {
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-06T18:52:48Z",
+                        "end_date_time": "2023-11-06T18:52:48Z"
+                    }
+                },
+                "event_type": "EGV",
+                "source_device_id": "PG15103236",
+                "blood_glucose": {
+                    "unit": "mg/dL",
+                    "value": 120
+                },
+                "transmitter_time": {
+                    "unit": "long integer",
+                    "value": 10273
+                },
+                "transmitter_id": "355CH3"
+            },
+            {
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-06T18:57:48Z",
+                        "end_date_time": "2023-11-06T18:57:48Z"
+                    }
+                },
+                "event_type": "EGV",
+                "source_device_id": "PG15103236",
+                "blood_glucose": {
+                    "unit": "mg/dL",
+                    "value": 121
+                },
+                "transmitter_time": {
+                    "unit": "long integer",
+                    "value": 10573
+                },
+                "transmitter_id": "355CH3"
+            },
+            {
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-06T19:02:48Z",
+                        "end_date_time": "2023-11-06T19:02:48Z"
+                    }
+                },
+                "event_type": "EGV",
+                "source_device_id": "PG15103236",
+                "blood_glucose": {
+                    "unit": "mg/dL",
+                    "value": 113
+                },
+                "transmitter_time": {
+                    "unit": "long integer",
+                    "value": 10873
+                },
+                "transmitter_id": "355CH3"
+            },
+            {
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-06T19:07:48Z",
+                        "end_date_time": "2023-11-06T19:07:48Z"
+                    }
+                },
+                "event_type": "EGV",
+                "source_device_id": "PG15103236",
+                "blood_glucose": {
+                    "unit": "mg/dL",
+                    "value": 108
+                },
+                "transmitter_time": {
+                    "unit": "long integer",
+                    "value": 11173
+                },
+                "transmitter_id": "355CH3"
+            },
+            {
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-06T19:12:48Z",
+                        "end_date_time": "2023-11-06T19:12:48Z"
+                    }
+                },
+                "event_type": "EGV",
+                "source_device_id": "PG15103236",
+                "blood_glucose": {
+                    "unit": "mg/dL",
+                    "value": 118
+                },
+                "transmitter_time": {
+                    "unit": "long integer",
+                    "value": 11473
+                },
+                "transmitter_id": "355CH3"
+            },
+            {
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-06T19:17:48Z",
+                        "end_date_time": "2023-11-06T19:17:48Z"
+                    }
+                },
+                "event_type": "EGV",
+                "source_device_id": "PG15103236",
+                "blood_glucose": {
+                    "unit": "mg/dL",
+                    "value": 116
+                },
+                "transmitter_time": {
+                    "unit": "long integer",
+                    "value": 11773
+                },
+                "transmitter_id": "355CH3"
+            },
+            {
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-06T19:22:48Z",
+                        "end_date_time": "2023-11-06T19:22:48Z"
+                    }
+                },
+                "event_type": "EGV",
+                "source_device_id": "PG15103236",
+                "blood_glucose": {
+                    "unit": "mg/dL",
+                    "value": 126
+                },
+                "transmitter_time": {
+                    "unit": "long integer",
+                    "value": 12073
+                },
+                "transmitter_id": "355CH3"
+            },
+            {
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-06T19:27:48Z",
+                        "end_date_time": "2023-11-06T19:27:48Z"
+                    }
+                },
+                "event_type": "EGV",
+                "source_device_id": "PG15103236",
+                "blood_glucose": {
+                    "unit": "mg/dL",
+                    "value": 135
+                },
+                "transmitter_time": {
+                    "unit": "long integer",
+                    "value": 12373
+                },
+                "transmitter_id": "355CH3"
+            },
+            {
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-06T19:32:48Z",
+                        "end_date_time": "2023-11-06T19:32:48Z"
+                    }
+                },
+                "event_type": "EGV",
+                "source_device_id": "PG15103236",
+                "blood_glucose": {
+                    "unit": "mg/dL",
+                    "value": 118
+                },
+                "transmitter_time": {
+                    "unit": "long integer",
+                    "value": 12673
+                },
+                "transmitter_id": "355CH3"
+            },
+            {
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-06T19:37:48Z",
+                        "end_date_time": "2023-11-06T19:37:48Z"
+                    }
+                },
+                "event_type": "EGV",
+                "source_device_id": "PG15103236",
+                "blood_glucose": {
+                    "unit": "mg/dL",
+                    "value": 114
+                },
+                "transmitter_time": {
+                    "unit": "long integer",
+                    "value": 12973
+                },
+                "transmitter_id": "355CH3"
+            },
+            {
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-06T19:42:48Z",
+                        "end_date_time": "2023-11-06T19:42:48Z"
+                    }
+                },
+                "event_type": "EGV",
+                "source_device_id": "PG15103236",
+                "blood_glucose": {
+                    "unit": "mg/dL",
+                    "value": 127
+                },
+                "transmitter_time": {
+                    "unit": "long integer",
+                    "value": 13273
+                },
+                "transmitter_id": "355CH3"
+            },
+            {
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-06T19:47:48Z",
+                        "end_date_time": "2023-11-06T19:47:48Z"
+                    }
+                },
+                "event_type": "EGV",
+                "source_device_id": "PG15103236",
+                "blood_glucose": {
+                    "unit": "mg/dL",
+                    "value": 155
+                },
+                "transmitter_time": {
+                    "unit": "long integer",
+                    "value": 13573
+                },
+                "transmitter_id": "355CH3"
+            },
+            {
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-06T19:52:48Z",
+                        "end_date_time": "2023-11-06T19:52:48Z"
+                    }
+                },
+                "event_type": "EGV",
+                "source_device_id": "PG15103236",
+                "blood_glucose": {
+                    "unit": "mg/dL",
+                    "value": 168
+                },
+                "transmitter_time": {
+                    "unit": "long integer",
+                    "value": 13873
+                },
+                "transmitter_id": "355CH3"
+            },
+            {
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-06T19:57:48Z",
+                        "end_date_time": "2023-11-06T19:57:48Z"
+                    }
+                },
+                "event_type": "EGV",
+                "source_device_id": "PG15103236",
+                "blood_glucose": {
+                    "unit": "mg/dL",
+                    "value": 170
+                },
+                "transmitter_time": {
+                    "unit": "long integer",
+                    "value": 14173
+                },
+                "transmitter_id": "355CH3"
+            },
+            {
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-06T20:02:48Z",
+                        "end_date_time": "2023-11-06T20:02:48Z"
+                    }
+                },
+                "event_type": "EGV",
+                "source_device_id": "PG15103236",
+                "blood_glucose": {
+                    "unit": "mg/dL",
+                    "value": 166
+                },
+                "transmitter_time": {
+                    "unit": "long integer",
+                    "value": 14473
+                },
+                "transmitter_id": "355CH3"
+            },
+            {
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-06T20:07:48Z",
+                        "end_date_time": "2023-11-06T20:07:48Z"
+                    }
+                },
+                "event_type": "EGV",
+                "source_device_id": "PG15103236",
+                "blood_glucose": {
+                    "unit": "mg/dL",
+                    "value": 159
+                },
+                "transmitter_time": {
+                    "unit": "long integer",
+                    "value": 14773
+                },
+                "transmitter_id": "355CH3"
+            },
+            {
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-06T20:12:48Z",
+                        "end_date_time": "2023-11-06T20:12:48Z"
+                    }
+                },
+                "event_type": "EGV",
+                "source_device_id": "PG15103236",
+                "blood_glucose": {
+                    "unit": "mg/dL",
+                    "value": 158
+                },
+                "transmitter_time": {
+                    "unit": "long integer",
+                    "value": 15073
+                },
+                "transmitter_id": "355CH3"
+            },
+            {
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-06T20:17:48Z",
+                        "end_date_time": "2023-11-06T20:17:48Z"
+                    }
+                },
+                "event_type": "EGV",
+                "source_device_id": "PG15103236",
+                "blood_glucose": {
+                    "unit": "mg/dL",
+                    "value": 145
+                },
+                "transmitter_time": {
+                    "unit": "long integer",
+                    "value": 15373
+                },
+                "transmitter_id": "355CH3"
+            },
+            {
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-06T20:22:48Z",
+                        "end_date_time": "2023-11-06T20:22:48Z"
+                    }
+                },
+                "event_type": "EGV",
+                "source_device_id": "PG15103236",
+                "blood_glucose": {
+                    "unit": "mg/dL",
+                    "value": 137
+                },
+                "transmitter_time": {
+                    "unit": "long integer",
+                    "value": 15673
+                },
+                "transmitter_id": "355CH3"
+            },
+            {
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-06T20:27:48Z",
+                        "end_date_time": "2023-11-06T20:27:48Z"
+                    }
+                },
+                "event_type": "EGV",
+                "source_device_id": "PG15103236",
+                "blood_glucose": {
+                    "unit": "mg/dL",
+                    "value": 136
+                },
+                "transmitter_time": {
+                    "unit": "long integer",
+                    "value": 15973
+                },
+                "transmitter_id": "355CH3"
+            },
+            {
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-06T20:32:48Z",
+                        "end_date_time": "2023-11-06T20:32:48Z"
+                    }
+                },
+                "event_type": "EGV",
+                "source_device_id": "PG15103236",
+                "blood_glucose": {
+                    "unit": "mg/dL",
+                    "value": 135
+                },
+                "transmitter_time": {
+                    "unit": "long integer",
+                    "value": 16273
+                },
+                "transmitter_id": "355CH3"
+            },
+            {
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-06T20:37:48Z",
+                        "end_date_time": "2023-11-06T20:37:48Z"
+                    }
+                },
+                "event_type": "EGV",
+                "source_device_id": "PG15103236",
+                "blood_glucose": {
+                    "unit": "mg/dL",
+                    "value": 131
+                },
+                "transmitter_time": {
+                    "unit": "long integer",
+                    "value": 16573
+                },
+                "transmitter_id": "355CH3"
+            },
+            {
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-06T20:42:48Z",
+                        "end_date_time": "2023-11-06T20:42:48Z"
+                    }
+                },
+                "event_type": "EGV",
+                "source_device_id": "PG15103236",
+                "blood_glucose": {
+                    "unit": "mg/dL",
+                    "value": 133
+                },
+                "transmitter_time": {
+                    "unit": "long integer",
+                    "value": 16873
+                },
+                "transmitter_id": "355CH3"
+            },
+            {
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-06T20:47:48Z",
+                        "end_date_time": "2023-11-06T20:47:48Z"
+                    }
+                },
+                "event_type": "EGV",
+                "source_device_id": "PG15103236",
+                "blood_glucose": {
+                    "unit": "mg/dL",
+                    "value": 127
+                },
+                "transmitter_time": {
+                    "unit": "long integer",
+                    "value": 17173
+                },
+                "transmitter_id": "355CH3"
+            },
+            {
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-06T20:52:48Z",
+                        "end_date_time": "2023-11-06T20:52:48Z"
+                    }
+                },
+                "event_type": "EGV",
+                "source_device_id": "PG15103236",
+                "blood_glucose": {
+                    "unit": "mg/dL",
+                    "value": 125
+                },
+                "transmitter_time": {
+                    "unit": "long integer",
+                    "value": 17473
+                },
+                "transmitter_id": "355CH3"
+            },
+            {
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-06T20:57:48Z",
+                        "end_date_time": "2023-11-06T20:57:48Z"
+                    }
+                },
+                "event_type": "EGV",
+                "source_device_id": "PG15103236",
+                "blood_glucose": {
+                    "unit": "mg/dL",
+                    "value": 127
+                },
+                "transmitter_time": {
+                    "unit": "long integer",
+                    "value": 17773
+                },
+                "transmitter_id": "355CH3"
+            },
+            {
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-06T21:02:48Z",
+                        "end_date_time": "2023-11-06T21:02:48Z"
+                    }
+                },
+                "event_type": "EGV",
+                "source_device_id": "PG15103236",
+                "blood_glucose": {
+                    "unit": "mg/dL",
+                    "value": 130
+                },
+                "transmitter_time": {
+                    "unit": "long integer",
+                    "value": 18073
+                },
+                "transmitter_id": "355CH3"
+            },
+            {
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-06T21:07:48Z",
+                        "end_date_time": "2023-11-06T21:07:48Z"
+                    }
+                },
+                "event_type": "EGV",
+                "source_device_id": "PG15103236",
+                "blood_glucose": {
+                    "unit": "mg/dL",
+                    "value": 135
+                },
+                "transmitter_time": {
+                    "unit": "long integer",
+                    "value": 18373
+                },
+                "transmitter_id": "355CH3"
+            },
+            {
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-06T21:12:48Z",
+                        "end_date_time": "2023-11-06T21:12:48Z"
+                    }
+                },
+                "event_type": "EGV",
+                "source_device_id": "PG15103236",
+                "blood_glucose": {
+                    "unit": "mg/dL",
+                    "value": 145
+                },
+                "transmitter_time": {
+                    "unit": "long integer",
+                    "value": 18673
+                },
+                "transmitter_id": "355CH3"
+            },
+            {
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-06T21:17:48Z",
+                        "end_date_time": "2023-11-06T21:17:48Z"
+                    }
+                },
+                "event_type": "EGV",
+                "source_device_id": "PG15103236",
+                "blood_glucose": {
+                    "unit": "mg/dL",
+                    "value": 139
+                },
+                "transmitter_time": {
+                    "unit": "long integer",
+                    "value": 18973
+                },
+                "transmitter_id": "355CH3"
+            },
+            {
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-06T21:22:48Z",
+                        "end_date_time": "2023-11-06T21:22:48Z"
+                    }
+                },
+                "event_type": "EGV",
+                "source_device_id": "PG15103236",
+                "blood_glucose": {
+                    "unit": "mg/dL",
+                    "value": 133
+                },
+                "transmitter_time": {
+                    "unit": "long integer",
+                    "value": 19273
+                },
+                "transmitter_id": "355CH3"
+            },
+            {
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-06T21:27:48Z",
+                        "end_date_time": "2023-11-06T21:27:48Z"
+                    }
+                },
+                "event_type": "EGV",
+                "source_device_id": "PG15103236",
+                "blood_glucose": {
+                    "unit": "mg/dL",
+                    "value": 137
+                },
+                "transmitter_time": {
+                    "unit": "long integer",
+                    "value": 19573
+                },
+                "transmitter_id": "355CH3"
+            },
+            {
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-06T21:32:48Z",
+                        "end_date_time": "2023-11-06T21:32:48Z"
+                    }
+                },
+                "event_type": "EGV",
+                "source_device_id": "PG15103236",
+                "blood_glucose": {
+                    "unit": "mg/dL",
+                    "value": 136
+                },
+                "transmitter_time": {
+                    "unit": "long integer",
+                    "value": 19873
+                },
+                "transmitter_id": "355CH3"
+            },
+            {
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-06T21:37:48Z",
+                        "end_date_time": "2023-11-06T21:37:48Z"
+                    }
+                },
+                "event_type": "EGV",
+                "source_device_id": "PG15103236",
+                "blood_glucose": {
+                    "unit": "mg/dL",
+                    "value": 138
+                },
+                "transmitter_time": {
+                    "unit": "long integer",
+                    "value": 20173
+                },
+                "transmitter_id": "355CH3"
+            },
+            {
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-06T21:42:48Z",
+                        "end_date_time": "2023-11-06T21:42:48Z"
+                    }
+                },
+                "event_type": "EGV",
+                "source_device_id": "PG15103236",
+                "blood_glucose": {
+                    "unit": "mg/dL",
+                    "value": 142
+                },
+                "transmitter_time": {
+                    "unit": "long integer",
+                    "value": 20473
+                },
+                "transmitter_id": "355CH3"
+            },
+            {
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-06T21:47:48Z",
+                        "end_date_time": "2023-11-06T21:47:48Z"
+                    }
+                },
+                "event_type": "EGV",
+                "source_device_id": "PG15103236",
+                "blood_glucose": {
+                    "unit": "mg/dL",
+                    "value": 141
+                },
+                "transmitter_time": {
+                    "unit": "long integer",
+                    "value": 20773
+                },
+                "transmitter_id": "355CH3"
+            },
+            {
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-06T21:52:48Z",
+                        "end_date_time": "2023-11-06T21:52:48Z"
+                    }
+                },
+                "event_type": "EGV",
+                "source_device_id": "PG15103236",
+                "blood_glucose": {
+                    "unit": "mg/dL",
+                    "value": 140
+                },
+                "transmitter_time": {
+                    "unit": "long integer",
+                    "value": 21073
+                },
+                "transmitter_id": "355CH3"
+            },
+            {
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-06T21:57:48Z",
+                        "end_date_time": "2023-11-06T21:57:48Z"
+                    }
+                },
+                "event_type": "EGV",
+                "source_device_id": "PG15103236",
+                "blood_glucose": {
+                    "unit": "mg/dL",
+                    "value": 138
+                },
+                "transmitter_time": {
+                    "unit": "long integer",
+                    "value": 21373
+                },
+                "transmitter_id": "355CH3"
+            },
+            {
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-06T22:02:48Z",
+                        "end_date_time": "2023-11-06T22:02:48Z"
+                    }
+                },
+                "event_type": "EGV",
+                "source_device_id": "PG15103236",
+                "blood_glucose": {
+                    "unit": "mg/dL",
+                    "value": 135
+                },
+                "transmitter_time": {
+                    "unit": "long integer",
+                    "value": 21673
+                },
+                "transmitter_id": "355CH3"
+            },
+            {
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-06T22:07:48Z",
+                        "end_date_time": "2023-11-06T22:07:48Z"
+                    }
+                },
+                "event_type": "EGV",
+                "source_device_id": "PG15103236",
+                "blood_glucose": {
+                    "unit": "mg/dL",
+                    "value": 134
+                },
+                "transmitter_time": {
+                    "unit": "long integer",
+                    "value": 21973
+                },
+                "transmitter_id": "355CH3"
+            },
+            {
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-06T22:12:48Z",
+                        "end_date_time": "2023-11-06T22:12:48Z"
+                    }
+                },
+                "event_type": "EGV",
+                "source_device_id": "PG15103236",
+                "blood_glucose": {
+                    "unit": "mg/dL",
+                    "value": 131
+                },
+                "transmitter_time": {
+                    "unit": "long integer",
+                    "value": 22273
+                },
+                "transmitter_id": "355CH3"
+            },
+            {
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-06T22:17:48Z",
+                        "end_date_time": "2023-11-06T22:17:48Z"
+                    }
+                },
+                "event_type": "EGV",
+                "source_device_id": "PG15103236",
+                "blood_glucose": {
+                    "unit": "mg/dL",
+                    "value": 130
+                },
+                "transmitter_time": {
+                    "unit": "long integer",
+                    "value": 22573
+                },
+                "transmitter_id": "355CH3"
+            },
+            {
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-06T22:22:48Z",
+                        "end_date_time": "2023-11-06T22:22:48Z"
+                    }
+                },
+                "event_type": "EGV",
+                "source_device_id": "PG15103236",
+                "blood_glucose": {
+                    "unit": "mg/dL",
+                    "value": 129
+                },
+                "transmitter_time": {
+                    "unit": "long integer",
+                    "value": 22873
+                },
+                "transmitter_id": "355CH3"
+            },
+            {
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-06T22:27:48Z",
+                        "end_date_time": "2023-11-06T22:27:48Z"
+                    }
+                },
+                "event_type": "EGV",
+                "source_device_id": "PG15103236",
+                "blood_glucose": {
+                    "unit": "mg/dL",
+                    "value": 125
+                },
+                "transmitter_time": {
+                    "unit": "long integer",
+                    "value": 23173
+                },
+                "transmitter_id": "355CH3"
+            },
+            {
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-06T22:32:48Z",
+                        "end_date_time": "2023-11-06T22:32:48Z"
+                    }
+                },
+                "event_type": "EGV",
+                "source_device_id": "PG15103236",
+                "blood_glucose": {
+                    "unit": "mg/dL",
+                    "value": 128
+                },
+                "transmitter_time": {
+                    "unit": "long integer",
+                    "value": 23473
+                },
+                "transmitter_id": "355CH3"
+            },
+            {
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-06T22:37:48Z",
+                        "end_date_time": "2023-11-06T22:37:48Z"
+                    }
+                },
+                "event_type": "EGV",
+                "source_device_id": "PG15103236",
+                "blood_glucose": {
+                    "unit": "mg/dL",
+                    "value": 132
+                },
+                "transmitter_time": {
+                    "unit": "long integer",
+                    "value": 23773
+                },
+                "transmitter_id": "355CH3"
+            },
+            {
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-06T22:42:48Z",
+                        "end_date_time": "2023-11-06T22:42:48Z"
+                    }
+                },
+                "event_type": "EGV",
+                "source_device_id": "PG15103236",
+                "blood_glucose": {
+                    "unit": "mg/dL",
+                    "value": 136
+                },
+                "transmitter_time": {
+                    "unit": "long integer",
+                    "value": 24073
+                },
+                "transmitter_id": "355CH3"
+            },
+            {
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-06T22:47:48Z",
+                        "end_date_time": "2023-11-06T22:47:48Z"
+                    }
+                },
+                "event_type": "EGV",
+                "source_device_id": "PG15103236",
+                "blood_glucose": {
+                    "unit": "mg/dL",
+                    "value": 133
+                },
+                "transmitter_time": {
+                    "unit": "long integer",
+                    "value": 24373
+                },
+                "transmitter_id": "355CH3"
+            },
+            {
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-06T22:52:48Z",
+                        "end_date_time": "2023-11-06T22:52:48Z"
+                    }
+                },
+                "event_type": "EGV",
+                "source_device_id": "PG15103236",
+                "blood_glucose": {
+                    "unit": "mg/dL",
+                    "value": 131
+                },
+                "transmitter_time": {
+                    "unit": "long integer",
+                    "value": 24673
+                },
+                "transmitter_id": "355CH3"
+            },
+            {
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-06T22:57:48Z",
+                        "end_date_time": "2023-11-06T22:57:48Z"
+                    }
+                },
+                "event_type": "EGV",
+                "source_device_id": "PG15103236",
+                "blood_glucose": {
+                    "unit": "mg/dL",
+                    "value": 132
+                },
+                "transmitter_time": {
+                    "unit": "long integer",
+                    "value": 24973
+                },
+                "transmitter_id": "355CH3"
+            },
+            {
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-06T23:02:48Z",
+                        "end_date_time": "2023-11-06T23:02:48Z"
+                    }
+                },
+                "event_type": "EGV",
+                "source_device_id": "PG15103236",
+                "blood_glucose": {
+                    "unit": "mg/dL",
+                    "value": 137
+                },
+                "transmitter_time": {
+                    "unit": "long integer",
+                    "value": 25273
+                },
+                "transmitter_id": "355CH3"
+            },
+            {
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-06T23:07:48Z",
+                        "end_date_time": "2023-11-06T23:07:48Z"
+                    }
+                },
+                "event_type": "EGV",
+                "source_device_id": "PG15103236",
+                "blood_glucose": {
+                    "unit": "mg/dL",
+                    "value": 116
+                },
+                "transmitter_time": {
+                    "unit": "long integer",
+                    "value": 25573
+                },
+                "transmitter_id": "355CH3"
+            },
+            {
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-06T23:12:48Z",
+                        "end_date_time": "2023-11-06T23:12:48Z"
+                    }
+                },
+                "event_type": "EGV",
+                "source_device_id": "PG15103236",
+                "blood_glucose": {
+                    "unit": "mg/dL",
+                    "value": 92
+                },
+                "transmitter_time": {
+                    "unit": "long integer",
+                    "value": 25873
+                },
+                "transmitter_id": "355CH3"
+            },
+            {
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-06T23:17:48Z",
+                        "end_date_time": "2023-11-06T23:17:48Z"
+                    }
+                },
+                "event_type": "EGV",
+                "source_device_id": "PG15103236",
+                "blood_glucose": {
+                    "unit": "mg/dL",
+                    "value": 56
+                },
+                "transmitter_time": {
+                    "unit": "long integer",
+                    "value": 26173
+                },
+                "transmitter_id": "355CH3"
+            },
+            {
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-06T23:22:48Z",
+                        "end_date_time": "2023-11-06T23:22:48Z"
+                    }
+                },
+                "event_type": "EGV",
+                "source_device_id": "PG15103236",
+                "blood_glucose": {
+                    "unit": "mg/dL",
+                    "value": "Low"
+                },
+                "transmitter_time": {
+                    "unit": "long integer",
+                    "value": 26473
+                },
+                "transmitter_id": "355CH3"
+            },
+            {
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-06T23:37:48Z",
+                        "end_date_time": "2023-11-06T23:37:48Z"
+                    }
+                },
+                "event_type": "EGV",
+                "source_device_id": "PG15103236",
+                "blood_glucose": {
+                    "unit": "mg/dL",
+                    "value": 45
+                },
+                "transmitter_time": {
+                    "unit": "long integer",
+                    "value": 27373
+                },
+                "transmitter_id": "355CH3"
+            },
+            {
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-06T23:42:48Z",
+                        "end_date_time": "2023-11-06T23:42:48Z"
+                    }
+                },
+                "event_type": "EGV",
+                "source_device_id": "PG15103236",
+                "blood_glucose": {
+                    "unit": "mg/dL",
+                    "value": 50
+                },
+                "transmitter_time": {
+                    "unit": "long integer",
+                    "value": 27673
+                },
+                "transmitter_id": "355CH3"
+            },
+            {
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-06T23:47:48Z",
+                        "end_date_time": "2023-11-06T23:47:48Z"
+                    }
+                },
+                "event_type": "EGV",
+                "source_device_id": "PG15103236",
+                "blood_glucose": {
+                    "unit": "mg/dL",
+                    "value": 46
+                },
+                "transmitter_time": {
+                    "unit": "long integer",
+                    "value": 27973
+                },
+                "transmitter_id": "355CH3"
+            },
+            {
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-06T23:52:48Z",
+                        "end_date_time": "2023-11-06T23:52:48Z"
+                    }
+                },
+                "event_type": "EGV",
+                "source_device_id": "PG15103236",
+                "blood_glucose": {
+                    "unit": "mg/dL",
+                    "value": 45
+                },
+                "transmitter_time": {
+                    "unit": "long integer",
+                    "value": 28273
+                },
+                "transmitter_id": "355CH3"
+            },
+            {
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-06T23:57:48Z",
+                        "end_date_time": "2023-11-06T23:57:48Z"
+                    }
+                },
+                "event_type": "EGV",
+                "source_device_id": "PG15103236",
+                "blood_glucose": {
+                    "unit": "mg/dL",
+                    "value": 45
+                },
+                "transmitter_time": {
+                    "unit": "long integer",
+                    "value": 28573
+                },
+                "transmitter_id": "355CH3"
+            },
+            {
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-07T00:02:48Z",
+                        "end_date_time": "2023-11-07T00:02:48Z"
+                    }
+                },
+                "event_type": "EGV",
+                "source_device_id": "PG15103236",
+                "blood_glucose": {
+                    "unit": "mg/dL",
+                    "value": 45
+                },
+                "transmitter_time": {
+                    "unit": "long integer",
+                    "value": 28873
+                },
+                "transmitter_id": "355CH3"
+            },
+            {
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-07T00:07:48Z",
+                        "end_date_time": "2023-11-07T00:07:48Z"
+                    }
+                },
+                "event_type": "EGV",
+                "source_device_id": "PG15103236",
+                "blood_glucose": {
+                    "unit": "mg/dL",
+                    "value": 44
+                },
+                "transmitter_time": {
+                    "unit": "long integer",
+                    "value": 29173
+                },
+                "transmitter_id": "355CH3"
+            },
+            {
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-07T00:12:48Z",
+                        "end_date_time": "2023-11-07T00:12:48Z"
+                    }
+                },
+                "event_type": "EGV",
+                "source_device_id": "PG15103236",
+                "blood_glucose": {
+                    "unit": "mg/dL",
+                    "value": 44
+                },
+                "transmitter_time": {
+                    "unit": "long integer",
+                    "value": 29473
+                },
+                "transmitter_id": "355CH3"
+            },
+            {
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-07T00:17:48Z",
+                        "end_date_time": "2023-11-07T00:17:48Z"
+                    }
+                },
+                "event_type": "EGV",
+                "source_device_id": "PG15103236",
+                "blood_glucose": {
+                    "unit": "mg/dL",
+                    "value": 43
+                },
+                "transmitter_time": {
+                    "unit": "long integer",
+                    "value": 29773
+                },
+                "transmitter_id": "355CH3"
+            },
+            {
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-07T00:22:48Z",
+                        "end_date_time": "2023-11-07T00:22:48Z"
+                    }
+                },
+                "event_type": "EGV",
+                "source_device_id": "PG15103236",
+                "blood_glucose": {
+                    "unit": "mg/dL",
+                    "value": 42
+                },
+                "transmitter_time": {
+                    "unit": "long integer",
+                    "value": 30073
+                },
+                "transmitter_id": "355CH3"
+            },
+            {
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-07T00:27:48Z",
+                        "end_date_time": "2023-11-07T00:27:48Z"
+                    }
+                },
+                "event_type": "EGV",
+                "source_device_id": "PG15103236",
+                "blood_glucose": {
+                    "unit": "mg/dL",
+                    "value": 41
+                },
+                "transmitter_time": {
+                    "unit": "long integer",
+                    "value": 30373
+                },
+                "transmitter_id": "355CH3"
+            },
+            {
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-07T00:32:48Z",
+                        "end_date_time": "2023-11-07T00:32:48Z"
+                    }
+                },
+                "event_type": "EGV",
+                "source_device_id": "PG15103236",
+                "blood_glucose": {
+                    "unit": "mg/dL",
+                    "value": 41
+                },
+                "transmitter_time": {
+                    "unit": "long integer",
+                    "value": 30673
+                },
+                "transmitter_id": "355CH3"
+            },
+            {
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-07T00:37:48Z",
+                        "end_date_time": "2023-11-07T00:37:48Z"
+                    }
+                },
+                "event_type": "EGV",
+                "source_device_id": "PG15103236",
+                "blood_glucose": {
+                    "unit": "mg/dL",
+                    "value": 42
+                },
+                "transmitter_time": {
+                    "unit": "long integer",
+                    "value": 30973
+                },
+                "transmitter_id": "355CH3"
+            },
+            {
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-07T00:42:48Z",
+                        "end_date_time": "2023-11-07T00:42:48Z"
+                    }
+                },
+                "event_type": "EGV",
+                "source_device_id": "PG15103236",
+                "blood_glucose": {
+                    "unit": "mg/dL",
+                    "value": 40
+                },
+                "transmitter_time": {
+                    "unit": "long integer",
+                    "value": 31273
+                },
+                "transmitter_id": "355CH3"
+            },
+            {
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-07T01:47:48Z",
+                        "end_date_time": "2023-11-07T01:47:48Z"
+                    }
+                },
+                "event_type": "EGV",
+                "source_device_id": "PG15103236",
+                "blood_glucose": {
+                    "unit": "mg/dL",
+                    "value": "Low"
+                },
+                "transmitter_time": {
+                    "unit": "long integer",
+                    "value": 35173
+                },
+                "transmitter_id": "355CH3"
+            },
+            {
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-07T01:52:48Z",
+                        "end_date_time": "2023-11-07T01:52:48Z"
+                    }
+                },
+                "event_type": "EGV",
+                "source_device_id": "PG15103236",
+                "blood_glucose": {
+                    "unit": "mg/dL",
+                    "value": "Low"
+                },
+                "transmitter_time": {
+                    "unit": "long integer",
+                    "value": 35473
+                },
+                "transmitter_id": "355CH3"
+            },
+            {
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-07T01:57:48Z",
+                        "end_date_time": "2023-11-07T01:57:48Z"
+                    }
+                },
+                "event_type": "EGV",
+                "source_device_id": "PG15103236",
+                "blood_glucose": {
+                    "unit": "mg/dL",
+                    "value": 40
+                },
+                "transmitter_time": {
+                    "unit": "long integer",
+                    "value": 35773
+                },
+                "transmitter_id": "355CH3"
+            },
+            {
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-07T02:02:48Z",
+                        "end_date_time": "2023-11-07T02:02:48Z"
+                    }
+                },
+                "event_type": "EGV",
+                "source_device_id": "PG15103236",
+                "blood_glucose": {
+                    "unit": "mg/dL",
+                    "value": 42
+                },
+                "transmitter_time": {
+                    "unit": "long integer",
+                    "value": 36073
+                },
+                "transmitter_id": "355CH3"
+            },
+            {
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-07T02:07:48Z",
+                        "end_date_time": "2023-11-07T02:07:48Z"
+                    }
+                },
+                "event_type": "EGV",
+                "source_device_id": "PG15103236",
+                "blood_glucose": {
+                    "unit": "mg/dL",
+                    "value": "Low"
+                },
+                "transmitter_time": {
+                    "unit": "long integer",
+                    "value": 36373
+                },
+                "transmitter_id": "355CH3"
+            },
+            {
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-07T02:12:48Z",
+                        "end_date_time": "2023-11-07T02:12:48Z"
+                    }
+                },
+                "event_type": "EGV",
+                "source_device_id": "PG15103236",
+                "blood_glucose": {
+                    "unit": "mg/dL",
+                    "value": "Low"
+                },
+                "transmitter_time": {
+                    "unit": "long integer",
+                    "value": 36673
+                },
+                "transmitter_id": "355CH3"
+            },
+            {
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-07T02:17:48Z",
+                        "end_date_time": "2023-11-07T02:17:48Z"
+                    }
+                },
+                "event_type": "EGV",
+                "source_device_id": "PG15103236",
+                "blood_glucose": {
+                    "unit": "mg/dL",
+                    "value": "Low"
+                },
+                "transmitter_time": {
+                    "unit": "long integer",
+                    "value": 36973
+                },
+                "transmitter_id": "355CH3"
+            },
+            {
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-07T02:22:48Z",
+                        "end_date_time": "2023-11-07T02:22:48Z"
+                    }
+                },
+                "event_type": "EGV",
+                "source_device_id": "PG15103236",
+                "blood_glucose": {
+                    "unit": "mg/dL",
+                    "value": "Low"
+                },
+                "transmitter_time": {
+                    "unit": "long integer",
+                    "value": 37273
+                },
+                "transmitter_id": "355CH3"
+            },
+            {
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-07T02:27:48Z",
+                        "end_date_time": "2023-11-07T02:27:48Z"
+                    }
+                },
+                "event_type": "EGV",
+                "source_device_id": "PG15103236",
+                "blood_glucose": {
+                    "unit": "mg/dL",
+                    "value": "Low"
+                },
+                "transmitter_time": {
+                    "unit": "long integer",
+                    "value": 37573
+                },
+                "transmitter_id": "355CH3"
+            },
+            {
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-07T02:32:48Z",
+                        "end_date_time": "2023-11-07T02:32:48Z"
+                    }
+                },
+                "event_type": "EGV",
+                "source_device_id": "PG15103236",
+                "blood_glucose": {
+                    "unit": "mg/dL",
+                    "value": "Low"
+                },
+                "transmitter_time": {
+                    "unit": "long integer",
+                    "value": 37873
+                },
+                "transmitter_id": "355CH3"
+            },
+            {
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-07T02:37:48Z",
+                        "end_date_time": "2023-11-07T02:37:48Z"
+                    }
+                },
+                "event_type": "EGV",
+                "source_device_id": "PG15103236",
+                "blood_glucose": {
+                    "unit": "mg/dL",
+                    "value": "Low"
+                },
+                "transmitter_time": {
+                    "unit": "long integer",
+                    "value": 38173
+                },
+                "transmitter_id": "355CH3"
+            }
+        ]
+    }
+}
