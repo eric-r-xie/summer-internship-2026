@@ -414,7 +414,8 @@ nrow(qc_summary_all)  # one row per successfully processed participant
 qc_summary_all %>% knitr::kable()
 ```
 
-- All of the 100 participants in the mini dataset had 9 days of valid data, with zero missing / duplicate timestamps or glucose values, etc.
+- Most of the 100 participants in the mini dataset had 9 days of valid data, with zero missing / duplicate timestamps or glucose values, etc., with the exception of 1168 and 1173, having 12 duplicate timestamps each. 
+- Participant 4034 was an extreme outlier, having zero valid local days and less than 100 cleaned readings compared to the thousands of cleaned readings for other participants
 
 ## Summary Tables
 
@@ -530,14 +531,107 @@ ggplot(cgm_1029_reading_level, aes(x = time_local, y = glucose_value_numeric)) +
   theme_minimal()
 ```
 
-Participant 1029 was chosen for its completeness of CGM modalities, making it a representative baseline case before scaling to a larger group of participants. 
+Participant 1029 was chosen for its completeness of CGM modalities, making it a representative baseline case before scaling to a larger group of participants. Although the glucose levels fluctuate, they do not exceed 180 mg/dL or decrease below 70 mg/dL. 
 
 ##### Figure 2
 
 One valid local-day trace for each of two or three participants; state how the participants and dates were selected
 
+##### Figure 2: One Valid Local-Day Trace for Three Participants
 
+```{r}
+selected_ids <- c(1029, 7399, 1173)
 
+reading_level_selected <- map_dfr(results_all_clean, "reading_level") %>%
+  filter(person_id %in% selected_ids)
+
+day_counts_selected <- map_dfr(results_all_clean, "day_counts") %>%
+  filter(person_id %in% selected_ids)
+```
+
+```{r}
+best_days <- day_counts_selected %>%
+  filter(valid_day) %>%
+  group_by(person_id) %>%
+  slice_max(n_readings, n = 1, with_ties = FALSE) %>%
+  ungroup()
+
+best_days %>% knitr::kable()
+```
+
+```{r}
+# Restrict readings to just each participant's chosen day
+trace_data <- reading_level_selected %>%
+  inner_join(best_days %>% select(person_id, date_local), by = c("person_id", "date_local"))
+```
+
+```{r}
+trace_data <- trace_data %>%
+  mutate(
+    person_label = case_when(
+      person_id == 1029 ~ "1029 (excellent control)",
+      person_id == 7399 ~ "7399 (poor control)",
+      person_id == 1173 ~ "1173 (most extreme)"
+    )
+  )
+
+ggplot(trace_data, aes(x = hour_local + minute(time_local)/60, y = glucose_value_numeric, color = person_label)) +
+  geom_line(linewidth = 0.6) +
+  geom_hline(yintercept = c(70, 180), linetype = "dashed", color = "gray40") +
+  labs(
+    title = "One Valid-Day CGM Trace per Participant",
+    subtitle = "Dashed lines mark 70–180 mg/dL",
+    x = "Local hour of day",
+    y = "Glucose (mg/dL)",
+    color = "Participant (time in range)"
+  ) +
+  scale_x_continuous(breaks = seq(0, 24, 4)) +
+  theme_minimal()
+```
+
+##### Figure 3: AGP-Style Plot for Participant 1029
+```{r}
+agp_data <- cgm_1029_valid_days_readings %>%
+  mutate(
+    minute_of_day = hour_local * 60 + minute(time_local),
+    minute_of_day = round(minute_of_day / 5) * 5
+  )
+
+agp_summary <- agp_data %>%
+  group_by(minute_of_day) %>%
+  summarize(
+    median_glucose = median(glucose_value_numeric),
+    p25            = quantile(glucose_value_numeric, 0.25),
+    p75            = quantile(glucose_value_numeric, 0.75),
+    n_days         = n_distinct(date_local),
+    .groups = "drop"
+  ) %>%
+  mutate(hour_of_day = minute_of_day / 60)
+
+agp_summary %>% head(10) %>% knitr::kable(digits = 1)
+```
+
+```{r}
+ggplot(agp_summary, aes(x = hour_of_day)) +
+  geom_ribbon(aes(ymin = p25, ymax = p75), fill = "steelblue", alpha = 0.25) +
+  geom_line(aes(y = median_glucose), color = "steelblue", linewidth = 0.8) +
+  geom_hline(yintercept = c(70, 180), linetype = "dashed", color = "gray40") +
+  scale_x_continuous(breaks = seq(0, 24, 4), limits = c(0, 24)) +
+  labs(
+    title = "AGP-Style Plot — Participant 1029",
+    subtitle = paste0(
+      "Median (line) and 25th–75th percentile (band) glucose by time of day, across ",
+      n_distinct(agp_data$date_local), " valid days; dashed lines mark 70–180 mg/dL"
+    ),
+    x = "Local hour of day",
+    y = "Glucose (mg/dL)"
+  ) +
+  theme_minimal()
+```
+
+## Questions
+
+##### Would it be normal for my code to run for quite a couple of minutes during the full mini dataset testing? 
 
 
 
