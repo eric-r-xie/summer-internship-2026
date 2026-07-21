@@ -20,7 +20,9 @@ manifest <- read_tsv("data/wearable_blood_glucose_mini.tsv")
 manifest %>% pull(glucose_filepath) %>% head(3)
 ```
 
-## Cleaning the CGM Data
+## Participant #1: 1029
+
+Selected Participant with Person ID 1029, the first in the mini dataset. 
 
 ##### Keeping Variables
 ```{r}
@@ -35,19 +37,22 @@ timezone_abbrev <- raw_1029$header$timezone
 
 cgm_1029 <- map_dfr(raw_1029$body$cgm, function(r) {
   tibble(
-    person_id             = person_id_val,
-    event_type            = r$event_type,
-    time_utc              = r$effective_time_frame$time_interval$start_date_time,
+    person_id = person_id_val,
+    event_type = r$event_type,
+    time_utc = r$effective_time_frame$time_interval$start_date_time,
     timezone_abbreviation = timezone_abbrev,
     glucose_value_original = r$blood_glucose$value,
-    glucose_value_numeric  = as.numeric(r$blood_glucose$value),
-    glucose_unit            = r$blood_glucose$unit
+    glucose_value_numeric = as.numeric(r$blood_glucose$value),
+    glucose_unit = r$blood_glucose$unit
   )
 })
 
 glimpse(cgm_1029)
 nrow(cgm_1029)
 ```
+
+- Read the json file and kept core CGM and other variables
+- "cgm_1029" as the raw extraction
 
 ##### 1. Keep only estimated glucose value events (event_type == "EGV")
 ```{r}
@@ -56,6 +61,9 @@ cgm_1029 <- cgm_1029 %>%
 
 nrow(cgm_1029)
 ```
+
+- Filtered cgm_1029 by boolean event_type == "EGV"
+- 2856 estimated glucose readings
 
 ##### 2. Parse timestamps ending in Z as UTC and save them as time_utc
 ```{r}
@@ -66,6 +74,8 @@ cgm_1029 <- cgm_1029 %>%
 cgm_1029 <- cgm_1029 %>%
   mutate(person_id_numeric = as.numeric(str_remove(person_id, "AIREADI-")))
 ```
+
+- Removed the "AIREADI-" heading of the person_id formatting in cgm_1029 to accomodate for the raw number person_id formatting style of participants_mini.tsv
 
 ##### 3. Infer the participant/device regional timezone from the JSON timezone label and check that it is consistent with the clinical site.
 ```{r}
@@ -101,16 +111,17 @@ cgm_1029 <- cgm_1029 %>%
   )
 
 cgm_1029 %>%
-  distinct(person_id, timezone_abbreviation, iana_zone, clinical_site, site_region, tz_site_consistent, tz_flag_for_review)
+  distinct(person_id, timezone_abbreviation, iana_zone, clinical_site,
+           site_region, tz_site_consistent, tz_flag_for_review)
 ```
 
-Nothing flagged for participant 1029. 
+- Assigned iana_zone, expected_region, etc. using joins
+- Nothing flagged for participant 1029 (therefore, JSON label and clinical site agree)
 
 ##### 4. Convert time_utc to time_local with the selected IANA timezone. Create date_local, hour_local, timezone_abbreviation, and is_dst. Let R apply daylight-saving-time rules automatically.
 
 ```{r}
 participant_tz <- unique(cgm_1029$iana_zone)
-stopifnot(length(participant_tz) == 1)  # sanity check — should be exactly one zone
 
 cgm_1029 <- cgm_1029 %>%
   mutate(
@@ -139,6 +150,8 @@ missing_summary <- cgm_1029 %>%
 missing_summary %>% knitr::kable()
 ```
 
+- No missing timestamps or glucose values
+
 ##### 7. Define a duplicate as the same participant ID and UTC timestamp.
 
 - If duplicate rows have the same glucose value, keep one copy.
@@ -158,6 +171,8 @@ nrow(cgm_1029)
 nrow(cgm_1029_clean)
 ```
 
+- No duplicates with the same participant ID and UTC timestamp.
+
 ##### 8. Confirm glucose unit is mg/dL
 ```{r}
 unit_check <- cgm_1029_clean %>%
@@ -165,6 +180,8 @@ unit_check <- cgm_1029_clean %>%
 
 unit_check %>% knitr::kable()
 ```
+
+- 2856 / 2856 readings have the glucose unit of mg/dL
 
 ##### 9. Flag unusual glucose values (< 40 or > 400 mg/dL)
 ```{r}
@@ -180,6 +197,8 @@ cgm_1029_valid_readings <- cgm_1029_clean %>%
 nrow(cgm_1029_clean)
 nrow(cgm_1029_valid_readings)
 ```
+
+- No unusual values
 
 ##### 10. Create the clean reading-level CGM table
 ```{r}
@@ -199,9 +218,6 @@ cgm_1029_reading_level <- cgm_1029_valid_readings %>%
     glucose_unit
   )
 
-nrow(cgm_1029)
-nrow(cgm_1029_reading_level)
-
 cgm_1029_reading_level %>%
   head(10) %>%
   knitr::kable()
@@ -216,6 +232,8 @@ cgm_1029_day_counts <- cgm_1029_reading_level %>%
 cgm_1029_day_counts %>% knitr::kable()
 ```
 
+- 9 out of the 11 days were valid
+
 ##### 12. Flag any date that crosses a DST transition
 ```{r}
 dst_crossing_days <- cgm_1029_reading_level %>%
@@ -227,8 +245,176 @@ dst_crossing_days <- cgm_1029_reading_level %>%
   filter(n_distinct_dst > 1)
 
 nrow(dst_crossing_days)
-dst_crossing_days %>% knitr::kable()
 ```
+
+- No date crossed a DST transition (DST transition = the moment clocks shift for daylight saving time)
+
+## Generalized Function to Test on Five Participants
+
+```{r}
+process_one_participant <- function(json_path) {
+  
+  # --- Extract raw JSON ---
+  raw <- fromJSON(json_path, simplifyVector = FALSE)
+  person_id_val   <- raw$header$patient_id
+  timezone_abbrev <- raw$header$timezone
+  
+  cgm <- map_dfr(raw$body$cgm, function(r) {
+    tibble(
+      person_id              = person_id_val,
+      event_type             = r$event_type,
+      time_utc               = r$effective_time_frame$time_interval$start_date_time,
+      timezone_abbreviation   = timezone_abbrev,
+      glucose_value_original  = as.character(r$blood_glucose$value),   # force consistent type
+      glucose_value_numeric   = suppressWarnings(as.numeric(r$blood_glucose$value)),
+      glucose_unit             = r$blood_glucose$unit
+    )
+  })
+  
+  # --- Step 1: EGV filter ---
+  cgm <- cgm %>% filter(event_type == "EGV")
+  
+  # --- Step 2: parse UTC, clean ID ---
+  cgm <- cgm %>%
+    mutate(
+      time_utc          = ymd_hms(time_utc, tz = "UTC"),
+      person_id_numeric = as.numeric(str_remove(person_id, "AIREADI-"))
+    )
+  
+  # --- Step 3: timezone / site consistency ---
+  cgm <- cgm %>%
+    left_join(tz_map, by = "timezone_abbreviation") %>%
+    left_join(participants_mini %>% select(person_id, clinical_site),
+              by = c("person_id_numeric" = "person_id")) %>%
+    left_join(site_region_map, by = "clinical_site") %>%
+    mutate(
+      tz_site_consistent = expected_region == site_region,
+      tz_flag_for_review  = is.na(iana_zone) | is.na(site_region) | !tz_site_consistent
+    )
+  
+  # --- Step 4: local time ---
+  participant_tz <- unique(cgm$iana_zone)
+  stopifnot(length(participant_tz) == 1)
+  
+  cgm <- cgm %>%
+    mutate(
+      time_local = with_tz(time_utc, tzone = participant_tz),
+      date_local = as_date(time_local),
+      hour_local = hour(time_local),
+      is_dst     = dst(time_local)
+    )
+  
+  # --- Step 6: missing values ---
+  n_missing_time    <- sum(is.na(cgm$time_utc))
+  n_missing_glucose <- sum(is.na(cgm$glucose_value_original))
+  
+  # --- Step 7: duplicates ---
+  n_raw <- nrow(cgm)
+  cgm_clean <- cgm %>% distinct(person_id, time_utc, .keep_all = TRUE)
+  n_duplicates <- n_raw - nrow(cgm_clean)
+  
+  # --- Step 8: unit check ---
+  cgm_clean <- cgm_clean %>%
+    mutate(unit_flag = glucose_unit != "mg/dL" | is.na(glucose_unit))
+  
+  # --- Step 9: unusual values ---
+  cgm_clean <- cgm_clean %>%
+    mutate(unusual_value_flag = glucose_value_numeric < 40 | glucose_value_numeric > 400)
+  n_unusual <- sum(cgm_clean$unusual_value_flag, na.rm = TRUE)
+  
+  cgm_valid <- cgm_clean %>% filter(!unusual_value_flag)
+  
+  # --- Step 10: final reading-level table ---
+  reading_level <- cgm_valid %>%
+    mutate(person_id = person_id_numeric) %>%
+    select(person_id, event_type, time_utc, timezone_abbreviation,
+           time_local, date_local, hour_local, is_dst,
+           glucose_value_original, glucose_value_numeric, glucose_unit)
+  
+  # --- Step 11: valid-day counts ---
+  day_counts <- reading_level %>%
+    count(person_id, date_local, name = "n_readings") %>%
+    mutate(valid_day = n_readings >= 202)
+  
+  # --- Step 12: DST-crossing flag ---
+  dst_crossing <- reading_level %>%
+    group_by(person_id, date_local) %>%
+    summarize(n_distinct_dst = n_distinct(is_dst), .groups = "drop") %>%
+    filter(n_distinct_dst > 1)
+  
+  # --- return everything needed downstream, bundled in a list ---
+  list(
+    reading_level     = reading_level,
+    day_counts        = day_counts,
+    dst_crossing_days = dst_crossing,
+    qc_summary = tibble(
+      person_id          = unique(reading_level$person_id),
+      raw_egv_readings    = n_raw,
+      missing_timestamps  = n_missing_time,
+      missing_glucose        = n_missing_glucose,
+      duplicate_timestamps   = n_duplicates,
+      unusual_values            = n_unusual,
+      cleaned_readings          = nrow(reading_level),
+      valid_days                = sum(day_counts$valid_day)
+    )
+  )
+}
+```
+
+##### Test on Five Participants
+```{r}
+# rebuild manifest$json_path if not already present
+manifest <- manifest %>%
+  mutate(json_path = file.path("data", "dexcom_g6", person_id, paste0(person_id, "_DEX.json")))
+
+five_ids <- head(cgm_cohort, 5)
+five_paths <- manifest %>% filter(person_id %in% five_ids) %>% pull(json_path)
+
+five_paths
+```
+
+```{r}
+results_five <- map(five_paths, process_one_participant)
+
+# combine each piece across participants
+qc_summary_five <- map_dfr(results_five, "qc_summary")
+qc_summary_five %>% knitr::kable()
+```
+
+## Testing on Entire Mini-Dataset
+```{r}
+all_paths <- manifest %>% filter(person_id %in% cgm_cohort) %>% pull(json_path)
+length(all_paths)  # should be 100
+```
+
+```{r}
+results_all <- map(all_paths, possibly(process_one_participant, otherwise = NULL))
+
+# check whether any participant's file caused an error
+n_failed <- sum(map_lgl(results_all, is.null))
+n_failed
+```
+
+```{r}
+# drop any failures before combining, and note which participants failed
+if (n_failed > 0) {
+  failed_ids <- cgm_cohort[map_lgl(results_all, is.null)]
+  failed_ids
+}
+
+results_all_clean <- results_all %>% compact()  # drops NULLs
+
+length(results_all_clean)  # should be 100 - n_failed
+```
+
+```{r}
+qc_summary_all <- map_dfr(results_all_clean, "qc_summary")
+
+nrow(qc_summary_all)  # one row per successfully processed participant
+qc_summary_all %>% knitr::kable()
+```
+
+- All of the 100 participants in the mini dataset had 9 days of valid data, with zero missing / duplicate timestamps or glucose values, etc.
 
 ## Summary Tables
 
@@ -266,7 +452,6 @@ cgm_1029_participant_summary <- cgm_1029_valid_days_readings %>%
 cgm_1029_participant_summary %>% knitr::kable(digits = 1)
 ```
 
-
 ##### Participant-Day Summary
 ```{r}
 cgm_1029_day_summary <- cgm_1029_valid_days_readings %>%
@@ -291,3 +476,68 @@ cgm_1029_day_summary <- cgm_1029_valid_days_readings %>%
 
 cgm_1029_day_summary %>% knitr::kable(digits = 1)
 ```
+
+## Tables and Figures
+
+##### Table 1: 
+
+CGM quality-control summary by participant, including raw EGV readings, missing timestamps, missing glucose values, duplicate timestamps, unusual values, cleaned readings, and valid days
+
+```{r}
+cgm_1029_qc_summary <- tibble(
+  person_id           = unique(cgm_1029_reading_level$person_id),
+  raw_egv_readings     = nrow(cgm_1029),
+  missing_timestamps    = missing_summary$n_missing_time_utc,
+  missing_glucose        = missing_summary$n_missing_glucose_original,
+  duplicate_timestamps   = nrow(cgm_1029) - nrow(cgm_1029_clean),
+  unusual_values         = n_unusual,
+  cleaned_readings       = nrow(cgm_1029_reading_level),
+  valid_days             = sum(cgm_1029_day_counts$valid_day)
+)
+
+cgm_1029_qc_summary %>% knitr::kable()
+```
+
+##### Table 2:
+
+Participant-level CGM features
+
+```{r}
+cgm_1029_participant_summary %>% knitr::kable(digits = 1)
+```
+
+##### Table 3: 
+
+Valid participant-day CGM features
+
+```{r}
+cgm_1029_day_summary %>% knitr::kable(digits = 1)
+```
+
+##### Figure 1: Full CGM Trace for Participant 1029
+```{r}
+library(ggplot2)
+
+ggplot(cgm_1029_reading_level, aes(x = time_local, y = glucose_value_numeric)) +
+  geom_line(color = "steelblue", linewidth = 0.3) +
+  geom_hline(yintercept = c(70, 180), linetype = "dashed", color = "gray40") +
+  labs(
+    title = "Full CGM Trace — Participant 1029",
+    subtitle = "All cleaned readings, local time; dashed lines mark the 70–180 mg/dL target range",
+    x = "Local date/time",
+    y = "Glucose (mg/dL)"
+  ) +
+  theme_minimal()
+```
+
+Participant 1029 was chosen for its completeness of CGM modalities, making it a representative baseline case before scaling to a larger group of participants. 
+
+##### Figure 2
+
+One valid local-day trace for each of two or three participants; state how the participants and dates were selected
+
+
+
+
+
+
