@@ -87,6 +87,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <ul>
   <li><a href="#cgm-cohort" id="toc-cgm-cohort" class="nav-link active" data-scroll-target="#cgm-cohort">CGM Cohort</a></li>
   <li><a href="#cleaning-the-cgm-data" id="toc-cleaning-the-cgm-data" class="nav-link" data-scroll-target="#cleaning-the-cgm-data">Cleaning the CGM Data</a></li>
+  <li><a href="#summary-tables" id="toc-summary-tables" class="nav-link" data-scroll-target="#summary-tables">Summary Tables</a></li>
   </ul>
 </nav>
 </div>
@@ -464,6 +465,697 @@ $ glucose_unit           &lt;chr&gt; "mg/dL", "mg/dL", "mg/dL", "mg/dL", "mg/dL"
 <span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a><span class="fu">nrow</span>(dup_groups)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 0</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>cgm_1029_clean <span class="ot">&lt;-</span> cgm_1029 <span class="sc">%&gt;%</span></span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">distinct</span>(person_id, time_utc, <span class="at">.keep_all =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a><span class="fu">nrow</span>(cgm_1029)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 2856</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="fu">nrow</span>(cgm_1029_clean)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 2856</code></pre>
+</div>
+</div>
+</section>
+<section id="confirm-glucose-unit-is-mgdl" class="level5">
+<h5 class="anchored" data-anchor-id="confirm-glucose-unit-is-mgdl">8. Confirm glucose unit is mg/dL</h5>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>unit_check <span class="ot">&lt;-</span> cgm_1029_clean <span class="sc">%&gt;%</span></span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(glucose_unit, <span class="at">name =</span> <span class="st">"n_readings"</span>)</span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a>unit_check <span class="sc">%&gt;%</span> knitr<span class="sc">::</span><span class="fu">kable</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;">glucose_unit</th>
+<th style="text-align: right;">n_readings</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">mg/dL</td>
+<td style="text-align: right;">2856</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+<section id="flag-unusual-glucose-values-40-or-400-mgdl" class="level5">
+<h5 class="anchored" data-anchor-id="flag-unusual-glucose-values-40-or-400-mgdl">9. Flag unusual glucose values (&lt; 40 or &gt; 400 mg/dL)</h5>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>cgm_1029_clean <span class="ot">&lt;-</span> cgm_1029_clean <span class="sc">%&gt;%</span></span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">unusual_value_flag =</span> glucose_value_numeric <span class="sc">&lt;</span> <span class="dv">40</span> <span class="sc">|</span> glucose_value_numeric <span class="sc">&gt;</span> <span class="dv">400</span>)</span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a>n_unusual <span class="ot">&lt;-</span> <span class="fu">sum</span>(cgm_1029_clean<span class="sc">$</span>unusual_value_flag, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a>n_unusual</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>cgm_1029_valid_readings <span class="ot">&lt;-</span> cgm_1029_clean <span class="sc">%&gt;%</span></span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span>unusual_value_flag)</span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a><span class="fu">nrow</span>(cgm_1029_clean)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 2856</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="fu">nrow</span>(cgm_1029_valid_readings)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 2856</code></pre>
+</div>
+</div>
+</section>
+<section id="create-the-clean-reading-level-cgm-table" class="level5">
+<h5 class="anchored" data-anchor-id="create-the-clean-reading-level-cgm-table">10. Create the clean reading-level CGM table</h5>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>cgm_1029_reading_level <span class="ot">&lt;-</span> cgm_1029_valid_readings <span class="sc">%&gt;%</span></span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">person_id =</span> person_id_numeric) <span class="sc">%&gt;%</span></span>
+<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(</span>
+<span id="cb38-4"><a href="#cb38-4" aria-hidden="true" tabindex="-1"></a>    person_id,</span>
+<span id="cb38-5"><a href="#cb38-5" aria-hidden="true" tabindex="-1"></a>    event_type,</span>
+<span id="cb38-6"><a href="#cb38-6" aria-hidden="true" tabindex="-1"></a>    time_utc,</span>
+<span id="cb38-7"><a href="#cb38-7" aria-hidden="true" tabindex="-1"></a>    timezone_abbreviation,</span>
+<span id="cb38-8"><a href="#cb38-8" aria-hidden="true" tabindex="-1"></a>    time_local,</span>
+<span id="cb38-9"><a href="#cb38-9" aria-hidden="true" tabindex="-1"></a>    date_local,</span>
+<span id="cb38-10"><a href="#cb38-10" aria-hidden="true" tabindex="-1"></a>    hour_local,</span>
+<span id="cb38-11"><a href="#cb38-11" aria-hidden="true" tabindex="-1"></a>    is_dst,</span>
+<span id="cb38-12"><a href="#cb38-12" aria-hidden="true" tabindex="-1"></a>    glucose_value_original,</span>
+<span id="cb38-13"><a href="#cb38-13" aria-hidden="true" tabindex="-1"></a>    glucose_value_numeric,</span>
+<span id="cb38-14"><a href="#cb38-14" aria-hidden="true" tabindex="-1"></a>    glucose_unit</span>
+<span id="cb38-15"><a href="#cb38-15" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb38-16"><a href="#cb38-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-17"><a href="#cb38-17" aria-hidden="true" tabindex="-1"></a><span class="fu">nrow</span>(cgm_1029)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 2856</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="fu">nrow</span>(cgm_1029_reading_level)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 2856</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>cgm_1029_reading_level <span class="sc">%&gt;%</span></span>
+<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">head</span>(<span class="dv">10</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a>  knitr<span class="sc">::</span><span class="fu">kable</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<colgroup>
+<col style="width: 5%">
+<col style="width: 6%">
+<col style="width: 11%">
+<col style="width: 12%">
+<col style="width: 11%">
+<col style="width: 6%">
+<col style="width: 6%">
+<col style="width: 4%">
+<col style="width: 13%">
+<col style="width: 12%">
+<col style="width: 7%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: right;">person_id</th>
+<th style="text-align: left;">event_type</th>
+<th style="text-align: left;">time_utc</th>
+<th style="text-align: left;">timezone_abbreviation</th>
+<th style="text-align: left;">time_local</th>
+<th style="text-align: left;">date_local</th>
+<th style="text-align: right;">hour_local</th>
+<th style="text-align: left;">is_dst</th>
+<th style="text-align: right;">glucose_value_original</th>
+<th style="text-align: right;">glucose_value_numeric</th>
+<th style="text-align: left;">glucose_unit</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">1029</td>
+<td style="text-align: left;">EGV</td>
+<td style="text-align: left;">2023-09-07 21:08:07</td>
+<td style="text-align: left;">pst</td>
+<td style="text-align: left;">2023-09-07 14:08:07</td>
+<td style="text-align: left;">2023-09-07</td>
+<td style="text-align: right;">14</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: right;">139</td>
+<td style="text-align: right;">139</td>
+<td style="text-align: left;">mg/dL</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">1029</td>
+<td style="text-align: left;">EGV</td>
+<td style="text-align: left;">2023-09-07 21:13:07</td>
+<td style="text-align: left;">pst</td>
+<td style="text-align: left;">2023-09-07 14:13:07</td>
+<td style="text-align: left;">2023-09-07</td>
+<td style="text-align: right;">14</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: right;">138</td>
+<td style="text-align: right;">138</td>
+<td style="text-align: left;">mg/dL</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">1029</td>
+<td style="text-align: left;">EGV</td>
+<td style="text-align: left;">2023-09-07 21:18:07</td>
+<td style="text-align: left;">pst</td>
+<td style="text-align: left;">2023-09-07 14:18:07</td>
+<td style="text-align: left;">2023-09-07</td>
+<td style="text-align: right;">14</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: right;">136</td>
+<td style="text-align: right;">136</td>
+<td style="text-align: left;">mg/dL</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">1029</td>
+<td style="text-align: left;">EGV</td>
+<td style="text-align: left;">2023-09-07 21:23:07</td>
+<td style="text-align: left;">pst</td>
+<td style="text-align: left;">2023-09-07 14:23:07</td>
+<td style="text-align: left;">2023-09-07</td>
+<td style="text-align: right;">14</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: right;">133</td>
+<td style="text-align: right;">133</td>
+<td style="text-align: left;">mg/dL</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">1029</td>
+<td style="text-align: left;">EGV</td>
+<td style="text-align: left;">2023-09-07 21:28:07</td>
+<td style="text-align: left;">pst</td>
+<td style="text-align: left;">2023-09-07 14:28:07</td>
+<td style="text-align: left;">2023-09-07</td>
+<td style="text-align: right;">14</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: right;">125</td>
+<td style="text-align: right;">125</td>
+<td style="text-align: left;">mg/dL</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">1029</td>
+<td style="text-align: left;">EGV</td>
+<td style="text-align: left;">2023-09-07 21:33:07</td>
+<td style="text-align: left;">pst</td>
+<td style="text-align: left;">2023-09-07 14:33:07</td>
+<td style="text-align: left;">2023-09-07</td>
+<td style="text-align: right;">14</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: right;">127</td>
+<td style="text-align: right;">127</td>
+<td style="text-align: left;">mg/dL</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">1029</td>
+<td style="text-align: left;">EGV</td>
+<td style="text-align: left;">2023-09-07 21:38:07</td>
+<td style="text-align: left;">pst</td>
+<td style="text-align: left;">2023-09-07 14:38:07</td>
+<td style="text-align: left;">2023-09-07</td>
+<td style="text-align: right;">14</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: right;">125</td>
+<td style="text-align: right;">125</td>
+<td style="text-align: left;">mg/dL</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">1029</td>
+<td style="text-align: left;">EGV</td>
+<td style="text-align: left;">2023-09-07 21:43:07</td>
+<td style="text-align: left;">pst</td>
+<td style="text-align: left;">2023-09-07 14:43:07</td>
+<td style="text-align: left;">2023-09-07</td>
+<td style="text-align: right;">14</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: right;">122</td>
+<td style="text-align: right;">122</td>
+<td style="text-align: left;">mg/dL</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">1029</td>
+<td style="text-align: left;">EGV</td>
+<td style="text-align: left;">2023-09-07 21:48:07</td>
+<td style="text-align: left;">pst</td>
+<td style="text-align: left;">2023-09-07 14:48:07</td>
+<td style="text-align: left;">2023-09-07</td>
+<td style="text-align: right;">14</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: right;">117</td>
+<td style="text-align: right;">117</td>
+<td style="text-align: left;">mg/dL</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">1029</td>
+<td style="text-align: left;">EGV</td>
+<td style="text-align: left;">2023-09-07 21:53:07</td>
+<td style="text-align: left;">pst</td>
+<td style="text-align: left;">2023-09-07 14:53:07</td>
+<td style="text-align: left;">2023-09-07</td>
+<td style="text-align: right;">14</td>
+<td style="text-align: left;">TRUE</td>
+<td style="text-align: right;">117</td>
+<td style="text-align: right;">117</td>
+<td style="text-align: left;">mg/dL</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+<section id="count-readings-per-local-day-and-flag-valid-days" class="level5">
+<h5 class="anchored" data-anchor-id="count-readings-per-local-day-and-flag-valid-days">11. Count readings per local day and flag valid days</h5>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a>cgm_1029_day_counts <span class="ot">&lt;-</span> cgm_1029_reading_level <span class="sc">%&gt;%</span></span>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(person_id, date_local, <span class="at">name =</span> <span class="st">"n_readings"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">valid_day =</span> n_readings <span class="sc">&gt;=</span> <span class="dv">202</span>)</span>
+<span id="cb43-4"><a href="#cb43-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-5"><a href="#cb43-5" aria-hidden="true" tabindex="-1"></a>cgm_1029_day_counts <span class="sc">%&gt;%</span> knitr<span class="sc">::</span><span class="fu">kable</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: right;">person_id</th>
+<th style="text-align: left;">date_local</th>
+<th style="text-align: right;">n_readings</th>
+<th style="text-align: left;">valid_day</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">1029</td>
+<td style="text-align: left;">2023-09-07</td>
+<td style="text-align: right;">119</td>
+<td style="text-align: left;">FALSE</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">1029</td>
+<td style="text-align: left;">2023-09-08</td>
+<td style="text-align: right;">288</td>
+<td style="text-align: left;">TRUE</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">1029</td>
+<td style="text-align: left;">2023-09-09</td>
+<td style="text-align: right;">288</td>
+<td style="text-align: left;">TRUE</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">1029</td>
+<td style="text-align: left;">2023-09-10</td>
+<td style="text-align: right;">288</td>
+<td style="text-align: left;">TRUE</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">1029</td>
+<td style="text-align: left;">2023-09-11</td>
+<td style="text-align: right;">288</td>
+<td style="text-align: left;">TRUE</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">1029</td>
+<td style="text-align: left;">2023-09-12</td>
+<td style="text-align: right;">288</td>
+<td style="text-align: left;">TRUE</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">1029</td>
+<td style="text-align: left;">2023-09-13</td>
+<td style="text-align: right;">288</td>
+<td style="text-align: left;">TRUE</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">1029</td>
+<td style="text-align: left;">2023-09-14</td>
+<td style="text-align: right;">288</td>
+<td style="text-align: left;">TRUE</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">1029</td>
+<td style="text-align: left;">2023-09-15</td>
+<td style="text-align: right;">288</td>
+<td style="text-align: left;">TRUE</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">1029</td>
+<td style="text-align: left;">2023-09-16</td>
+<td style="text-align: right;">288</td>
+<td style="text-align: left;">TRUE</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">1029</td>
+<td style="text-align: left;">2023-09-17</td>
+<td style="text-align: right;">145</td>
+<td style="text-align: left;">FALSE</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+<section id="flag-any-date-that-crosses-a-dst-transition" class="level5">
+<h5 class="anchored" data-anchor-id="flag-any-date-that-crosses-a-dst-transition">12. Flag any date that crosses a DST transition</h5>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a>dst_crossing_days <span class="ot">&lt;-</span> cgm_1029_reading_level <span class="sc">%&gt;%</span></span>
+<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(person_id, date_local) <span class="sc">%&gt;%</span></span>
+<span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(</span>
+<span id="cb44-4"><a href="#cb44-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">n_distinct_dst =</span> <span class="fu">n_distinct</span>(is_dst),</span>
+<span id="cb44-5"><a href="#cb44-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">.groups =</span> <span class="st">"drop"</span></span>
+<span id="cb44-6"><a href="#cb44-6" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb44-7"><a href="#cb44-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(n_distinct_dst <span class="sc">&gt;</span> <span class="dv">1</span>)</span>
+<span id="cb44-8"><a href="#cb44-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-9"><a href="#cb44-9" aria-hidden="true" tabindex="-1"></a><span class="fu">nrow</span>(dst_crossing_days)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a>dst_crossing_days <span class="sc">%&gt;%</span> knitr<span class="sc">::</span><span class="fu">kable</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th style="text-align: right;">person_id</th>
+<th style="text-align: left;">date_local</th>
+<th style="text-align: right;">n_distinct_dst</th>
+</tr>
+</thead>
+<tbody>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+</section>
+<section id="summary-tables" class="level2">
+<h2 class="anchored" data-anchor-id="summary-tables">Summary Tables</h2>
+<section id="participant-level-summary" class="level5">
+<h5 class="anchored" data-anchor-id="participant-level-summary">Participant-Level Summary</h5>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Restrict to cleaned readings that fall on valid local days only</span></span>
+<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a>cgm_1029_valid_days_readings <span class="ot">&lt;-</span> cgm_1029_reading_level <span class="sc">%&gt;%</span></span>
+<span id="cb47-3"><a href="#cb47-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(</span>
+<span id="cb47-4"><a href="#cb47-4" aria-hidden="true" tabindex="-1"></a>    cgm_1029_day_counts <span class="sc">%&gt;%</span> <span class="fu">select</span>(person_id, date_local, valid_day),</span>
+<span id="cb47-5"><a href="#cb47-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">by =</span> <span class="fu">c</span>(<span class="st">"person_id"</span>, <span class="st">"date_local"</span>)</span>
+<span id="cb47-6"><a href="#cb47-6" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb47-7"><a href="#cb47-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(valid_day)</span>
+<span id="cb47-8"><a href="#cb47-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb47-9"><a href="#cb47-9" aria-hidden="true" tabindex="-1"></a><span class="fu">nrow</span>(cgm_1029_reading_level)         <span class="co"># all cleaned readings</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 2856</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb49"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a><span class="fu">nrow</span>(cgm_1029_valid_days_readings)   <span class="co"># cleaned readings from valid days only</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 2592</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb51"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a>cgm_1029_participant_summary <span class="ot">&lt;-</span> cgm_1029_valid_days_readings <span class="sc">%&gt;%</span></span>
+<span id="cb51-2"><a href="#cb51-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(</span>
+<span id="cb51-3"><a href="#cb51-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">person_id      =</span> <span class="fu">first</span>(person_id),</span>
+<span id="cb51-4"><a href="#cb51-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">n_readings     =</span> <span class="fu">n</span>(),</span>
+<span id="cb51-5"><a href="#cb51-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">n_valid_days   =</span> <span class="fu">n_distinct</span>(date_local),</span>
+<span id="cb51-6"><a href="#cb51-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">mean_glucose   =</span> <span class="fu">mean</span>(glucose_value_numeric),</span>
+<span id="cb51-7"><a href="#cb51-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">median_glucose =</span> <span class="fu">median</span>(glucose_value_numeric),</span>
+<span id="cb51-8"><a href="#cb51-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">sd_glucose     =</span> <span class="fu">sd</span>(glucose_value_numeric),</span>
+<span id="cb51-9"><a href="#cb51-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">cv_glucose     =</span> sd_glucose <span class="sc">/</span> mean_glucose <span class="sc">*</span> <span class="dv">100</span>,</span>
+<span id="cb51-10"><a href="#cb51-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">pct_70_180     =</span> <span class="fu">mean</span>(glucose_value_numeric <span class="sc">&gt;=</span> <span class="dv">70</span> <span class="sc">&amp;</span> glucose_value_numeric <span class="sc">&lt;=</span> <span class="dv">180</span>) <span class="sc">*</span> <span class="dv">100</span>,</span>
+<span id="cb51-11"><a href="#cb51-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">pct_above_180  =</span> <span class="fu">mean</span>(glucose_value_numeric <span class="sc">&gt;</span> <span class="dv">180</span>) <span class="sc">*</span> <span class="dv">100</span>,</span>
+<span id="cb51-12"><a href="#cb51-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">pct_above_250  =</span> <span class="fu">mean</span>(glucose_value_numeric <span class="sc">&gt;</span> <span class="dv">250</span>) <span class="sc">*</span> <span class="dv">100</span>,</span>
+<span id="cb51-13"><a href="#cb51-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">pct_below_70   =</span> <span class="fu">mean</span>(glucose_value_numeric <span class="sc">&lt;</span> <span class="dv">70</span>) <span class="sc">*</span> <span class="dv">100</span>,</span>
+<span id="cb51-14"><a href="#cb51-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">pct_below_54   =</span> <span class="fu">mean</span>(glucose_value_numeric <span class="sc">&lt;</span> <span class="dv">54</span>) <span class="sc">*</span> <span class="dv">100</span></span>
+<span id="cb51-15"><a href="#cb51-15" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb51-16"><a href="#cb51-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb51-17"><a href="#cb51-17" aria-hidden="true" tabindex="-1"></a>cgm_1029_participant_summary <span class="sc">%&gt;%</span> knitr<span class="sc">::</span><span class="fu">kable</span>(<span class="at">digits =</span> <span class="dv">1</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<colgroup>
+<col style="width: 6%">
+<col style="width: 7%">
+<col style="width: 8%">
+<col style="width: 8%">
+<col style="width: 10%">
+<col style="width: 7%">
+<col style="width: 7%">
+<col style="width: 7%">
+<col style="width: 9%">
+<col style="width: 9%">
+<col style="width: 8%">
+<col style="width: 8%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: right;">person_id</th>
+<th style="text-align: right;">n_readings</th>
+<th style="text-align: right;">n_valid_days</th>
+<th style="text-align: right;">mean_glucose</th>
+<th style="text-align: right;">median_glucose</th>
+<th style="text-align: right;">sd_glucose</th>
+<th style="text-align: right;">cv_glucose</th>
+<th style="text-align: right;">pct_70_180</th>
+<th style="text-align: right;">pct_above_180</th>
+<th style="text-align: right;">pct_above_250</th>
+<th style="text-align: right;">pct_below_70</th>
+<th style="text-align: right;">pct_below_54</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">1029</td>
+<td style="text-align: right;">2592</td>
+<td style="text-align: right;">9</td>
+<td style="text-align: right;">110.7</td>
+<td style="text-align: right;">109</td>
+<td style="text-align: right;">11.3</td>
+<td style="text-align: right;">10.2</td>
+<td style="text-align: right;">100</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+<section id="participant-day-summary" class="level5">
+<h5 class="anchored" data-anchor-id="participant-day-summary">Participant-Day Summary</h5>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb52"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a>cgm_1029_day_summary <span class="ot">&lt;-</span> cgm_1029_valid_days_readings <span class="sc">%&gt;%</span></span>
+<span id="cb52-2"><a href="#cb52-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">period =</span> <span class="fu">if_else</span>(hour_local <span class="sc">&gt;=</span> <span class="dv">6</span>, <span class="st">"daytime"</span>, <span class="st">"nighttime"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb52-3"><a href="#cb52-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(person_id, date_local) <span class="sc">%&gt;%</span></span>
+<span id="cb52-4"><a href="#cb52-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(</span>
+<span id="cb52-5"><a href="#cb52-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">n_readings         =</span> <span class="fu">n</span>(),</span>
+<span id="cb52-6"><a href="#cb52-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">pct_expected        =</span> n_readings <span class="sc">/</span> <span class="dv">288</span> <span class="sc">*</span> <span class="dv">100</span>,</span>
+<span id="cb52-7"><a href="#cb52-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">mean_glucose        =</span> <span class="fu">mean</span>(glucose_value_numeric),</span>
+<span id="cb52-8"><a href="#cb52-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">sd_glucose           =</span> <span class="fu">sd</span>(glucose_value_numeric),</span>
+<span id="cb52-9"><a href="#cb52-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">pct_70_180           =</span> <span class="fu">mean</span>(glucose_value_numeric <span class="sc">&gt;=</span> <span class="dv">70</span> <span class="sc">&amp;</span> glucose_value_numeric <span class="sc">&lt;=</span> <span class="dv">180</span>) <span class="sc">*</span> <span class="dv">100</span>,</span>
+<span id="cb52-10"><a href="#cb52-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">pct_above_180         =</span> <span class="fu">mean</span>(glucose_value_numeric <span class="sc">&gt;</span> <span class="dv">180</span>) <span class="sc">*</span> <span class="dv">100</span>,</span>
+<span id="cb52-11"><a href="#cb52-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">pct_below_70           =</span> <span class="fu">mean</span>(glucose_value_numeric <span class="sc">&lt;</span> <span class="dv">70</span>) <span class="sc">*</span> <span class="dv">100</span>,</span>
+<span id="cb52-12"><a href="#cb52-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">n_daytime               =</span> <span class="fu">sum</span>(period <span class="sc">==</span> <span class="st">"daytime"</span>),</span>
+<span id="cb52-13"><a href="#cb52-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">n_nighttime              =</span> <span class="fu">sum</span>(period <span class="sc">==</span> <span class="st">"nighttime"</span>),</span>
+<span id="cb52-14"><a href="#cb52-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">mean_glucose_daytime      =</span> <span class="fu">mean</span>(glucose_value_numeric[period <span class="sc">==</span> <span class="st">"daytime"</span>]),</span>
+<span id="cb52-15"><a href="#cb52-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">mean_glucose_nighttime     =</span> <span class="fu">mean</span>(glucose_value_numeric[period <span class="sc">==</span> <span class="st">"nighttime"</span>]),</span>
+<span id="cb52-16"><a href="#cb52-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">sd_glucose_daytime          =</span> <span class="fu">sd</span>(glucose_value_numeric[period <span class="sc">==</span> <span class="st">"daytime"</span>]),</span>
+<span id="cb52-17"><a href="#cb52-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">sd_glucose_nighttime         =</span> <span class="fu">sd</span>(glucose_value_numeric[period <span class="sc">==</span> <span class="st">"nighttime"</span>]),</span>
+<span id="cb52-18"><a href="#cb52-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">.groups =</span> <span class="st">"drop"</span></span>
+<span id="cb52-19"><a href="#cb52-19" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb52-20"><a href="#cb52-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-21"><a href="#cb52-21" aria-hidden="true" tabindex="-1"></a>cgm_1029_day_summary <span class="sc">%&gt;%</span> knitr<span class="sc">::</span><span class="fu">kable</span>(<span class="at">digits =</span> <span class="dv">1</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<colgroup>
+<col style="width: 4%">
+<col style="width: 5%">
+<col style="width: 5%">
+<col style="width: 6%">
+<col style="width: 6%">
+<col style="width: 5%">
+<col style="width: 5%">
+<col style="width: 6%">
+<col style="width: 6%">
+<col style="width: 4%">
+<col style="width: 5%">
+<col style="width: 9%">
+<col style="width: 10%">
+<col style="width: 8%">
+<col style="width: 9%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: right;">person_id</th>
+<th style="text-align: left;">date_local</th>
+<th style="text-align: right;">n_readings</th>
+<th style="text-align: right;">pct_expected</th>
+<th style="text-align: right;">mean_glucose</th>
+<th style="text-align: right;">sd_glucose</th>
+<th style="text-align: right;">pct_70_180</th>
+<th style="text-align: right;">pct_above_180</th>
+<th style="text-align: right;">pct_below_70</th>
+<th style="text-align: right;">n_daytime</th>
+<th style="text-align: right;">n_nighttime</th>
+<th style="text-align: right;">mean_glucose_daytime</th>
+<th style="text-align: right;">mean_glucose_nighttime</th>
+<th style="text-align: right;">sd_glucose_daytime</th>
+<th style="text-align: right;">sd_glucose_nighttime</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">1029</td>
+<td style="text-align: left;">2023-09-08</td>
+<td style="text-align: right;">288</td>
+<td style="text-align: right;">100</td>
+<td style="text-align: right;">109.5</td>
+<td style="text-align: right;">13.6</td>
+<td style="text-align: right;">100</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">216</td>
+<td style="text-align: right;">72</td>
+<td style="text-align: right;">106.8</td>
+<td style="text-align: right;">117.7</td>
+<td style="text-align: right;">10.9</td>
+<td style="text-align: right;">17.2</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">1029</td>
+<td style="text-align: left;">2023-09-09</td>
+<td style="text-align: right;">288</td>
+<td style="text-align: right;">100</td>
+<td style="text-align: right;">114.4</td>
+<td style="text-align: right;">9.2</td>
+<td style="text-align: right;">100</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">216</td>
+<td style="text-align: right;">72</td>
+<td style="text-align: right;">114.8</td>
+<td style="text-align: right;">113.0</td>
+<td style="text-align: right;">9.3</td>
+<td style="text-align: right;">8.7</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">1029</td>
+<td style="text-align: left;">2023-09-10</td>
+<td style="text-align: right;">288</td>
+<td style="text-align: right;">100</td>
+<td style="text-align: right;">111.5</td>
+<td style="text-align: right;">10.2</td>
+<td style="text-align: right;">100</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">216</td>
+<td style="text-align: right;">72</td>
+<td style="text-align: right;">110.9</td>
+<td style="text-align: right;">113.2</td>
+<td style="text-align: right;">8.8</td>
+<td style="text-align: right;">13.4</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">1029</td>
+<td style="text-align: left;">2023-09-11</td>
+<td style="text-align: right;">288</td>
+<td style="text-align: right;">100</td>
+<td style="text-align: right;">112.2</td>
+<td style="text-align: right;">13.5</td>
+<td style="text-align: right;">100</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">216</td>
+<td style="text-align: right;">72</td>
+<td style="text-align: right;">111.2</td>
+<td style="text-align: right;">115.5</td>
+<td style="text-align: right;">10.7</td>
+<td style="text-align: right;">19.3</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">1029</td>
+<td style="text-align: left;">2023-09-12</td>
+<td style="text-align: right;">288</td>
+<td style="text-align: right;">100</td>
+<td style="text-align: right;">113.4</td>
+<td style="text-align: right;">8.9</td>
+<td style="text-align: right;">100</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">216</td>
+<td style="text-align: right;">72</td>
+<td style="text-align: right;">114.7</td>
+<td style="text-align: right;">109.3</td>
+<td style="text-align: right;">8.1</td>
+<td style="text-align: right;">9.8</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">1029</td>
+<td style="text-align: left;">2023-09-13</td>
+<td style="text-align: right;">288</td>
+<td style="text-align: right;">100</td>
+<td style="text-align: right;">109.0</td>
+<td style="text-align: right;">10.5</td>
+<td style="text-align: right;">100</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">216</td>
+<td style="text-align: right;">72</td>
+<td style="text-align: right;">107.2</td>
+<td style="text-align: right;">114.2</td>
+<td style="text-align: right;">9.6</td>
+<td style="text-align: right;">11.2</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">1029</td>
+<td style="text-align: left;">2023-09-14</td>
+<td style="text-align: right;">288</td>
+<td style="text-align: right;">100</td>
+<td style="text-align: right;">108.7</td>
+<td style="text-align: right;">13.8</td>
+<td style="text-align: right;">100</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">216</td>
+<td style="text-align: right;">72</td>
+<td style="text-align: right;">109.6</td>
+<td style="text-align: right;">106.2</td>
+<td style="text-align: right;">14.0</td>
+<td style="text-align: right;">12.9</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">1029</td>
+<td style="text-align: left;">2023-09-15</td>
+<td style="text-align: right;">288</td>
+<td style="text-align: right;">100</td>
+<td style="text-align: right;">108.6</td>
+<td style="text-align: right;">9.5</td>
+<td style="text-align: right;">100</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">216</td>
+<td style="text-align: right;">72</td>
+<td style="text-align: right;">108.7</td>
+<td style="text-align: right;">108.3</td>
+<td style="text-align: right;">8.0</td>
+<td style="text-align: right;">13.1</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">1029</td>
+<td style="text-align: left;">2023-09-16</td>
+<td style="text-align: right;">288</td>
+<td style="text-align: right;">100</td>
+<td style="text-align: right;">108.8</td>
+<td style="text-align: right;">9.2</td>
+<td style="text-align: right;">100</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">216</td>
+<td style="text-align: right;">72</td>
+<td style="text-align: right;">108.0</td>
+<td style="text-align: right;">110.9</td>
+<td style="text-align: right;">9.9</td>
+<td style="text-align: right;">6.3</td>
+</tr>
+</tbody>
+</table>
 </div>
 </div>
 </section>

@@ -150,7 +150,144 @@ dup_groups <- cgm_1029 %>%
   filter(n_readings > 1)
 
 nrow(dup_groups)
+
+cgm_1029_clean <- cgm_1029 %>%
+  distinct(person_id, time_utc, .keep_all = TRUE)
+
+nrow(cgm_1029)
+nrow(cgm_1029_clean)
+```
+
+##### 8. Confirm glucose unit is mg/dL
+```{r}
+unit_check <- cgm_1029_clean %>%
+  count(glucose_unit, name = "n_readings")
+
+unit_check %>% knitr::kable()
+```
+
+##### 9. Flag unusual glucose values (< 40 or > 400 mg/dL)
+```{r}
+cgm_1029_clean <- cgm_1029_clean %>%
+  mutate(unusual_value_flag = glucose_value_numeric < 40 | glucose_value_numeric > 400)
+
+n_unusual <- sum(cgm_1029_clean$unusual_value_flag, na.rm = TRUE)
+n_unusual
+
+cgm_1029_valid_readings <- cgm_1029_clean %>%
+  filter(!unusual_value_flag)
+
+nrow(cgm_1029_clean)
+nrow(cgm_1029_valid_readings)
+```
+
+##### 10. Create the clean reading-level CGM table
+```{r}
+cgm_1029_reading_level <- cgm_1029_valid_readings %>%
+  mutate(person_id = person_id_numeric) %>%
+  select(
+    person_id,
+    event_type,
+    time_utc,
+    timezone_abbreviation,
+    time_local,
+    date_local,
+    hour_local,
+    is_dst,
+    glucose_value_original,
+    glucose_value_numeric,
+    glucose_unit
+  )
+
+nrow(cgm_1029)
+nrow(cgm_1029_reading_level)
+
+cgm_1029_reading_level %>%
+  head(10) %>%
+  knitr::kable()
+```
+
+##### 11. Count readings per local day and flag valid days
+```{r}
+cgm_1029_day_counts <- cgm_1029_reading_level %>%
+  count(person_id, date_local, name = "n_readings") %>%
+  mutate(valid_day = n_readings >= 202)
+
+cgm_1029_day_counts %>% knitr::kable()
+```
+
+##### 12. Flag any date that crosses a DST transition
+```{r}
+dst_crossing_days <- cgm_1029_reading_level %>%
+  group_by(person_id, date_local) %>%
+  summarize(
+    n_distinct_dst = n_distinct(is_dst),
+    .groups = "drop"
+  ) %>%
+  filter(n_distinct_dst > 1)
+
+nrow(dst_crossing_days)
+dst_crossing_days %>% knitr::kable()
+```
+
+## Summary Tables
+
+##### Participant-Level Summary
+```{r}
+# Restrict to cleaned readings that fall on valid local days only
+cgm_1029_valid_days_readings <- cgm_1029_reading_level %>%
+  left_join(
+    cgm_1029_day_counts %>% select(person_id, date_local, valid_day),
+    by = c("person_id", "date_local")
+  ) %>%
+  filter(valid_day)
+
+nrow(cgm_1029_reading_level)         # all cleaned readings
+nrow(cgm_1029_valid_days_readings)   # cleaned readings from valid days only
+```
+
+```{r}
+cgm_1029_participant_summary <- cgm_1029_valid_days_readings %>%
+  summarize(
+    person_id      = first(person_id),
+    n_readings     = n(),
+    n_valid_days   = n_distinct(date_local),
+    mean_glucose   = mean(glucose_value_numeric),
+    median_glucose = median(glucose_value_numeric),
+    sd_glucose     = sd(glucose_value_numeric),
+    cv_glucose     = sd_glucose / mean_glucose * 100,
+    pct_70_180     = mean(glucose_value_numeric >= 70 & glucose_value_numeric <= 180) * 100,
+    pct_above_180  = mean(glucose_value_numeric > 180) * 100,
+    pct_above_250  = mean(glucose_value_numeric > 250) * 100,
+    pct_below_70   = mean(glucose_value_numeric < 70) * 100,
+    pct_below_54   = mean(glucose_value_numeric < 54) * 100
+  )
+
+cgm_1029_participant_summary %>% knitr::kable(digits = 1)
 ```
 
 
+##### Participant-Day Summary
+```{r}
+cgm_1029_day_summary <- cgm_1029_valid_days_readings %>%
+  mutate(period = if_else(hour_local >= 6, "daytime", "nighttime")) %>%
+  group_by(person_id, date_local) %>%
+  summarize(
+    n_readings         = n(),
+    pct_expected        = n_readings / 288 * 100,
+    mean_glucose        = mean(glucose_value_numeric),
+    sd_glucose           = sd(glucose_value_numeric),
+    pct_70_180           = mean(glucose_value_numeric >= 70 & glucose_value_numeric <= 180) * 100,
+    pct_above_180         = mean(glucose_value_numeric > 180) * 100,
+    pct_below_70           = mean(glucose_value_numeric < 70) * 100,
+    n_daytime               = sum(period == "daytime"),
+    n_nighttime              = sum(period == "nighttime"),
+    mean_glucose_daytime      = mean(glucose_value_numeric[period == "daytime"]),
+    mean_glucose_nighttime     = mean(glucose_value_numeric[period == "nighttime"]),
+    sd_glucose_daytime          = sd(glucose_value_numeric[period == "daytime"]),
+    sd_glucose_nighttime         = sd(glucose_value_numeric[period == "nighttime"]),
+    .groups = "drop"
+  )
 
+cgm_1029_day_summary %>% knitr::kable(digits = 1)
+```
