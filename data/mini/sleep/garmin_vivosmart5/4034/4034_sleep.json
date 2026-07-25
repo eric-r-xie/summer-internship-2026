@@ -1,0 +1,1115 @@
+{
+    "header": {
+        "uuid": "AIREADI-4034",
+        "creation_date_time": "2025-10-17T20:14:14Z",
+        "user_id": "AIREADI-4034",
+        "schema_id": {
+            "namespace": "omh",
+            "name": "sleep-stages",
+            "version": 2.0
+        },
+        "timezone": "pst"
+    },
+    "body": {
+        "sleep": [
+            {
+                "sleep_stage_state": "light",
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-08T08:58:13Z",
+                        "end_date_time": "2023-11-08T09:01:13Z"
+                    }
+                }
+            },
+            {
+                "sleep_stage_state": "light",
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-08T08:58:13Z",
+                        "end_date_time": "2023-11-08T09:01:13Z"
+                    }
+                }
+            },
+            {
+                "sleep_stage_state": "awake",
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-08T09:01:13Z",
+                        "end_date_time": "2023-11-08T09:11:13Z"
+                    }
+                }
+            },
+            {
+                "sleep_stage_state": "awake",
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-08T09:01:13Z",
+                        "end_date_time": "2023-11-08T09:11:13Z"
+                    }
+                }
+            },
+            {
+                "sleep_stage_state": "light",
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-08T09:11:13Z",
+                        "end_date_time": "2023-11-08T09:29:13Z"
+                    }
+                }
+            },
+            {
+                "sleep_stage_state": "light",
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-08T09:11:13Z",
+                        "end_date_time": "2023-11-08T09:29:13Z"
+                    }
+                }
+            },
+            {
+                "sleep_stage_state": "deep",
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-08T09:29:13Z",
+                        "end_date_time": "2023-11-08T09:56:13Z"
+                    }
+                }
+            },
+            {
+                "sleep_stage_state": "deep",
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-08T09:29:13Z",
+                        "end_date_time": "2023-11-08T09:56:13Z"
+                    }
+                }
+            },
+            {
+                "sleep_stage_state": "light",
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-08T09:56:13Z",
+                        "end_date_time": "2023-11-08T10:04:13Z"
+                    }
+                }
+            },
+            {
+                "sleep_stage_state": "light",
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-08T09:56:13Z",
+                        "end_date_time": "2023-11-08T10:04:13Z"
+                    }
+                }
+            },
+            {
+                "sleep_stage_state": "deep",
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-08T10:04:13Z",
+                        "end_date_time": "2023-11-08T10:25:13Z"
+                    }
+                }
+            },
+            {
+                "sleep_stage_state": "deep",
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-08T10:04:13Z",
+                        "end_date_time": "2023-11-08T10:25:13Z"
+                    }
+                }
+            },
+            {
+                "sleep_stage_state": "light",
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-08T10:25:13Z",
+                        "end_date_time": "2023-11-08T10:28:13Z"
+                    }
+                }
+            },
+            {
+                "sleep_stage_state": "light",
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-08T10:25:13Z",
+                        "end_date_time": "2023-11-08T10:28:13Z"
+                    }
+                }
+            },
+            {
+                "sleep_stage_state": "awake",
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-08T10:28:13Z",
+                        "end_date_time": "2023-11-08T12:39:13Z"
+                    }
+                }
+            },
+            {
+                "sleep_stage_state": "awake",
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-08T10:28:13Z",
+                        "end_date_time": "2023-11-08T12:39:13Z"
+                    }
+                }
+            },
+            {
+                "sleep_stage_state": "light",
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-10T09:47:13Z",
+                        "end_date_time": "2023-11-10T10:19:13Z"
+                    }
+                }
+            },
+            {
+                "sleep_stage_state": "light",
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-10T09:47:13Z",
+                        "end_date_time": "2023-11-10T10:19:13Z"
+                    }
+                }
+            },
+            {
+                "sleep_stage_state": "deep",
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-10T10:19:13Z",
+                        "end_date_time": "2023-11-10T12:32:13Z"
+                    }
+                }
+            },
+            {
+                "sleep_stage_state": "deep",
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-10T10:19:13Z",
+                        "end_date_time": "2023-11-10T12:32:13Z"
+                    }
+                }
+            },
+            {
+                "sleep_stage_state": "light",
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-10T12:32:13Z",
+                        "end_date_time": "2023-11-10T12:33:13Z"
+                    }
+                }
+            },
+            {
+                "sleep_stage_state": "light",
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-10T12:32:13Z",
+                        "end_date_time": "2023-11-10T12:33:13Z"
+                    }
+                }
+            },
+            {
+                "sleep_stage_state": "awake",
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-10T12:33:13Z",
+                        "end_date_time": "2023-11-10T13:17:13Z"
+                    }
+                }
+            },
+            {
+                "sleep_stage_state": "awake",
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-10T12:33:13Z",
+                        "end_date_time": "2023-11-10T13:17:13Z"
+                    }
+                }
+            },
+            {
+                "sleep_stage_state": "light",
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-10T13:17:13Z",
+                        "end_date_time": "2023-11-10T13:28:13Z"
+                    }
+                }
+            },
+            {
+                "sleep_stage_state": "light",
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-10T13:17:13Z",
+                        "end_date_time": "2023-11-10T13:28:13Z"
+                    }
+                }
+            },
+            {
+                "sleep_stage_state": "deep",
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-10T13:28:13Z",
+                        "end_date_time": "2023-11-10T13:41:13Z"
+                    }
+                }
+            },
+            {
+                "sleep_stage_state": "deep",
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-10T13:28:13Z",
+                        "end_date_time": "2023-11-10T13:41:13Z"
+                    }
+                }
+            },
+            {
+                "sleep_stage_state": "awake",
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-10T13:41:13Z",
+                        "end_date_time": "2023-11-10T13:59:13Z"
+                    }
+                }
+            },
+            {
+                "sleep_stage_state": "awake",
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-10T13:41:13Z",
+                        "end_date_time": "2023-11-10T13:59:13Z"
+                    }
+                }
+            },
+            {
+                "sleep_stage_state": "light",
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-12T07:42:13Z",
+                        "end_date_time": "2023-11-12T08:05:13Z"
+                    }
+                }
+            },
+            {
+                "sleep_stage_state": "light",
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-12T07:42:13Z",
+                        "end_date_time": "2023-11-12T08:05:13Z"
+                    }
+                }
+            },
+            {
+                "sleep_stage_state": "light",
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-12T07:42:13Z",
+                        "end_date_time": "2023-11-12T08:05:13Z"
+                    }
+                }
+            },
+            {
+                "sleep_stage_state": "deep",
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-12T08:05:13Z",
+                        "end_date_time": "2023-11-12T08:26:13Z"
+                    }
+                }
+            },
+            {
+                "sleep_stage_state": "deep",
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-12T08:05:13Z",
+                        "end_date_time": "2023-11-12T08:26:13Z"
+                    }
+                }
+            },
+            {
+                "sleep_stage_state": "deep",
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-12T08:05:13Z",
+                        "end_date_time": "2023-11-12T08:26:13Z"
+                    }
+                }
+            },
+            {
+                "sleep_stage_state": "light",
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-12T08:26:13Z",
+                        "end_date_time": "2023-11-12T08:27:13Z"
+                    }
+                }
+            },
+            {
+                "sleep_stage_state": "light",
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-12T08:26:13Z",
+                        "end_date_time": "2023-11-12T08:27:13Z"
+                    }
+                }
+            },
+            {
+                "sleep_stage_state": "light",
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-12T08:26:13Z",
+                        "end_date_time": "2023-11-12T08:27:13Z"
+                    }
+                }
+            },
+            {
+                "sleep_stage_state": "awake",
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-12T08:27:13Z",
+                        "end_date_time": "2023-11-12T08:42:13Z"
+                    }
+                }
+            },
+            {
+                "sleep_stage_state": "awake",
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-12T08:27:13Z",
+                        "end_date_time": "2023-11-12T08:42:13Z"
+                    }
+                }
+            },
+            {
+                "sleep_stage_state": "awake",
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-12T08:27:13Z",
+                        "end_date_time": "2023-11-12T08:42:13Z"
+                    }
+                }
+            },
+            {
+                "sleep_stage_state": "light",
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-12T08:42:13Z",
+                        "end_date_time": "2023-11-12T09:02:13Z"
+                    }
+                }
+            },
+            {
+                "sleep_stage_state": "light",
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-12T08:42:13Z",
+                        "end_date_time": "2023-11-12T09:02:13Z"
+                    }
+                }
+            },
+            {
+                "sleep_stage_state": "light",
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-12T08:42:13Z",
+                        "end_date_time": "2023-11-12T09:02:13Z"
+                    }
+                }
+            },
+            {
+                "sleep_stage_state": "deep",
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-12T09:02:13Z",
+                        "end_date_time": "2023-11-12T09:08:13Z"
+                    }
+                }
+            },
+            {
+                "sleep_stage_state": "deep",
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-12T09:02:13Z",
+                        "end_date_time": "2023-11-12T09:08:13Z"
+                    }
+                }
+            },
+            {
+                "sleep_stage_state": "deep",
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-12T09:02:13Z",
+                        "end_date_time": "2023-11-12T09:08:13Z"
+                    }
+                }
+            },
+            {
+                "sleep_stage_state": "light",
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-12T09:08:13Z",
+                        "end_date_time": "2023-11-12T09:13:13Z"
+                    }
+                }
+            },
+            {
+                "sleep_stage_state": "light",
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-12T09:08:13Z",
+                        "end_date_time": "2023-11-12T09:13:13Z"
+                    }
+                }
+            },
+            {
+                "sleep_stage_state": "light",
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-12T09:08:13Z",
+                        "end_date_time": "2023-11-12T09:13:13Z"
+                    }
+                }
+            },
+            {
+                "sleep_stage_state": "deep",
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-12T09:13:13Z",
+                        "end_date_time": "2023-11-12T09:18:13Z"
+                    }
+                }
+            },
+            {
+                "sleep_stage_state": "deep",
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-12T09:13:13Z",
+                        "end_date_time": "2023-11-12T09:18:13Z"
+                    }
+                }
+            },
+            {
+                "sleep_stage_state": "deep",
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-12T09:13:13Z",
+                        "end_date_time": "2023-11-12T09:18:13Z"
+                    }
+                }
+            },
+            {
+                "sleep_stage_state": "awake",
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-12T09:18:13Z",
+                        "end_date_time": "2023-11-12T09:28:13Z"
+                    }
+                }
+            },
+            {
+                "sleep_stage_state": "awake",
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-12T09:18:13Z",
+                        "end_date_time": "2023-11-12T09:28:13Z"
+                    }
+                }
+            },
+            {
+                "sleep_stage_state": "awake",
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-12T09:18:13Z",
+                        "end_date_time": "2023-11-12T09:28:13Z"
+                    }
+                }
+            },
+            {
+                "sleep_stage_state": "light",
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-12T09:28:13Z",
+                        "end_date_time": "2023-11-12T09:58:13Z"
+                    }
+                }
+            },
+            {
+                "sleep_stage_state": "light",
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-12T09:28:13Z",
+                        "end_date_time": "2023-11-12T09:58:13Z"
+                    }
+                }
+            },
+            {
+                "sleep_stage_state": "light",
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-12T09:28:13Z",
+                        "end_date_time": "2023-11-12T09:58:13Z"
+                    }
+                }
+            },
+            {
+                "sleep_stage_state": "deep",
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-12T09:58:13Z",
+                        "end_date_time": "2023-11-12T10:55:13Z"
+                    }
+                }
+            },
+            {
+                "sleep_stage_state": "deep",
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-12T09:58:13Z",
+                        "end_date_time": "2023-11-12T10:55:13Z"
+                    }
+                }
+            },
+            {
+                "sleep_stage_state": "deep",
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-12T09:58:13Z",
+                        "end_date_time": "2023-11-12T10:55:13Z"
+                    }
+                }
+            },
+            {
+                "sleep_stage_state": "light",
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-12T10:55:13Z",
+                        "end_date_time": "2023-11-12T11:07:13Z"
+                    }
+                }
+            },
+            {
+                "sleep_stage_state": "light",
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-12T10:55:13Z",
+                        "end_date_time": "2023-11-12T11:07:13Z"
+                    }
+                }
+            },
+            {
+                "sleep_stage_state": "light",
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-12T10:55:13Z",
+                        "end_date_time": "2023-11-12T11:07:13Z"
+                    }
+                }
+            },
+            {
+                "sleep_stage_state": "rem",
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-12T11:07:13Z",
+                        "end_date_time": "2023-11-12T11:42:13Z"
+                    }
+                }
+            },
+            {
+                "sleep_stage_state": "rem",
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-12T11:07:13Z",
+                        "end_date_time": "2023-11-12T11:42:13Z"
+                    }
+                }
+            },
+            {
+                "sleep_stage_state": "rem",
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-12T11:07:13Z",
+                        "end_date_time": "2023-11-12T11:42:13Z"
+                    }
+                }
+            },
+            {
+                "sleep_stage_state": "light",
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-12T11:42:13Z",
+                        "end_date_time": "2023-11-12T11:51:13Z"
+                    }
+                }
+            },
+            {
+                "sleep_stage_state": "light",
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-12T11:42:13Z",
+                        "end_date_time": "2023-11-12T11:51:13Z"
+                    }
+                }
+            },
+            {
+                "sleep_stage_state": "light",
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-12T11:42:13Z",
+                        "end_date_time": "2023-11-12T11:51:13Z"
+                    }
+                }
+            },
+            {
+                "sleep_stage_state": "deep",
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-12T11:51:13Z",
+                        "end_date_time": "2023-11-12T12:11:13Z"
+                    }
+                }
+            },
+            {
+                "sleep_stage_state": "deep",
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-12T11:51:13Z",
+                        "end_date_time": "2023-11-12T12:11:13Z"
+                    }
+                }
+            },
+            {
+                "sleep_stage_state": "deep",
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-12T11:51:13Z",
+                        "end_date_time": "2023-11-12T12:11:13Z"
+                    }
+                }
+            },
+            {
+                "sleep_stage_state": "light",
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-12T12:11:13Z",
+                        "end_date_time": "2023-11-12T12:20:13Z"
+                    }
+                }
+            },
+            {
+                "sleep_stage_state": "light",
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-12T12:11:13Z",
+                        "end_date_time": "2023-11-12T12:20:13Z"
+                    }
+                }
+            },
+            {
+                "sleep_stage_state": "light",
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-12T12:11:13Z",
+                        "end_date_time": "2023-11-12T12:20:13Z"
+                    }
+                }
+            },
+            {
+                "sleep_stage_state": "deep",
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-12T12:20:13Z",
+                        "end_date_time": "2023-11-12T12:23:13Z"
+                    }
+                }
+            },
+            {
+                "sleep_stage_state": "deep",
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-12T12:20:13Z",
+                        "end_date_time": "2023-11-12T12:23:13Z"
+                    }
+                }
+            },
+            {
+                "sleep_stage_state": "deep",
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-12T12:20:13Z",
+                        "end_date_time": "2023-11-12T12:23:13Z"
+                    }
+                }
+            },
+            {
+                "sleep_stage_state": "awake",
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-12T12:23:13Z",
+                        "end_date_time": "2023-11-12T13:25:13Z"
+                    }
+                }
+            },
+            {
+                "sleep_stage_state": "awake",
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-12T12:23:13Z",
+                        "end_date_time": "2023-11-12T13:25:13Z"
+                    }
+                }
+            },
+            {
+                "sleep_stage_state": "awake",
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-12T12:23:13Z",
+                        "end_date_time": "2023-11-12T13:25:13Z"
+                    }
+                }
+            },
+            {
+                "sleep_stage_state": "light",
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-12T13:25:13Z",
+                        "end_date_time": "2023-11-12T13:26:13Z"
+                    }
+                }
+            },
+            {
+                "sleep_stage_state": "light",
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-12T13:25:13Z",
+                        "end_date_time": "2023-11-12T13:26:13Z"
+                    }
+                }
+            },
+            {
+                "sleep_stage_state": "light",
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-12T13:25:13Z",
+                        "end_date_time": "2023-11-12T13:26:13Z"
+                    }
+                }
+            },
+            {
+                "sleep_stage_state": "awake",
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-12T13:26:13Z",
+                        "end_date_time": "2023-11-12T13:43:13Z"
+                    }
+                }
+            },
+            {
+                "sleep_stage_state": "awake",
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-12T13:26:13Z",
+                        "end_date_time": "2023-11-12T13:43:13Z"
+                    }
+                }
+            },
+            {
+                "sleep_stage_state": "awake",
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-12T13:26:13Z",
+                        "end_date_time": "2023-11-12T13:43:13Z"
+                    }
+                }
+            },
+            {
+                "sleep_stage_state": "light",
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-12T13:43:13Z",
+                        "end_date_time": "2023-11-12T14:00:13Z"
+                    }
+                }
+            },
+            {
+                "sleep_stage_state": "light",
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-12T13:43:13Z",
+                        "end_date_time": "2023-11-12T14:00:13Z"
+                    }
+                }
+            },
+            {
+                "sleep_stage_state": "light",
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-12T13:43:13Z",
+                        "end_date_time": "2023-11-12T14:00:13Z"
+                    }
+                }
+            },
+            {
+                "sleep_stage_state": "awake",
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-12T14:00:13Z",
+                        "end_date_time": "2023-11-12T14:54:13Z"
+                    }
+                }
+            },
+            {
+                "sleep_stage_state": "awake",
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-12T14:00:13Z",
+                        "end_date_time": "2023-11-12T14:54:13Z"
+                    }
+                }
+            },
+            {
+                "sleep_stage_state": "awake",
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-12T14:00:13Z",
+                        "end_date_time": "2023-11-12T14:54:13Z"
+                    }
+                }
+            },
+            {
+                "sleep_stage_state": "light",
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-12T14:54:13Z",
+                        "end_date_time": "2023-11-12T15:32:13Z"
+                    }
+                }
+            },
+            {
+                "sleep_stage_state": "light",
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-12T14:54:13Z",
+                        "end_date_time": "2023-11-12T15:32:13Z"
+                    }
+                }
+            },
+            {
+                "sleep_stage_state": "light",
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-12T14:54:13Z",
+                        "end_date_time": "2023-11-12T15:32:13Z"
+                    }
+                }
+            },
+            {
+                "sleep_stage_state": "rem",
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-12T15:32:13Z",
+                        "end_date_time": "2023-11-12T15:49:13Z"
+                    }
+                }
+            },
+            {
+                "sleep_stage_state": "rem",
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-12T15:32:13Z",
+                        "end_date_time": "2023-11-12T15:49:13Z"
+                    }
+                }
+            },
+            {
+                "sleep_stage_state": "rem",
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-12T15:32:13Z",
+                        "end_date_time": "2023-11-12T15:49:13Z"
+                    }
+                }
+            },
+            {
+                "sleep_stage_state": "light",
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-15T08:52:13Z",
+                        "end_date_time": "2023-11-15T08:58:13Z"
+                    }
+                }
+            },
+            {
+                "sleep_stage_state": "deep",
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-15T08:58:13Z",
+                        "end_date_time": "2023-11-15T09:18:13Z"
+                    }
+                }
+            },
+            {
+                "sleep_stage_state": "light",
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-15T09:18:13Z",
+                        "end_date_time": "2023-11-15T09:26:13Z"
+                    }
+                }
+            },
+            {
+                "sleep_stage_state": "awake",
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-15T09:26:13Z",
+                        "end_date_time": "2023-11-15T09:36:13Z"
+                    }
+                }
+            },
+            {
+                "sleep_stage_state": "light",
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-15T09:36:13Z",
+                        "end_date_time": "2023-11-15T09:57:13Z"
+                    }
+                }
+            },
+            {
+                "sleep_stage_state": "deep",
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-15T09:57:13Z",
+                        "end_date_time": "2023-11-15T10:44:13Z"
+                    }
+                }
+            },
+            {
+                "sleep_stage_state": "light",
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-15T10:44:13Z",
+                        "end_date_time": "2023-11-15T10:58:13Z"
+                    }
+                }
+            },
+            {
+                "sleep_stage_state": "deep",
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-15T10:58:13Z",
+                        "end_date_time": "2023-11-15T12:21:13Z"
+                    }
+                }
+            },
+            {
+                "sleep_stage_state": "light",
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-15T12:21:13Z",
+                        "end_date_time": "2023-11-15T12:22:13Z"
+                    }
+                }
+            },
+            {
+                "sleep_stage_state": "awake",
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-15T12:22:13Z",
+                        "end_date_time": "2023-11-15T13:09:13Z"
+                    }
+                }
+            },
+            {
+                "sleep_stage_state": "light",
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-16T09:38:13Z",
+                        "end_date_time": "2023-11-16T09:44:13Z"
+                    }
+                }
+            },
+            {
+                "sleep_stage_state": "deep",
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-16T09:44:13Z",
+                        "end_date_time": "2023-11-16T09:51:13Z"
+                    }
+                }
+            },
+            {
+                "sleep_stage_state": "light",
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-16T09:51:13Z",
+                        "end_date_time": "2023-11-16T09:53:13Z"
+                    }
+                }
+            },
+            {
+                "sleep_stage_state": "awake",
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-16T09:53:13Z",
+                        "end_date_time": "2023-11-16T10:45:13Z"
+                    }
+                }
+            },
+            {
+                "sleep_stage_state": "light",
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-16T10:45:13Z",
+                        "end_date_time": "2023-11-16T10:55:13Z"
+                    }
+                }
+            },
+            {
+                "sleep_stage_state": "deep",
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-16T10:55:13Z",
+                        "end_date_time": "2023-11-16T12:03:13Z"
+                    }
+                }
+            },
+            {
+                "sleep_stage_state": "light",
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-16T12:03:13Z",
+                        "end_date_time": "2023-11-16T12:25:13Z"
+                    }
+                }
+            },
+            {
+                "sleep_stage_state": "deep",
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-16T12:25:13Z",
+                        "end_date_time": "2023-11-16T13:13:13Z"
+                    }
+                }
+            },
+            {
+                "sleep_stage_state": "light",
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-16T13:13:13Z",
+                        "end_date_time": "2023-11-16T13:14:13Z"
+                    }
+                }
+            },
+            {
+                "sleep_stage_state": "awake",
+                "effective_time_frame": {
+                    "time_interval": {
+                        "start_date_time": "2023-11-16T13:14:13Z",
+                        "end_date_time": "2023-11-16T13:48:13Z"
+                    }
+                }
+            }
+        ]
+    }
+}
