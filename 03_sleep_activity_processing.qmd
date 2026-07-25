@@ -1,0 +1,24 @@
+---
+title: "Week 3: Sleep Activity Processing"
+author: "Eric Xie"
+format:
+  html:
+    toc: true
+    toc-location: left
+---
+
+## Load Packages
+```{r}
+library(tidyverse)
+library(knitr)
+library(readr)
+library(jsonlite)
+```
+
+## Person-Night Sleep Table
+```{r}
+am <- read_tsv("data/mini/wearable_activity_monitor_mini.tsv")
+sleep_path <- ("data/mini/sleep/garmin_vivosmart5/1029/1029_sleep.json")
+sleep_json <- fromJSON(sleep_path)
+
+```
