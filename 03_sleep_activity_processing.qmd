@@ -51,11 +51,137 @@ sleep_tbl <- stages |>
     ) |>
   arrange(sleep_night)
 
-kable(sleep_tbl, digits = 2, caption = "Participant 1029 — Sleep Nights")
+kable(sleep_tbl, digits = 2)
 ```
 
+##### Analysis
 - On 9/11, 9/13, and 9/16, Participant 1029 had very good sleep quality (sleep efficiency 100%)
 - However, on 9/16, Participant 1029 had less than 5 hours (300 minutes) of sleep time, much less than other nights.
 - On 9/9, the participant was almost 30% awake of the night time. 
+
+## Daily Activity Table
+
+```{r}
+pa_path <- ("data/mini/physical_activity/garmin_vivosmart5/1029/1029_activity.json")
+pa_json <- fromJSON(pa_path)
+
+pac_path <- ("data/mini/physical_activity_calorie/garmin_vivosmart5/1029/1029_calorie.json")
+pac_json <- fromJSON(pac_path)
+
+hr_path <- ("data/mini/heart_rate/garmin_vivosmart5/1029/1029_heartrate.json")
+hr_json <- fromJSON(hr_path)
+
+# steps
+steps_raw <- pa_json$body$activity |>
+  unnest_wider(base_movement_quantity, names_sep = "_") |>
+  unnest_wider(effective_time_frame) |>
+  unnest_wider(time_interval)
+
+steps_daily <- steps_raw |>
+  mutate(
+    start = ymd_hms(start_date_time, tz = "UTC"),
+    date  = as_date(start),
+    steps = as.numeric(base_movement_quantity_value)
+  ) |>
+  group_by(date) |>
+  summarise(total_steps = sum(steps, na.rm = TRUE))
+
+# calories
+cal_raw <- pac_json$body$activity |>
+  unnest_wider(calories_value, names_sep = "_") |>
+  unnest_wider(effective_time_frame)
+
+cal_daily <- cal_raw |>
+  mutate(
+    ts   = ymd_hms(date_time, tz = "UTC"),
+    date = as_date(ts)
+  ) |>
+  group_by(date) |>
+  summarise(active_calories = sum(calories_value_value, na.rm = TRUE), .groups = "drop")
+
+# heart rate
+hr_raw <- hr_json$body$heart_rate |>
+  unnest_wider(heart_rate, names_sep = "_") |>
+  unnest_wider(effective_time_frame)
+
+hr_daily <- hr_raw |>
+  mutate(
+    ts   = ymd_hms(date_time, tz = "UTC"),
+    date = as_date(ts)
+  ) |>
+  filter(heart_rate_value != 0) |>
+  group_by(date) |>
+  summarise(average_heartrate_bpm = mean(heart_rate_value, na.rm = TRUE))
+
+# join into one table
+daily_activity_tbl <- steps_daily |>
+  full_join(cal_daily, by = "date") |>
+  full_join(hr_daily,  by = "date") |>
+  mutate(participant_id = pa_json$header$user_id, .before = 1) |>
+  arrange(date)
+
+kable(daily_activity_tbl, digits = 1)
+```
+
+##### Analysis
+
+- On 9/19, the participant had 0 total steps recorded (likely missing data)
+- Average heart rate seems to be relatively constant throughout the study (hovering around the 60s and 70s)
+
+## Sleep Duration Plot
+```{r}
+ggplot(sleep_tbl, aes(x = sleep_night, y = total_sleep_time_min)) +
+  geom_col()
+```
+
+- 9/12 has missing data on sleep time
+
+## Daily Steps Plot
+```{r}
+ggplot(daily_activity_tbl, aes(x = date, y = total_steps)) +
+  geom_col()
+```
+
+- 9/7 is a partial day (starting from 5:43 pm), so the recorded steps is lower compared to the other days
+
+## CGM During Sleep Plot
+```{r}
+# load glucose data
+glucose_json <- fromJSON("data/mini/dexcom_g6/1029/1029_DEX.json")
+
+glucose_raw <- glucose_json$body$cgm |>
+  unnest_wider(blood_glucose, names_sep = "_") |>
+  unnest_wider(effective_time_frame) |>
+  unnest_wider(time_interval)
+
+glucose_tbl <- glucose_raw |>
+  mutate(reading_time = ymd_hms(start_date_time, tz = "UTC")) |>
+  select(reading_time, glucose_mg_dl = blood_glucose_value)
+
+# join
+glucose_during_sleep <- glucose_tbl |>
+  cross_join(sleep_tbl |> select(participant_id, sleep_night, bedtime, waketime)) |>
+  filter(reading_time >= bedtime, reading_time <= waketime) |>
+  select(participant_id, sleep_night, reading_time, glucose_mg_dl)
+
+# plot
+ggplot(glucose_during_sleep, aes(x = reading_time, y = glucose_mg_dl)) +
+  geom_line(color = "steelblue") +
+  facet_wrap(~ sleep_night, scales = "free_x", ncol = 3) +
+  labs(
+    title = "CGM During Sleep — Participant 1029",
+    x = "Time",
+    y = "Glucose (mg/dL)"
+  ) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1, size = 7))
+```
+
+##### Analysis
+
+- From nights 9/11 to 9/16, the graph was relatively constant (fluctuations in glucose is small)
+- 9/10 has the biggest glucose fluctuation
+
+
 
 

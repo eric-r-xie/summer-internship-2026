@@ -87,6 +87,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <ul>
   <li><a href="#load-packages" id="toc-load-packages" class="nav-link active" data-scroll-target="#load-packages">Load Packages</a></li>
   <li><a href="#person-night-sleep-table" id="toc-person-night-sleep-table" class="nav-link" data-scroll-target="#person-night-sleep-table">Person-Night Sleep Table</a></li>
+  <li><a href="#daily-activity-table" id="toc-daily-activity-table" class="nav-link" data-scroll-target="#daily-activity-table">Daily Activity Table</a></li>
+  <li><a href="#sleep-duration-plot" id="toc-sleep-duration-plot" class="nav-link" data-scroll-target="#sleep-duration-plot">Sleep Duration Plot</a></li>
+  <li><a href="#daily-steps-plot" id="toc-daily-steps-plot" class="nav-link" data-scroll-target="#daily-steps-plot">Daily Steps Plot</a></li>
+  <li><a href="#cgm-during-sleep-plot" id="toc-cgm-during-sleep-plot" class="nav-link" data-scroll-target="#cgm-during-sleep-plot">CGM During Sleep Plot</a></li>
   </ul>
 </nav>
 </div>
@@ -205,10 +209,9 @@ The following object is masked from 'package:dplyr':
 <pre><code>`summarise()` has grouped output by 'participant_id'. You can override using
 the `.groups` argument.</code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(sleep_tbl, <span class="at">digits =</span> <span class="dv">2</span>, <span class="at">caption =</span> <span class="st">"Participant 1029 — Sleep Nights"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(sleep_tbl, <span class="at">digits =</span> <span class="dv">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <table class="caption-top table table-sm table-striped small">
-<caption>Participant 1029 — Sleep Nights</caption>
 <colgroup>
 <col style="width: 9%">
 <col style="width: 7%">
@@ -372,6 +375,280 @@ the `.groups` argument.</code></pre>
 </table>
 </div>
 </div>
+<section id="analysis" class="level5">
+<h5 class="anchored" data-anchor-id="analysis">Analysis</h5>
+<ul>
+<li>On 9/11, 9/13, and 9/16, Participant 1029 had very good sleep quality (sleep efficiency 100%)</li>
+<li>However, on 9/16, Participant 1029 had less than 5 hours (300 minutes) of sleep time, much less than other nights.</li>
+<li>On 9/9, the participant was almost 30% awake of the night time.</li>
+</ul>
+</section>
+</section>
+<section id="daily-activity-table" class="level2">
+<h2 class="anchored" data-anchor-id="daily-activity-table">Daily Activity Table</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>pa_path <span class="ot">&lt;-</span> (<span class="st">"data/mini/physical_activity/garmin_vivosmart5/1029/1029_activity.json"</span>)</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>pa_json <span class="ot">&lt;-</span> <span class="fu">fromJSON</span>(pa_path)</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>pac_path <span class="ot">&lt;-</span> (<span class="st">"data/mini/physical_activity_calorie/garmin_vivosmart5/1029/1029_calorie.json"</span>)</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>pac_json <span class="ot">&lt;-</span> <span class="fu">fromJSON</span>(pac_path)</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>hr_path <span class="ot">&lt;-</span> (<span class="st">"data/mini/heart_rate/garmin_vivosmart5/1029/1029_heartrate.json"</span>)</span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>hr_json <span class="ot">&lt;-</span> <span class="fu">fromJSON</span>(hr_path)</span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a><span class="co"># steps</span></span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>steps_raw <span class="ot">&lt;-</span> pa_json<span class="sc">$</span>body<span class="sc">$</span>activity <span class="sc">|&gt;</span></span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest_wider</span>(base_movement_quantity, <span class="at">names_sep =</span> <span class="st">"_"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest_wider</span>(effective_time_frame) <span class="sc">|&gt;</span></span>
+<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest_wider</span>(time_interval)</span>
+<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a>steps_daily <span class="ot">&lt;-</span> steps_raw <span class="sc">|&gt;</span></span>
+<span id="cb13-17"><a href="#cb13-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb13-18"><a href="#cb13-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">start =</span> <span class="fu">ymd_hms</span>(start_date_time, <span class="at">tz =</span> <span class="st">"UTC"</span>),</span>
+<span id="cb13-19"><a href="#cb13-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">date  =</span> <span class="fu">as_date</span>(start),</span>
+<span id="cb13-20"><a href="#cb13-20" aria-hidden="true" tabindex="-1"></a>    <span class="at">steps =</span> <span class="fu">as.numeric</span>(base_movement_quantity_value)</span>
+<span id="cb13-21"><a href="#cb13-21" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb13-22"><a href="#cb13-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(date) <span class="sc">|&gt;</span></span>
+<span id="cb13-23"><a href="#cb13-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">total_steps =</span> <span class="fu">sum</span>(steps, <span class="at">na.rm =</span> <span class="cn">TRUE</span>))</span>
+<span id="cb13-24"><a href="#cb13-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-25"><a href="#cb13-25" aria-hidden="true" tabindex="-1"></a><span class="co"># calories</span></span>
+<span id="cb13-26"><a href="#cb13-26" aria-hidden="true" tabindex="-1"></a>cal_raw <span class="ot">&lt;-</span> pac_json<span class="sc">$</span>body<span class="sc">$</span>activity <span class="sc">|&gt;</span></span>
+<span id="cb13-27"><a href="#cb13-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest_wider</span>(calories_value, <span class="at">names_sep =</span> <span class="st">"_"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb13-28"><a href="#cb13-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest_wider</span>(effective_time_frame)</span>
+<span id="cb13-29"><a href="#cb13-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-30"><a href="#cb13-30" aria-hidden="true" tabindex="-1"></a>cal_daily <span class="ot">&lt;-</span> cal_raw <span class="sc">|&gt;</span></span>
+<span id="cb13-31"><a href="#cb13-31" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb13-32"><a href="#cb13-32" aria-hidden="true" tabindex="-1"></a>    <span class="at">ts   =</span> <span class="fu">ymd_hms</span>(date_time, <span class="at">tz =</span> <span class="st">"UTC"</span>),</span>
+<span id="cb13-33"><a href="#cb13-33" aria-hidden="true" tabindex="-1"></a>    <span class="at">date =</span> <span class="fu">as_date</span>(ts)</span>
+<span id="cb13-34"><a href="#cb13-34" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb13-35"><a href="#cb13-35" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(date) <span class="sc">|&gt;</span></span>
+<span id="cb13-36"><a href="#cb13-36" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">active_calories =</span> <span class="fu">sum</span>(calories_value_value, <span class="at">na.rm =</span> <span class="cn">TRUE</span>), <span class="at">.groups =</span> <span class="st">"drop"</span>)</span>
+<span id="cb13-37"><a href="#cb13-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-38"><a href="#cb13-38" aria-hidden="true" tabindex="-1"></a><span class="co"># heart rate</span></span>
+<span id="cb13-39"><a href="#cb13-39" aria-hidden="true" tabindex="-1"></a>hr_raw <span class="ot">&lt;-</span> hr_json<span class="sc">$</span>body<span class="sc">$</span>heart_rate <span class="sc">|&gt;</span></span>
+<span id="cb13-40"><a href="#cb13-40" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest_wider</span>(heart_rate, <span class="at">names_sep =</span> <span class="st">"_"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb13-41"><a href="#cb13-41" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest_wider</span>(effective_time_frame)</span>
+<span id="cb13-42"><a href="#cb13-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-43"><a href="#cb13-43" aria-hidden="true" tabindex="-1"></a>hr_daily <span class="ot">&lt;-</span> hr_raw <span class="sc">|&gt;</span></span>
+<span id="cb13-44"><a href="#cb13-44" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb13-45"><a href="#cb13-45" aria-hidden="true" tabindex="-1"></a>    <span class="at">ts   =</span> <span class="fu">ymd_hms</span>(date_time, <span class="at">tz =</span> <span class="st">"UTC"</span>),</span>
+<span id="cb13-46"><a href="#cb13-46" aria-hidden="true" tabindex="-1"></a>    <span class="at">date =</span> <span class="fu">as_date</span>(ts)</span>
+<span id="cb13-47"><a href="#cb13-47" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb13-48"><a href="#cb13-48" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(heart_rate_value <span class="sc">!=</span> <span class="dv">0</span>) <span class="sc">|&gt;</span></span>
+<span id="cb13-49"><a href="#cb13-49" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(date) <span class="sc">|&gt;</span></span>
+<span id="cb13-50"><a href="#cb13-50" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">average_heartrate_bpm =</span> <span class="fu">mean</span>(heart_rate_value, <span class="at">na.rm =</span> <span class="cn">TRUE</span>))</span>
+<span id="cb13-51"><a href="#cb13-51" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-52"><a href="#cb13-52" aria-hidden="true" tabindex="-1"></a><span class="co"># join into one table</span></span>
+<span id="cb13-53"><a href="#cb13-53" aria-hidden="true" tabindex="-1"></a>daily_activity_tbl <span class="ot">&lt;-</span> steps_daily <span class="sc">|&gt;</span></span>
+<span id="cb13-54"><a href="#cb13-54" aria-hidden="true" tabindex="-1"></a>  <span class="fu">full_join</span>(cal_daily, <span class="at">by =</span> <span class="st">"date"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb13-55"><a href="#cb13-55" aria-hidden="true" tabindex="-1"></a>  <span class="fu">full_join</span>(hr_daily,  <span class="at">by =</span> <span class="st">"date"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb13-56"><a href="#cb13-56" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">participant_id =</span> pa_json<span class="sc">$</span>header<span class="sc">$</span>user_id, <span class="at">.before =</span> <span class="dv">1</span>) <span class="sc">|&gt;</span></span>
+<span id="cb13-57"><a href="#cb13-57" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(date)</span>
+<span id="cb13-58"><a href="#cb13-58" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-59"><a href="#cb13-59" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(daily_activity_tbl, <span class="at">digits =</span> <span class="dv">1</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<colgroup>
+<col style="width: 19%">
+<col style="width: 14%">
+<col style="width: 15%">
+<col style="width: 21%">
+<col style="width: 28%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">participant_id</th>
+<th style="text-align: left;">date</th>
+<th style="text-align: right;">total_steps</th>
+<th style="text-align: right;">active_calories</th>
+<th style="text-align: right;">average_heartrate_bpm</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">AIREADI-1029</td>
+<td style="text-align: left;">2023-09-07</td>
+<td style="text-align: right;">1106</td>
+<td style="text-align: right;">445</td>
+<td style="text-align: right;">66.6</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">AIREADI-1029</td>
+<td style="text-align: left;">2023-09-08</td>
+<td style="text-align: right;">5762</td>
+<td style="text-align: right;">6689</td>
+<td style="text-align: right;">65.9</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">AIREADI-1029</td>
+<td style="text-align: left;">2023-09-09</td>
+<td style="text-align: right;">10761</td>
+<td style="text-align: right;">19559</td>
+<td style="text-align: right;">73.4</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">AIREADI-1029</td>
+<td style="text-align: left;">2023-09-10</td>
+<td style="text-align: right;">16970</td>
+<td style="text-align: right;">31714</td>
+<td style="text-align: right;">77.2</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">AIREADI-1029</td>
+<td style="text-align: left;">2023-09-11</td>
+<td style="text-align: right;">7774</td>
+<td style="text-align: right;">24104</td>
+<td style="text-align: right;">69.3</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">AIREADI-1029</td>
+<td style="text-align: left;">2023-09-12</td>
+<td style="text-align: right;">9419</td>
+<td style="text-align: right;">20208</td>
+<td style="text-align: right;">72.0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">AIREADI-1029</td>
+<td style="text-align: left;">2023-09-13</td>
+<td style="text-align: right;">9128</td>
+<td style="text-align: right;">14539</td>
+<td style="text-align: right;">75.8</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">AIREADI-1029</td>
+<td style="text-align: left;">2023-09-14</td>
+<td style="text-align: right;">6456</td>
+<td style="text-align: right;">19692</td>
+<td style="text-align: right;">71.0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">AIREADI-1029</td>
+<td style="text-align: left;">2023-09-15</td>
+<td style="text-align: right;">8091</td>
+<td style="text-align: right;">28740</td>
+<td style="text-align: right;">74.0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">AIREADI-1029</td>
+<td style="text-align: left;">2023-09-16</td>
+<td style="text-align: right;">7740</td>
+<td style="text-align: right;">12588</td>
+<td style="text-align: right;">71.0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">AIREADI-1029</td>
+<td style="text-align: left;">2023-09-17</td>
+<td style="text-align: right;">9323</td>
+<td style="text-align: right;">24352</td>
+<td style="text-align: right;">76.9</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">AIREADI-1029</td>
+<td style="text-align: left;">2023-09-18</td>
+<td style="text-align: right;">5780</td>
+<td style="text-align: right;">12032</td>
+<td style="text-align: right;">63.1</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">AIREADI-1029</td>
+<td style="text-align: left;">2023-09-19</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">NA</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<section id="analysis-1" class="level5">
+<h5 class="anchored" data-anchor-id="analysis-1">Analysis</h5>
+<ul>
+<li>On 9/19, the participant had 0 total steps recorded (likely missing data)</li>
+<li>Average heart rate seems to be relatively constant throughout the study (hovering around the 60s and 70s)</li>
+</ul>
+</section>
+</section>
+<section id="sleep-duration-plot" class="level2">
+<h2 class="anchored" data-anchor-id="sleep-duration-plot">Sleep Duration Plot</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(sleep_tbl, <span class="fu">aes</span>(<span class="at">x =</span> sleep_night, <span class="at">y =</span> total_sleep_time_min)) <span class="sc">+</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="03_sleep_activity_processing_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<ul>
+<li>9/12 has missing data on sleep time</li>
+</ul>
+</section>
+<section id="daily-steps-plot" class="level2">
+<h2 class="anchored" data-anchor-id="daily-steps-plot">Daily Steps Plot</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(daily_activity_tbl, <span class="fu">aes</span>(<span class="at">x =</span> date, <span class="at">y =</span> total_steps)) <span class="sc">+</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="03_sleep_activity_processing_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<ul>
+<li>9/7 is a partial day (starting from 5:43 pm), so the recorded steps is lower compared to the other days</li>
+</ul>
+</section>
+<section id="cgm-during-sleep-plot" class="level2">
+<h2 class="anchored" data-anchor-id="cgm-during-sleep-plot">CGM During Sleep Plot</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># load glucose data</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>glucose_json <span class="ot">&lt;-</span> <span class="fu">fromJSON</span>(<span class="st">"data/mini/dexcom_g6/1029/1029_DEX.json"</span>)</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>glucose_raw <span class="ot">&lt;-</span> glucose_json<span class="sc">$</span>body<span class="sc">$</span>cgm <span class="sc">|&gt;</span></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest_wider</span>(blood_glucose, <span class="at">names_sep =</span> <span class="st">"_"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest_wider</span>(effective_time_frame) <span class="sc">|&gt;</span></span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest_wider</span>(time_interval)</span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>glucose_tbl <span class="ot">&lt;-</span> glucose_raw <span class="sc">|&gt;</span></span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">reading_time =</span> <span class="fu">ymd_hms</span>(start_date_time, <span class="at">tz =</span> <span class="st">"UTC"</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(reading_time, <span class="at">glucose_mg_dl =</span> blood_glucose_value)</span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a><span class="co"># join</span></span>
+<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a>glucose_during_sleep <span class="ot">&lt;-</span> glucose_tbl <span class="sc">|&gt;</span></span>
+<span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cross_join</span>(sleep_tbl <span class="sc">|&gt;</span> <span class="fu">select</span>(participant_id, sleep_night, bedtime, waketime)) <span class="sc">|&gt;</span></span>
+<span id="cb16-16"><a href="#cb16-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(reading_time <span class="sc">&gt;=</span> bedtime, reading_time <span class="sc">&lt;=</span> waketime) <span class="sc">|&gt;</span></span>
+<span id="cb16-17"><a href="#cb16-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(participant_id, sleep_night, reading_time, glucose_mg_dl)</span>
+<span id="cb16-18"><a href="#cb16-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-19"><a href="#cb16-19" aria-hidden="true" tabindex="-1"></a><span class="co"># plot</span></span>
+<span id="cb16-20"><a href="#cb16-20" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(glucose_during_sleep, <span class="fu">aes</span>(<span class="at">x =</span> reading_time, <span class="at">y =</span> glucose_mg_dl)) <span class="sc">+</span></span>
+<span id="cb16-21"><a href="#cb16-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">color =</span> <span class="st">"steelblue"</span>) <span class="sc">+</span></span>
+<span id="cb16-22"><a href="#cb16-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span> sleep_night, <span class="at">scales =</span> <span class="st">"free_x"</span>, <span class="at">ncol =</span> <span class="dv">3</span>) <span class="sc">+</span></span>
+<span id="cb16-23"><a href="#cb16-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb16-24"><a href="#cb16-24" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"CGM During Sleep — Participant 1029"</span>,</span>
+<span id="cb16-25"><a href="#cb16-25" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Time"</span>,</span>
+<span id="cb16-26"><a href="#cb16-26" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Glucose (mg/dL)"</span></span>
+<span id="cb16-27"><a href="#cb16-27" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb16-28"><a href="#cb16-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb16-29"><a href="#cb16-29" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">angle =</span> <span class="dv">45</span>, <span class="at">hjust =</span> <span class="dv">1</span>, <span class="at">size =</span> <span class="dv">7</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="03_sleep_activity_processing_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<section id="analysis-2" class="level5">
+<h5 class="anchored" data-anchor-id="analysis-2">Analysis</h5>
+<ul>
+<li>From nights 9/11 to 9/16, the graph was relatively constant (fluctuations in glucose is small)</li>
+<li>9/10 has the biggest glucose fluctuation</li>
+</ul>
+</section>
 </section>
 
 </main>
