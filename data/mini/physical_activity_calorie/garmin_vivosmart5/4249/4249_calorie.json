@@ -1,0 +1,1467 @@
+{
+    "header": {
+        "uuid": "AIREADI-4249",
+        "creation_date_time": "2025-10-17T20:12:16Z",
+        "user_id": "AIREADI-4249",
+        "schema_id": {
+            "namespace": "ieee",
+            "name": "physical-activity",
+            "version": 1.0
+        },
+        "timezone": "pst"
+    },
+    "body": {
+        "activity": [
+            {
+                "activity_name": "kcal_burned",
+                "calories_value": {
+                    "value": 6,
+                    "unit": "kcal"
+                },
+                "effective_time_frame": {
+                    "date_time": "2024-07-02T02:50:57Z"
+                }
+            },
+            {
+                "activity_name": "kcal_burned",
+                "calories_value": {
+                    "value": 7,
+                    "unit": "kcal"
+                },
+                "effective_time_frame": {
+                    "date_time": "2024-07-02T02:52:57Z"
+                }
+            },
+            {
+                "activity_name": "kcal_burned",
+                "calories_value": {
+                    "value": 7,
+                    "unit": "kcal"
+                },
+                "effective_time_frame": {
+                    "date_time": "2024-07-02T02:59:57Z"
+                }
+            },
+            {
+                "activity_name": "kcal_burned",
+                "calories_value": {
+                    "value": 7,
+                    "unit": "kcal"
+                },
+                "effective_time_frame": {
+                    "date_time": "2024-07-02T03:05:57Z"
+                }
+            },
+            {
+                "activity_name": "kcal_burned",
+                "calories_value": {
+                    "value": 7,
+                    "unit": "kcal"
+                },
+                "effective_time_frame": {
+                    "date_time": "2024-07-02T03:09:57Z"
+                }
+            },
+            {
+                "activity_name": "kcal_burned",
+                "calories_value": {
+                    "value": 8,
+                    "unit": "kcal"
+                },
+                "effective_time_frame": {
+                    "date_time": "2024-07-02T03:17:57Z"
+                }
+            },
+            {
+                "activity_name": "kcal_burned",
+                "calories_value": {
+                    "value": 9,
+                    "unit": "kcal"
+                },
+                "effective_time_frame": {
+                    "date_time": "2024-07-02T03:20:57Z"
+                }
+            },
+            {
+                "activity_name": "kcal_burned",
+                "calories_value": {
+                    "value": 16,
+                    "unit": "kcal"
+                },
+                "effective_time_frame": {
+                    "date_time": "2024-07-02T03:29:57Z"
+                }
+            },
+            {
+                "activity_name": "kcal_burned",
+                "calories_value": {
+                    "value": 18,
+                    "unit": "kcal"
+                },
+                "effective_time_frame": {
+                    "date_time": "2024-07-02T03:37:57Z"
+                }
+            },
+            {
+                "activity_name": "kcal_burned",
+                "calories_value": {
+                    "value": 20,
+                    "unit": "kcal"
+                },
+                "effective_time_frame": {
+                    "date_time": "2024-07-02T03:45:57Z"
+                }
+            },
+            {
+                "activity_name": "kcal_burned",
+                "calories_value": {
+                    "value": 20,
+                    "unit": "kcal"
+                },
+                "effective_time_frame": {
+                    "date_time": "2024-07-02T03:47:57Z"
+                }
+            },
+            {
+                "activity_name": "kcal_burned",
+                "calories_value": {
+                    "value": 22,
+                    "unit": "kcal"
+                },
+                "effective_time_frame": {
+                    "date_time": "2024-07-02T03:50:57Z"
+                }
+            },
+            {
+                "activity_name": "kcal_burned",
+                "calories_value": {
+                    "value": 23,
+                    "unit": "kcal"
+                },
+                "effective_time_frame": {
+                    "date_time": "2024-07-02T04:05:57Z"
+                }
+            },
+            {
+                "activity_name": "kcal_burned",
+                "calories_value": {
+                    "value": 13,
+                    "unit": "kcal"
+                },
+                "effective_time_frame": {
+                    "date_time": "2024-07-02T04:27:57Z"
+                }
+            },
+            {
+                "activity_name": "kcal_burned",
+                "calories_value": {
+                    "value": 28,
+                    "unit": "kcal"
+                },
+                "effective_time_frame": {
+                    "date_time": "2024-07-02T04:28:57Z"
+                }
+            },
+            {
+                "activity_name": "kcal_burned",
+                "calories_value": {
+                    "value": 27,
+                    "unit": "kcal"
+                },
+                "effective_time_frame": {
+                    "date_time": "2024-07-02T04:31:57Z"
+                }
+            },
+            {
+                "activity_name": "kcal_burned",
+                "calories_value": {
+                    "value": 30,
+                    "unit": "kcal"
+                },
+                "effective_time_frame": {
+                    "date_time": "2024-07-02T04:32:57Z"
+                }
+            },
+            {
+                "activity_name": "kcal_burned",
+                "calories_value": {
+                    "value": 48,
+                    "unit": "kcal"
+                },
+                "effective_time_frame": {
+                    "date_time": "2024-07-02T04:35:57Z"
+                }
+            },
+            {
+                "activity_name": "kcal_burned",
+                "calories_value": {
+                    "value": 43,
+                    "unit": "kcal"
+                },
+                "effective_time_frame": {
+                    "date_time": "2024-07-02T04:37:57Z"
+                }
+            },
+            {
+                "activity_name": "kcal_burned",
+                "calories_value": {
+                    "value": 65,
+                    "unit": "kcal"
+                },
+                "effective_time_frame": {
+                    "date_time": "2024-07-02T04:39:57Z"
+                }
+            },
+            {
+                "activity_name": "kcal_burned",
+                "calories_value": {
+                    "value": 75,
+                    "unit": "kcal"
+                },
+                "effective_time_frame": {
+                    "date_time": "2024-07-02T04:47:57Z"
+                }
+            },
+            {
+                "activity_name": "kcal_burned",
+                "calories_value": {
+                    "value": 83,
+                    "unit": "kcal"
+                },
+                "effective_time_frame": {
+                    "date_time": "2024-07-02T04:48:57Z"
+                }
+            },
+            {
+                "activity_name": "kcal_burned",
+                "calories_value": {
+                    "value": 81,
+                    "unit": "kcal"
+                },
+                "effective_time_frame": {
+                    "date_time": "2024-07-02T04:50:57Z"
+                }
+            },
+            {
+                "activity_name": "kcal_burned",
+                "calories_value": {
+                    "value": 121,
+                    "unit": "kcal"
+                },
+                "effective_time_frame": {
+                    "date_time": "2024-07-02T05:01:57Z"
+                }
+            },
+            {
+                "activity_name": "kcal_burned",
+                "calories_value": {
+                    "value": 123,
+                    "unit": "kcal"
+                },
+                "effective_time_frame": {
+                    "date_time": "2024-07-02T05:03:57Z"
+                }
+            },
+            {
+                "activity_name": "kcal_burned",
+                "calories_value": {
+                    "value": 137,
+                    "unit": "kcal"
+                },
+                "effective_time_frame": {
+                    "date_time": "2024-07-02T05:09:57Z"
+                }
+            },
+            {
+                "activity_name": "kcal_burned",
+                "calories_value": {
+                    "value": 82,
+                    "unit": "kcal"
+                },
+                "effective_time_frame": {
+                    "date_time": "2024-07-02T05:12:57Z"
+                }
+            },
+            {
+                "activity_name": "kcal_burned",
+                "calories_value": {
+                    "value": 151,
+                    "unit": "kcal"
+                },
+                "effective_time_frame": {
+                    "date_time": "2024-07-02T05:21:57Z"
+                }
+            },
+            {
+                "activity_name": "kcal_burned",
+                "calories_value": {
+                    "value": 154,
+                    "unit": "kcal"
+                },
+                "effective_time_frame": {
+                    "date_time": "2024-07-02T05:25:57Z"
+                }
+            },
+            {
+                "activity_name": "kcal_burned",
+                "calories_value": {
+                    "value": 158,
+                    "unit": "kcal"
+                },
+                "effective_time_frame": {
+                    "date_time": "2024-07-02T05:28:57Z"
+                }
+            },
+            {
+                "activity_name": "kcal_burned",
+                "calories_value": {
+                    "value": 161,
+                    "unit": "kcal"
+                },
+                "effective_time_frame": {
+                    "date_time": "2024-07-02T05:32:57Z"
+                }
+            },
+            {
+                "activity_name": "kcal_burned",
+                "calories_value": {
+                    "value": 162,
+                    "unit": "kcal"
+                },
+                "effective_time_frame": {
+                    "date_time": "2024-07-02T05:33:57Z"
+                }
+            },
+            {
+                "activity_name": "kcal_burned",
+                "calories_value": {
+                    "value": 84,
+                    "unit": "kcal"
+                },
+                "effective_time_frame": {
+                    "date_time": "2024-07-02T05:35:57Z"
+                }
+            },
+            {
+                "activity_name": "kcal_burned",
+                "calories_value": {
+                    "value": 192,
+                    "unit": "kcal"
+                },
+                "effective_time_frame": {
+                    "date_time": "2024-07-02T05:45:57Z"
+                }
+            },
+            {
+                "activity_name": "kcal_burned",
+                "calories_value": {
+                    "value": 91,
+                    "unit": "kcal"
+                },
+                "effective_time_frame": {
+                    "date_time": "2024-07-02T05:47:57Z"
+                }
+            },
+            {
+                "activity_name": "kcal_burned",
+                "calories_value": {
+                    "value": 193,
+                    "unit": "kcal"
+                },
+                "effective_time_frame": {
+                    "date_time": "2024-07-02T05:50:57Z"
+                }
+            },
+            {
+                "activity_name": "kcal_burned",
+                "calories_value": {
+                    "value": 98,
+                    "unit": "kcal"
+                },
+                "effective_time_frame": {
+                    "date_time": "2024-07-02T05:52:57Z"
+                }
+            },
+            {
+                "activity_name": "kcal_burned",
+                "calories_value": {
+                    "value": 200,
+                    "unit": "kcal"
+                },
+                "effective_time_frame": {
+                    "date_time": "2024-07-02T05:54:57Z"
+                }
+            },
+            {
+                "activity_name": "kcal_burned",
+                "calories_value": {
+                    "value": 105,
+                    "unit": "kcal"
+                },
+                "effective_time_frame": {
+                    "date_time": "2024-07-02T05:56:57Z"
+                }
+            },
+            {
+                "activity_name": "kcal_burned",
+                "calories_value": {
+                    "value": 203,
+                    "unit": "kcal"
+                },
+                "effective_time_frame": {
+                    "date_time": "2024-07-02T05:57:57Z"
+                }
+            },
+            {
+                "activity_name": "kcal_burned",
+                "calories_value": {
+                    "value": 204,
+                    "unit": "kcal"
+                },
+                "effective_time_frame": {
+                    "date_time": "2024-07-02T06:02:57Z"
+                }
+            },
+            {
+                "activity_name": "kcal_burned",
+                "calories_value": {
+                    "value": 236,
+                    "unit": "kcal"
+                },
+                "effective_time_frame": {
+                    "date_time": "2024-07-02T06:14:57Z"
+                }
+            },
+            {
+                "activity_name": "kcal_burned",
+                "calories_value": {
+                    "value": 112,
+                    "unit": "kcal"
+                },
+                "effective_time_frame": {
+                    "date_time": "2024-07-02T06:15:57Z"
+                }
+            },
+            {
+                "activity_name": "kcal_burned",
+                "calories_value": {
+                    "value": 250,
+                    "unit": "kcal"
+                },
+                "effective_time_frame": {
+                    "date_time": "2024-07-02T06:17:57Z"
+                }
+            },
+            {
+                "activity_name": "kcal_burned",
+                "calories_value": {
+                    "value": 120,
+                    "unit": "kcal"
+                },
+                "effective_time_frame": {
+                    "date_time": "2024-07-02T06:18:57Z"
+                }
+            },
+            {
+                "activity_name": "kcal_burned",
+                "calories_value": {
+                    "value": 273,
+                    "unit": "kcal"
+                },
+                "effective_time_frame": {
+                    "date_time": "2024-07-02T06:21:57Z"
+                }
+            },
+            {
+                "activity_name": "kcal_burned",
+                "calories_value": {
+                    "value": 132,
+                    "unit": "kcal"
+                },
+                "effective_time_frame": {
+                    "date_time": "2024-07-02T06:23:57Z"
+                }
+            },
+            {
+                "activity_name": "kcal_burned",
+                "calories_value": {
+                    "value": 311,
+                    "unit": "kcal"
+                },
+                "effective_time_frame": {
+                    "date_time": "2024-07-02T06:32:57Z"
+                }
+            },
+            {
+                "activity_name": "kcal_burned",
+                "calories_value": {
+                    "value": 327,
+                    "unit": "kcal"
+                },
+                "effective_time_frame": {
+                    "date_time": "2024-07-02T06:37:57Z"
+                }
+            },
+            {
+                "activity_name": "kcal_burned",
+                "calories_value": {
+                    "value": 147,
+                    "unit": "kcal"
+                },
+                "effective_time_frame": {
+                    "date_time": "2024-07-02T06:39:57Z"
+                }
+            },
+            {
+                "activity_name": "kcal_burned",
+                "calories_value": {
+                    "value": 334,
+                    "unit": "kcal"
+                },
+                "effective_time_frame": {
+                    "date_time": "2024-07-02T06:42:57Z"
+                }
+            },
+            {
+                "activity_name": "kcal_burned",
+                "calories_value": {
+                    "value": 336,
+                    "unit": "kcal"
+                },
+                "effective_time_frame": {
+                    "date_time": "2024-07-02T06:46:57Z"
+                }
+            },
+            {
+                "activity_name": "kcal_burned",
+                "calories_value": {
+                    "value": 337,
+                    "unit": "kcal"
+                },
+                "effective_time_frame": {
+                    "date_time": "2024-07-02T06:53:57Z"
+                }
+            },
+            {
+                "activity_name": "kcal_burned",
+                "calories_value": {
+                    "value": 150,
+                    "unit": "kcal"
+                },
+                "effective_time_frame": {
+                    "date_time": "2024-07-02T06:54:57Z"
+                }
+            },
+            {
+                "activity_name": "kcal_burned",
+                "calories_value": {
+                    "value": 350,
+                    "unit": "kcal"
+                },
+                "effective_time_frame": {
+                    "date_time": "2024-07-02T06:58:57Z"
+                }
+            },
+            {
+                "activity_name": "kcal_burned",
+                "calories_value": {
+                    "value": 153,
+                    "unit": "kcal"
+                },
+                "effective_time_frame": {
+                    "date_time": "2024-07-02T06:59:57Z"
+                }
+            },
+            {
+                "activity_name": "kcal_burned",
+                "calories_value": {
+                    "value": 157,
+                    "unit": "kcal"
+                },
+                "effective_time_frame": {
+                    "date_time": "2024-07-02T07:01:57Z"
+                }
+            },
+            {
+                "activity_name": "kcal_burned",
+                "calories_value": {
+                    "value": 352,
+                    "unit": "kcal"
+                },
+                "effective_time_frame": {
+                    "date_time": "2024-07-02T07:02:57Z"
+                }
+            },
+            {
+                "activity_name": "kcal_burned",
+                "calories_value": {
+                    "value": 361,
+                    "unit": "kcal"
+                },
+                "effective_time_frame": {
+                    "date_time": "2024-07-02T07:04:57Z"
+                }
+            },
+            {
+                "activity_name": "kcal_burned",
+                "calories_value": {
+                    "value": 162,
+                    "unit": "kcal"
+                },
+                "effective_time_frame": {
+                    "date_time": "2024-07-02T07:05:57Z"
+                }
+            },
+            {
+                "activity_name": "kcal_burned",
+                "calories_value": {
+                    "value": 369,
+                    "unit": "kcal"
+                },
+                "effective_time_frame": {
+                    "date_time": "2024-07-02T07:07:57Z"
+                }
+            },
+            {
+                "activity_name": "kcal_burned",
+                "calories_value": {
+                    "value": 177,
+                    "unit": "kcal"
+                },
+                "effective_time_frame": {
+                    "date_time": "2024-07-02T07:10:57Z"
+                }
+            },
+            {
+                "activity_name": "kcal_burned",
+                "calories_value": {
+                    "value": 375,
+                    "unit": "kcal"
+                },
+                "effective_time_frame": {
+                    "date_time": "2024-07-02T07:11:57Z"
+                }
+            },
+            {
+                "activity_name": "kcal_burned",
+                "calories_value": {
+                    "value": 195,
+                    "unit": "kcal"
+                },
+                "effective_time_frame": {
+                    "date_time": "2024-07-02T07:14:57Z"
+                }
+            },
+            {
+                "activity_name": "kcal_burned",
+                "calories_value": {
+                    "value": 388,
+                    "unit": "kcal"
+                },
+                "effective_time_frame": {
+                    "date_time": "2024-07-02T07:16:57Z"
+                }
+            },
+            {
+                "activity_name": "kcal_burned",
+                "calories_value": {
+                    "value": 200,
+                    "unit": "kcal"
+                },
+                "effective_time_frame": {
+                    "date_time": "2024-07-02T07:17:57Z"
+                }
+            },
+            {
+                "activity_name": "kcal_burned",
+                "calories_value": {
+                    "value": 393,
+                    "unit": "kcal"
+                },
+                "effective_time_frame": {
+                    "date_time": "2024-07-02T07:20:57Z"
+                }
+            },
+            {
+                "activity_name": "kcal_burned",
+                "calories_value": {
+                    "value": 203,
+                    "unit": "kcal"
+                },
+                "effective_time_frame": {
+                    "date_time": "2024-07-02T07:25:57Z"
+                }
+            },
+            {
+                "activity_name": "kcal_burned",
+                "calories_value": {
+                    "value": 394,
+                    "unit": "kcal"
+                },
+                "effective_time_frame": {
+                    "date_time": "2024-07-02T07:26:57Z"
+                }
+            },
+            {
+                "activity_name": "kcal_burned",
+                "calories_value": {
+                    "value": 204,
+                    "unit": "kcal"
+                },
+                "effective_time_frame": {
+                    "date_time": "2024-07-02T07:41:57Z"
+                }
+            },
+            {
+                "activity_name": "kcal_burned",
+                "calories_value": {
+                    "value": 214,
+                    "unit": "kcal"
+                },
+                "effective_time_frame": {
+                    "date_time": "2024-07-02T07:44:57Z"
+                }
+            },
+            {
+                "activity_name": "kcal_burned",
+                "calories_value": {
+                    "value": 402,
+                    "unit": "kcal"
+                },
+                "effective_time_frame": {
+                    "date_time": "2024-07-02T07:47:57Z"
+                }
+            },
+            {
+                "activity_name": "kcal_burned",
+                "calories_value": {
+                    "value": 407,
+                    "unit": "kcal"
+                },
+                "effective_time_frame": {
+                    "date_time": "2024-07-02T07:49:57Z"
+                }
+            },
+            {
+                "activity_name": "kcal_burned",
+                "calories_value": {
+                    "value": 414,
+                    "unit": "kcal"
+                },
+                "effective_time_frame": {
+                    "date_time": "2024-07-02T07:52:57Z"
+                }
+            },
+            {
+                "activity_name": "kcal_burned",
+                "calories_value": {
+                    "value": 216,
+                    "unit": "kcal"
+                },
+                "effective_time_frame": {
+                    "date_time": "2024-07-02T07:53:57Z"
+                }
+            },
+            {
+                "activity_name": "kcal_burned",
+                "calories_value": {
+                    "value": 434,
+                    "unit": "kcal"
+                },
+                "effective_time_frame": {
+                    "date_time": "2024-07-02T07:59:57Z"
+                }
+            },
+            {
+                "activity_name": "kcal_burned",
+                "calories_value": {
+                    "value": 441,
+                    "unit": "kcal"
+                },
+                "effective_time_frame": {
+                    "date_time": "2024-07-02T08:02:57Z"
+                }
+            },
+            {
+                "activity_name": "kcal_burned",
+                "calories_value": {
+                    "value": 445,
+                    "unit": "kcal"
+                },
+                "effective_time_frame": {
+                    "date_time": "2024-07-02T08:03:57Z"
+                }
+            },
+            {
+                "activity_name": "kcal_burned",
+                "calories_value": {
+                    "value": 224,
+                    "unit": "kcal"
+                },
+                "effective_time_frame": {
+                    "date_time": "2024-07-02T08:04:57Z"
+                }
+            },
+            {
+                "activity_name": "kcal_burned",
+                "calories_value": {
+                    "value": 241,
+                    "unit": "kcal"
+                },
+                "effective_time_frame": {
+                    "date_time": "2024-07-02T08:06:57Z"
+                }
+            },
+            {
+                "activity_name": "kcal_burned",
+                "calories_value": {
+                    "value": 487,
+                    "unit": "kcal"
+                },
+                "effective_time_frame": {
+                    "date_time": "2024-07-02T08:17:57Z"
+                }
+            },
+            {
+                "activity_name": "kcal_burned",
+                "calories_value": {
+                    "value": 488,
+                    "unit": "kcal"
+                },
+                "effective_time_frame": {
+                    "date_time": "2024-07-02T08:18:57Z"
+                }
+            },
+            {
+                "activity_name": "kcal_burned",
+                "calories_value": {
+                    "value": 496,
+                    "unit": "kcal"
+                },
+                "effective_time_frame": {
+                    "date_time": "2024-07-02T08:24:57Z"
+                }
+            },
+            {
+                "activity_name": "kcal_burned",
+                "calories_value": {
+                    "value": 498,
+                    "unit": "kcal"
+                },
+                "effective_time_frame": {
+                    "date_time": "2024-07-02T08:27:57Z"
+                }
+            },
+            {
+                "activity_name": "kcal_burned",
+                "calories_value": {
+                    "value": 505,
+                    "unit": "kcal"
+                },
+                "effective_time_frame": {
+                    "date_time": "2024-07-02T08:32:57Z"
+                }
+            },
+            {
+                "activity_name": "kcal_burned",
+                "calories_value": {
+                    "value": 514,
+                    "unit": "kcal"
+                },
+                "effective_time_frame": {
+                    "date_time": "2024-07-02T08:36:57Z"
+                }
+            },
+            {
+                "activity_name": "kcal_burned",
+                "calories_value": {
+                    "value": 532,
+                    "unit": "kcal"
+                },
+                "effective_time_frame": {
+                    "date_time": "2024-07-02T08:45:57Z"
+                }
+            },
+            {
+                "activity_name": "kcal_burned",
+                "calories_value": {
+                    "value": 535,
+                    "unit": "kcal"
+                },
+                "effective_time_frame": {
+                    "date_time": "2024-07-02T08:49:57Z"
+                }
+            },
+            {
+                "activity_name": "kcal_burned",
+                "calories_value": {
+                    "value": 536,
+                    "unit": "kcal"
+                },
+                "effective_time_frame": {
+                    "date_time": "2024-07-02T08:54:57Z"
+                }
+            },
+            {
+                "activity_name": "kcal_burned",
+                "calories_value": {
+                    "value": 539,
+                    "unit": "kcal"
+                },
+                "effective_time_frame": {
+                    "date_time": "2024-07-02T09:06:57Z"
+                }
+            },
+            {
+                "activity_name": "kcal_burned",
+                "calories_value": {
+                    "value": 540,
+                    "unit": "kcal"
+                },
+                "effective_time_frame": {
+                    "date_time": "2024-07-02T09:08:57Z"
+                }
+            },
+            {
+                "activity_name": "kcal_burned",
+                "calories_value": {
+                    "value": 542,
+                    "unit": "kcal"
+                },
+                "effective_time_frame": {
+                    "date_time": "2024-07-02T09:10:57Z"
+                }
+            },
+            {
+                "activity_name": "kcal_burned",
+                "calories_value": {
+                    "value": 557,
+                    "unit": "kcal"
+                },
+                "effective_time_frame": {
+                    "date_time": "2024-07-02T09:17:57Z"
+                }
+            },
+            {
+                "activity_name": "kcal_burned",
+                "calories_value": {
+                    "value": 567,
+                    "unit": "kcal"
+                },
+                "effective_time_frame": {
+                    "date_time": "2024-07-02T09:22:57Z"
+                }
+            },
+            {
+                "activity_name": "kcal_burned",
+                "calories_value": {
+                    "value": 569,
+                    "unit": "kcal"
+                },
+                "effective_time_frame": {
+                    "date_time": "2024-07-02T09:27:57Z"
+                }
+            },
+            {
+                "activity_name": "kcal_burned",
+                "calories_value": {
+                    "value": 241,
+                    "unit": "kcal"
+                },
+                "effective_time_frame": {
+                    "date_time": "2024-07-02T09:36:57Z"
+                }
+            },
+            {
+                "activity_name": "kcal_burned",
+                "calories_value": {
+                    "value": 573,
+                    "unit": "kcal"
+                },
+                "effective_time_frame": {
+                    "date_time": "2024-07-02T09:40:57Z"
+                }
+            },
+            {
+                "activity_name": "kcal_burned",
+                "calories_value": {
+                    "value": 247,
+                    "unit": "kcal"
+                },
+                "effective_time_frame": {
+                    "date_time": "2024-07-02T10:09:57Z"
+                }
+            },
+            {
+                "activity_name": "kcal_burned",
+                "calories_value": {
+                    "value": 575,
+                    "unit": "kcal"
+                },
+                "effective_time_frame": {
+                    "date_time": "2024-07-02T10:10:57Z"
+                }
+            },
+            {
+                "activity_name": "kcal_burned",
+                "calories_value": {
+                    "value": 249,
+                    "unit": "kcal"
+                },
+                "effective_time_frame": {
+                    "date_time": "2024-07-02T10:11:57Z"
+                }
+            },
+            {
+                "activity_name": "kcal_burned",
+                "calories_value": {
+                    "value": 576,
+                    "unit": "kcal"
+                },
+                "effective_time_frame": {
+                    "date_time": "2024-07-02T10:13:57Z"
+                }
+            },
+            {
+                "activity_name": "kcal_burned",
+                "calories_value": {
+                    "value": 253,
+                    "unit": "kcal"
+                },
+                "effective_time_frame": {
+                    "date_time": "2024-07-02T10:40:57Z"
+                }
+            },
+            {
+                "activity_name": "kcal_burned",
+                "calories_value": {
+                    "value": 581,
+                    "unit": "kcal"
+                },
+                "effective_time_frame": {
+                    "date_time": "2024-07-02T10:45:57Z"
+                }
+            },
+            {
+                "activity_name": "kcal_burned",
+                "calories_value": {
+                    "value": 256,
+                    "unit": "kcal"
+                },
+                "effective_time_frame": {
+                    "date_time": "2024-07-02T10:49:57Z"
+                }
+            },
+            {
+                "activity_name": "kcal_burned",
+                "calories_value": {
+                    "value": 588,
+                    "unit": "kcal"
+                },
+                "effective_time_frame": {
+                    "date_time": "2024-07-02T11:04:57Z"
+                }
+            },
+            {
+                "activity_name": "kcal_burned",
+                "calories_value": {
+                    "value": 657,
+                    "unit": "kcal"
+                },
+                "effective_time_frame": {
+                    "date_time": "2024-07-02T11:17:57Z"
+                }
+            },
+            {
+                "activity_name": "kcal_burned",
+                "calories_value": {
+                    "value": 713,
+                    "unit": "kcal"
+                },
+                "effective_time_frame": {
+                    "date_time": "2024-07-02T11:31:57Z"
+                }
+            },
+            {
+                "activity_name": "kcal_burned",
+                "calories_value": {
+                    "value": 743,
+                    "unit": "kcal"
+                },
+                "effective_time_frame": {
+                    "date_time": "2024-07-02T11:42:57Z"
+                }
+            },
+            {
+                "activity_name": "kcal_burned",
+                "calories_value": {
+                    "value": 260,
+                    "unit": "kcal"
+                },
+                "effective_time_frame": {
+                    "date_time": "2024-07-02T11:43:57Z"
+                }
+            },
+            {
+                "activity_name": "kcal_burned",
+                "calories_value": {
+                    "value": 747,
+                    "unit": "kcal"
+                },
+                "effective_time_frame": {
+                    "date_time": "2024-07-02T11:44:57Z"
+                }
+            },
+            {
+                "activity_name": "kcal_burned",
+                "calories_value": {
+                    "value": 759,
+                    "unit": "kcal"
+                },
+                "effective_time_frame": {
+                    "date_time": "2024-07-02T11:47:57Z"
+                }
+            },
+            {
+                "activity_name": "kcal_burned",
+                "calories_value": {
+                    "value": 288,
+                    "unit": "kcal"
+                },
+                "effective_time_frame": {
+                    "date_time": "2024-07-02T11:50:57Z"
+                }
+            },
+            {
+                "activity_name": "kcal_burned",
+                "calories_value": {
+                    "value": 768,
+                    "unit": "kcal"
+                },
+                "effective_time_frame": {
+                    "date_time": "2024-07-02T11:53:57Z"
+                }
+            },
+            {
+                "activity_name": "kcal_burned",
+                "calories_value": {
+                    "value": 290,
+                    "unit": "kcal"
+                },
+                "effective_time_frame": {
+                    "date_time": "2024-07-02T12:04:57Z"
+                }
+            },
+            {
+                "activity_name": "kcal_burned",
+                "calories_value": {
+                    "value": 790,
+                    "unit": "kcal"
+                },
+                "effective_time_frame": {
+                    "date_time": "2024-07-02T12:10:57Z"
+                }
+            },
+            {
+                "activity_name": "kcal_burned",
+                "calories_value": {
+                    "value": 291,
+                    "unit": "kcal"
+                },
+                "effective_time_frame": {
+                    "date_time": "2024-07-02T12:11:57Z"
+                }
+            },
+            {
+                "activity_name": "kcal_burned",
+                "calories_value": {
+                    "value": 800,
+                    "unit": "kcal"
+                },
+                "effective_time_frame": {
+                    "date_time": "2024-07-02T12:15:57Z"
+                }
+            },
+            {
+                "activity_name": "kcal_burned",
+                "calories_value": {
+                    "value": 301,
+                    "unit": "kcal"
+                },
+                "effective_time_frame": {
+                    "date_time": "2024-07-02T12:22:57Z"
+                }
+            },
+            {
+                "activity_name": "kcal_burned",
+                "calories_value": {
+                    "value": 841,
+                    "unit": "kcal"
+                },
+                "effective_time_frame": {
+                    "date_time": "2024-07-02T12:29:57Z"
+                }
+            },
+            {
+                "activity_name": "kcal_burned",
+                "calories_value": {
+                    "value": 308,
+                    "unit": "kcal"
+                },
+                "effective_time_frame": {
+                    "date_time": "2024-07-02T12:30:57Z"
+                }
+            },
+            {
+                "activity_name": "kcal_burned",
+                "calories_value": {
+                    "value": 852,
+                    "unit": "kcal"
+                },
+                "effective_time_frame": {
+                    "date_time": "2024-07-02T12:32:57Z"
+                }
+            },
+            {
+                "activity_name": "kcal_burned",
+                "calories_value": {
+                    "value": 859,
+                    "unit": "kcal"
+                },
+                "effective_time_frame": {
+                    "date_time": "2024-07-02T12:33:57Z"
+                }
+            },
+            {
+                "activity_name": "kcal_burned",
+                "calories_value": {
+                    "value": 322,
+                    "unit": "kcal"
+                },
+                "effective_time_frame": {
+                    "date_time": "2024-07-02T12:35:57Z"
+                }
+            },
+            {
+                "activity_name": "kcal_burned",
+                "calories_value": {
+                    "value": 887,
+                    "unit": "kcal"
+                },
+                "effective_time_frame": {
+                    "date_time": "2024-07-02T12:40:57Z"
+                }
+            },
+            {
+                "activity_name": "kcal_burned",
+                "calories_value": {
+                    "value": 329,
+                    "unit": "kcal"
+                },
+                "effective_time_frame": {
+                    "date_time": "2024-07-02T12:41:57Z"
+                }
+            },
+            {
+                "activity_name": "kcal_burned",
+                "calories_value": {
+                    "value": 905,
+                    "unit": "kcal"
+                },
+                "effective_time_frame": {
+                    "date_time": "2024-07-02T12:44:57Z"
+                }
+            },
+            {
+                "activity_name": "kcal_burned",
+                "calories_value": {
+                    "value": 920,
+                    "unit": "kcal"
+                },
+                "effective_time_frame": {
+                    "date_time": "2024-07-02T12:47:57Z"
+                }
+            },
+            {
+                "activity_name": "kcal_burned",
+                "calories_value": {
+                    "value": 5,
+                    "unit": "kcal"
+                },
+                "effective_time_frame": {
+                    "date_time": "2024-07-03T07:01:13Z"
+                }
+            },
+            {
+                "activity_name": "kcal_burned",
+                "calories_value": {
+                    "value": 5,
+                    "unit": "kcal"
+                },
+                "effective_time_frame": {
+                    "date_time": "2024-07-03T07:02:13Z"
+                }
+            },
+            {
+                "activity_name": "kcal_burned",
+                "calories_value": {
+                    "value": 67,
+                    "unit": "kcal"
+                },
+                "effective_time_frame": {
+                    "date_time": "2024-07-03T07:15:13Z"
+                }
+            },
+            {
+                "activity_name": "kcal_burned",
+                "calories_value": {
+                    "value": 75,
+                    "unit": "kcal"
+                },
+                "effective_time_frame": {
+                    "date_time": "2024-07-03T07:18:13Z"
+                }
+            },
+            {
+                "activity_name": "kcal_burned",
+                "calories_value": {
+                    "value": 79,
+                    "unit": "kcal"
+                },
+                "effective_time_frame": {
+                    "date_time": "2024-07-03T07:19:13Z"
+                }
+            },
+            {
+                "activity_name": "kcal_burned",
+                "calories_value": {
+                    "value": 89,
+                    "unit": "kcal"
+                },
+                "effective_time_frame": {
+                    "date_time": "2024-07-03T07:23:13Z"
+                }
+            },
+            {
+                "activity_name": "kcal_burned",
+                "calories_value": {
+                    "value": 92,
+                    "unit": "kcal"
+                },
+                "effective_time_frame": {
+                    "date_time": "2024-07-03T07:24:13Z"
+                }
+            },
+            {
+                "activity_name": "kcal_burned",
+                "calories_value": {
+                    "value": 109,
+                    "unit": "kcal"
+                },
+                "effective_time_frame": {
+                    "date_time": "2024-07-03T07:30:13Z"
+                }
+            },
+            {
+                "activity_name": "kcal_burned",
+                "calories_value": {
+                    "value": 127,
+                    "unit": "kcal"
+                },
+                "effective_time_frame": {
+                    "date_time": "2024-07-03T07:36:13Z"
+                }
+            },
+            {
+                "activity_name": "kcal_burned",
+                "calories_value": {
+                    "value": 135,
+                    "unit": "kcal"
+                },
+                "effective_time_frame": {
+                    "date_time": "2024-07-03T07:39:13Z"
+                }
+            },
+            {
+                "activity_name": "kcal_burned",
+                "calories_value": {
+                    "value": 155,
+                    "unit": "kcal"
+                },
+                "effective_time_frame": {
+                    "date_time": "2024-07-03T07:45:13Z"
+                }
+            },
+            {
+                "activity_name": "kcal_burned",
+                "calories_value": {
+                    "value": 157,
+                    "unit": "kcal"
+                },
+                "effective_time_frame": {
+                    "date_time": "2024-07-03T07:47:13Z"
+                }
+            },
+            {
+                "activity_name": "kcal_burned",
+                "calories_value": {
+                    "value": 162,
+                    "unit": "kcal"
+                },
+                "effective_time_frame": {
+                    "date_time": "2024-07-03T07:50:13Z"
+                }
+            },
+            {
+                "activity_name": "kcal_burned",
+                "calories_value": {
+                    "value": 176,
+                    "unit": "kcal"
+                },
+                "effective_time_frame": {
+                    "date_time": "2024-07-03T07:55:13Z"
+                }
+            },
+            {
+                "activity_name": "kcal_burned",
+                "calories_value": {
+                    "value": 11,
+                    "unit": "kcal"
+                },
+                "effective_time_frame": {
+                    "date_time": "2024-07-03T07:56:13Z"
+                }
+            },
+            {
+                "activity_name": "kcal_burned",
+                "calories_value": {
+                    "value": 182,
+                    "unit": "kcal"
+                },
+                "effective_time_frame": {
+                    "date_time": "2024-07-03T07:57:13Z"
+                }
+            },
+            {
+                "activity_name": "kcal_burned",
+                "calories_value": {
+                    "value": 18,
+                    "unit": "kcal"
+                },
+                "effective_time_frame": {
+                    "date_time": "2024-07-03T07:58:13Z"
+                }
+            },
+            {
+                "activity_name": "kcal_burned",
+                "calories_value": {
+                    "value": 188,
+                    "unit": "kcal"
+                },
+                "effective_time_frame": {
+                    "date_time": "2024-07-03T07:59:13Z"
+                }
+            }
+        ]
+    }
+}
