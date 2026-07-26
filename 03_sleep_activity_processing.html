@@ -142,54 +142,234 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 ℹ Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors</code></pre>
 </div>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(knitr)</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(readr)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(readr)</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(jsonlite)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+Attaching package: 'jsonlite'
+
+The following object is masked from 'package:purrr':
+
+    flatten</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(kableExtra)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: package 'kableExtra' was built under R version 4.5.3</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+Attaching package: 'kableExtra'
+
+The following object is masked from 'package:dplyr':
+
+    group_rows</code></pre>
+</div>
 </div>
 </section>
 <section id="person-night-sleep-table" class="level2">
 <h2 class="anchored" data-anchor-id="person-night-sleep-table">Person-Night Sleep Table</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>am <span class="ot">&lt;-</span> <span class="fu">read_tsv</span>(<span class="st">"data/mini/wearable_activity_monitor_mini.tsv"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>sleep_path <span class="ot">&lt;-</span> (<span class="st">"data/mini/sleep/garmin_vivosmart5/1029/1029_sleep.json"</span>)</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>sleep_json <span class="ot">&lt;-</span> <span class="fu">fromJSON</span>(sleep_path)</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>stages <span class="ot">&lt;-</span> sleep_json<span class="sc">$</span>body<span class="sc">$</span>sleep</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>stages <span class="ot">&lt;-</span> stages <span class="sc">|&gt;</span></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest_wider</span>(effective_time_frame) <span class="sc">|&gt;</span></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest_wider</span>(time_interval)</span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>sleep_tbl <span class="ot">&lt;-</span> stages <span class="sc">|&gt;</span></span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">start =</span> <span class="fu">ymd_hms</span>(start_date_time, <span class="at">tz =</span> <span class="st">"UTC"</span>),</span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">end   =</span> <span class="fu">ymd_hms</span>(end_date_time, <span class="at">tz =</span> <span class="st">"UTC"</span>),</span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">duration_min =</span> <span class="fu">as.numeric</span>(<span class="fu">difftime</span>(end, start, <span class="at">units =</span> <span class="st">"mins"</span>)),</span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 18 as the cutoff hour for the next day</span></span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">sleep_night =</span> <span class="fu">as_date</span>(<span class="fu">if_else</span>(<span class="fu">hour</span>(start) <span class="sc">&lt;</span> <span class="dv">18</span>, start <span class="sc">-</span> <span class="fu">days</span>(<span class="dv">1</span>), start))</span>
+<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(<span class="at">participant_id =</span> <span class="dv">1029</span>, sleep_night) <span class="sc">|&gt;</span></span>
+<span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
+<span id="cb10-20"><a href="#cb10-20" aria-hidden="true" tabindex="-1"></a>    <span class="at">bedtime =</span> <span class="fu">min</span>(start), </span>
+<span id="cb10-21"><a href="#cb10-21" aria-hidden="true" tabindex="-1"></a>    <span class="at">waketime =</span> <span class="fu">max</span>(end),</span>
+<span id="cb10-22"><a href="#cb10-22" aria-hidden="true" tabindex="-1"></a>    <span class="at">total_sleep_time_min =</span> <span class="fu">sum</span>(duration_min[sleep_stage_state <span class="sc">!=</span> <span class="st">"awake"</span>]),</span>
+<span id="cb10-23"><a href="#cb10-23" aria-hidden="true" tabindex="-1"></a>    <span class="at">time_in_bed_min =</span> <span class="fu">as.numeric</span>(<span class="fu">difftime</span>(<span class="fu">max</span>(end), </span>
+<span id="cb10-24"><a href="#cb10-24" aria-hidden="true" tabindex="-1"></a>                                          <span class="fu">min</span>(start), </span>
+<span id="cb10-25"><a href="#cb10-25" aria-hidden="true" tabindex="-1"></a>                                          <span class="at">units =</span> <span class="st">"mins"</span>)),</span>
+<span id="cb10-26"><a href="#cb10-26" aria-hidden="true" tabindex="-1"></a>    <span class="at">sleep_efficiency_pct  =</span> total_sleep_time_min <span class="sc">/</span> time_in_bed_min <span class="sc">*</span> <span class="dv">100</span>,</span>
+<span id="cb10-27"><a href="#cb10-27" aria-hidden="true" tabindex="-1"></a>    <span class="at">pct_light =</span> <span class="fu">sum</span>(duration_min[sleep_stage_state <span class="sc">==</span> <span class="st">"light"</span>]) <span class="sc">/</span> <span class="fu">sum</span>(duration_min) <span class="sc">*</span> <span class="dv">100</span>,</span>
+<span id="cb10-28"><a href="#cb10-28" aria-hidden="true" tabindex="-1"></a>    <span class="at">pct_deep =</span> <span class="fu">sum</span>(duration_min[sleep_stage_state <span class="sc">==</span> <span class="st">"deep"</span>]) <span class="sc">/</span> <span class="fu">sum</span>(duration_min) <span class="sc">*</span> <span class="dv">100</span>,</span>
+<span id="cb10-29"><a href="#cb10-29" aria-hidden="true" tabindex="-1"></a>    <span class="at">pct_rem =</span> <span class="fu">sum</span>(duration_min[sleep_stage_state <span class="sc">==</span> <span class="st">"rem"</span>]) <span class="sc">/</span> <span class="fu">sum</span>(duration_min) <span class="sc">*</span> <span class="dv">100</span>,</span>
+<span id="cb10-30"><a href="#cb10-30" aria-hidden="true" tabindex="-1"></a>    <span class="at">pct_awake =</span> <span class="fu">sum</span>(duration_min[sleep_stage_state <span class="sc">==</span> <span class="st">"awake"</span>]) <span class="sc">/</span> <span class="fu">sum</span>(duration_min) <span class="sc">*</span> <span class="dv">100</span>,</span>
+<span id="cb10-31"><a href="#cb10-31" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">|&gt;</span></span>
+<span id="cb10-32"><a href="#cb10-32" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(sleep_night)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stderr">
-<pre><code>Rows: 100 Columns: 27
-── Column specification ────────────────────────────────────────────────────────
-Delimiter: "\t"
-chr (13): wrist_worn_on, dominant_hand, heartrate_filepath, oxygen_saturatio...
-dbl (14): person_id, heartrate_record_count, average_heartrate_bpm, stress_l...
-
-ℹ Use `spec()` to retrieve the full column specification for this data.
-ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+<pre><code>`summarise()` has grouped output by 'participant_id'. You can override using
+the `.groups` argument.</code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(am)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Rows: 100
-Columns: 27
-$ person_id                      &lt;dbl&gt; 1029, 1042, 1046, 1054, 1055, 1073, 111…
-$ wrist_worn_on                  &lt;chr&gt; "Left", "Left", "Left", "Left", "Left",…
-$ dominant_hand                  &lt;chr&gt; "Right", "Right", "Right", "Right", "Ri…
-$ heartrate_filepath             &lt;chr&gt; "/wearable_activity_monitor/heart_rate/…
-$ heartrate_record_count         &lt;dbl&gt; 11854, 13018, 12541, 11389, 13953, 1108…
-$ average_heartrate_bpm          &lt;dbl&gt; 70.85, 79.77, 85.11, 68.30, 69.89, 84.7…
-$ oxygen_saturation_filepath     &lt;chr&gt; "/wearable_activity_monitor/oxygen_satu…
-$ oxygen_saturation_record_count &lt;chr&gt; "2036", "1723", "2534", "1751", "3200",…
-$ average_oxygen_saturation_pct  &lt;chr&gt; "92.99", "92.27", "92.44", "93.21", "89…
-$ stress_level_filepath          &lt;chr&gt; "/wearable_activity_monitor/stress/garm…
-$ stress_level_record_count      &lt;dbl&gt; 17561, 19337, 23047, 29984, 37569, 2890…
-$ average_stress_level           &lt;dbl&gt; 18.57, 30.44, 28.31, 18.05, 14.29, 35.8…
-$ sleep_filepath                 &lt;chr&gt; "/wearable_activity_monitor/sleep/garmi…
-$ sleep_record_count             &lt;dbl&gt; 169, 214, 225, 200, 355, 394, 243, 298,…
-$ average_sleep_hours            &lt;dbl&gt; 0.43, 0.39, 0.38, 0.43, 0.33, 0.46, 0.3…
-$ respiratory_rate_filepath      &lt;chr&gt; "/wearable_activity_monitor/respiratory…
-$ respiratory_rate_record_count  &lt;dbl&gt; 17549, 19333, 23014, 29970, 37564, 2887…
-$ average_respiratory_rate_bpm   &lt;dbl&gt; 9.61, 9.69, 7.69, 4.33, 4.77, 5.23, 8.1…
-$ physical_activity_filepath     &lt;chr&gt; "/wearable_activity_monitor/physical_ac…
-$ physical_activity_num_days     &lt;dbl&gt; 13, 16, 17, 22, 27, 21, 13, 15, 15, 15,…
-$ average_daily_activity         &lt;dbl&gt; 7562.31, 11370.00, 8194.35, 4665.50, 55…
-$ active_calories_filepath       &lt;chr&gt; "/wearable_activity_monitor/physical_ac…
-$ active_calories_record_count   &lt;dbl&gt; 1346, 1843, 1441, 1255, 1754, 1259, 118…
-$ average_active_calories_kcal   &lt;dbl&gt; 159.48, 266.85, 279.25, 168.16, 212.00,…
-$ sensor_sampling_duration_days  &lt;dbl&gt; 13, 15, 17, 22, 27, 21, 13, 15, 15, 15,…
-$ manufacturer                   &lt;chr&gt; "Garmin", "Garmin", "Garmin", "Garmin",…
-$ manufacturer_model_name        &lt;chr&gt; "Vivosmart 5", "Vivosmart 5", "Vivosmar…</code></pre>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(sleep_tbl, <span class="at">digits =</span> <span class="dv">2</span>, <span class="at">caption =</span> <span class="st">"Participant 1029 — Sleep Nights"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<caption>Participant 1029 — Sleep Nights</caption>
+<colgroup>
+<col style="width: 9%">
+<col style="width: 7%">
+<col style="width: 12%">
+<col style="width: 12%">
+<col style="width: 12%">
+<col style="width: 9%">
+<col style="width: 12%">
+<col style="width: 6%">
+<col style="width: 5%">
+<col style="width: 4%">
+<col style="width: 6%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: right;">participant_id</th>
+<th style="text-align: left;">sleep_night</th>
+<th style="text-align: left;">bedtime</th>
+<th style="text-align: left;">waketime</th>
+<th style="text-align: right;">total_sleep_time_min</th>
+<th style="text-align: right;">time_in_bed_min</th>
+<th style="text-align: right;">sleep_efficiency_pct</th>
+<th style="text-align: right;">pct_light</th>
+<th style="text-align: right;">pct_deep</th>
+<th style="text-align: right;">pct_rem</th>
+<th style="text-align: right;">pct_awake</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">1029</td>
+<td style="text-align: left;">2023-09-07</td>
+<td style="text-align: left;">2023-09-08 03:32:13</td>
+<td style="text-align: left;">2023-09-08 12:07:13</td>
+<td style="text-align: right;">498</td>
+<td style="text-align: right;">515</td>
+<td style="text-align: right;">96.70</td>
+<td style="text-align: right;">48.16</td>
+<td style="text-align: right;">13.01</td>
+<td style="text-align: right;">35.53</td>
+<td style="text-align: right;">3.30</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">1029</td>
+<td style="text-align: left;">2023-09-08</td>
+<td style="text-align: left;">2023-09-09 04:52:13</td>
+<td style="text-align: left;">2023-09-09 14:33:13</td>
+<td style="text-align: right;">419</td>
+<td style="text-align: right;">581</td>
+<td style="text-align: right;">72.12</td>
+<td style="text-align: right;">55.59</td>
+<td style="text-align: right;">7.06</td>
+<td style="text-align: right;">9.47</td>
+<td style="text-align: right;">27.88</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">1029</td>
+<td style="text-align: left;">2023-09-09</td>
+<td style="text-align: left;">2023-09-10 05:02:13</td>
+<td style="text-align: left;">2023-09-10 11:59:13</td>
+<td style="text-align: right;">350</td>
+<td style="text-align: right;">417</td>
+<td style="text-align: right;">83.93</td>
+<td style="text-align: right;">35.97</td>
+<td style="text-align: right;">19.18</td>
+<td style="text-align: right;">28.78</td>
+<td style="text-align: right;">16.07</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">1029</td>
+<td style="text-align: left;">2023-09-10</td>
+<td style="text-align: left;">2023-09-11 03:48:13</td>
+<td style="text-align: left;">2023-09-11 11:54:13</td>
+<td style="text-align: right;">452</td>
+<td style="text-align: right;">486</td>
+<td style="text-align: right;">93.00</td>
+<td style="text-align: right;">33.33</td>
+<td style="text-align: right;">35.60</td>
+<td style="text-align: right;">24.07</td>
+<td style="text-align: right;">7.00</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">1029</td>
+<td style="text-align: left;">2023-09-11</td>
+<td style="text-align: left;">2023-09-12 04:48:13</td>
+<td style="text-align: left;">2023-09-12 09:44:13</td>
+<td style="text-align: right;">296</td>
+<td style="text-align: right;">296</td>
+<td style="text-align: right;">100.00</td>
+<td style="text-align: right;">42.23</td>
+<td style="text-align: right;">26.69</td>
+<td style="text-align: right;">31.08</td>
+<td style="text-align: right;">0.00</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">1029</td>
+<td style="text-align: left;">2023-09-13</td>
+<td style="text-align: left;">2023-09-14 04:50:13</td>
+<td style="text-align: left;">2023-09-14 11:05:13</td>
+<td style="text-align: right;">375</td>
+<td style="text-align: right;">375</td>
+<td style="text-align: right;">100.00</td>
+<td style="text-align: right;">55.73</td>
+<td style="text-align: right;">4.00</td>
+<td style="text-align: right;">40.27</td>
+<td style="text-align: right;">0.00</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">1029</td>
+<td style="text-align: left;">2023-09-14</td>
+<td style="text-align: left;">2023-09-15 04:44:13</td>
+<td style="text-align: left;">2023-09-15 11:50:13</td>
+<td style="text-align: right;">384</td>
+<td style="text-align: right;">426</td>
+<td style="text-align: right;">90.14</td>
+<td style="text-align: right;">33.10</td>
+<td style="text-align: right;">46.24</td>
+<td style="text-align: right;">10.80</td>
+<td style="text-align: right;">9.86</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">1029</td>
+<td style="text-align: left;">2023-09-15</td>
+<td style="text-align: left;">2023-09-16 04:45:13</td>
+<td style="text-align: left;">2023-09-16 12:16:13</td>
+<td style="text-align: right;">389</td>
+<td style="text-align: right;">451</td>
+<td style="text-align: right;">86.25</td>
+<td style="text-align: right;">38.36</td>
+<td style="text-align: right;">14.41</td>
+<td style="text-align: right;">33.48</td>
+<td style="text-align: right;">13.75</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">1029</td>
+<td style="text-align: left;">2023-09-16</td>
+<td style="text-align: left;">2023-09-17 05:27:13</td>
+<td style="text-align: left;">2023-09-17 10:09:13</td>
+<td style="text-align: right;">282</td>
+<td style="text-align: right;">282</td>
+<td style="text-align: right;">100.00</td>
+<td style="text-align: right;">29.79</td>
+<td style="text-align: right;">38.30</td>
+<td style="text-align: right;">31.91</td>
+<td style="text-align: right;">0.00</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">1029</td>
+<td style="text-align: left;">2023-09-17</td>
+<td style="text-align: left;">2023-09-18 03:25:13</td>
+<td style="text-align: left;">2023-09-18 12:48:13</td>
+<td style="text-align: right;">452</td>
+<td style="text-align: right;">563</td>
+<td style="text-align: right;">80.28</td>
+<td style="text-align: right;">29.31</td>
+<td style="text-align: right;">25.04</td>
+<td style="text-align: right;">25.93</td>
+<td style="text-align: right;">19.72</td>
+</tr>
+</tbody>
+</table>
 </div>
 </div>
 </section>

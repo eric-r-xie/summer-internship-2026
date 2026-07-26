@@ -13,12 +13,49 @@ library(tidyverse)
 library(knitr)
 library(readr)
 library(jsonlite)
+library(kableExtra)
 ```
 
 ## Person-Night Sleep Table
 ```{r}
-am <- read_tsv("data/mini/wearable_activity_monitor_mini.tsv")
 sleep_path <- ("data/mini/sleep/garmin_vivosmart5/1029/1029_sleep.json")
 sleep_json <- fromJSON(sleep_path)
 
+stages <- sleep_json$body$sleep
+
+stages <- stages |>
+  unnest_wider(effective_time_frame) |>
+  unnest_wider(time_interval)
+
+sleep_tbl <- stages |>
+  mutate(
+    start = ymd_hms(start_date_time, tz = "UTC"),
+    end   = ymd_hms(end_date_time, tz = "UTC"),
+    duration_min = as.numeric(difftime(end, start, units = "mins")),
+    # 18 as the cutoff hour for the next day
+    sleep_night = as_date(if_else(hour(start) < 18, start - days(1), start))
+  ) |>
+  group_by(participant_id = 1029, sleep_night) |>
+  summarise(
+    bedtime = min(start), 
+    waketime = max(end),
+    total_sleep_time_min = sum(duration_min[sleep_stage_state != "awake"]),
+    time_in_bed_min = as.numeric(difftime(max(end), 
+                                          min(start), 
+                                          units = "mins")),
+    sleep_efficiency_pct  = total_sleep_time_min / time_in_bed_min * 100,
+    pct_light = sum(duration_min[sleep_stage_state == "light"]) / sum(duration_min) * 100,
+    pct_deep = sum(duration_min[sleep_stage_state == "deep"]) / sum(duration_min) * 100,
+    pct_rem = sum(duration_min[sleep_stage_state == "rem"]) / sum(duration_min) * 100,
+    pct_awake = sum(duration_min[sleep_stage_state == "awake"]) / sum(duration_min) * 100,
+    ) |>
+  arrange(sleep_night)
+
+kable(sleep_tbl, digits = 2, caption = "Participant 1029 — Sleep Nights")
 ```
+
+- On 9/11, 9/13, and 9/16, Participant 1029 had very good sleep quality (sleep efficiency 100%)
+- However, on 9/16, Participant 1029 had less than 5 hours (300 minutes) of sleep time, much less than other nights.
+- On 9/9, the participant was almost 30% awake of the night time. 
+
+
