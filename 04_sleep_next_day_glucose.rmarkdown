@@ -316,3 +316,4 @@ ggplot(example_participant, aes(x = sleep_night, y = value)) +
 - AI-READI is cross-sectional: the dataset only captures the participants' data over a relatively short period of time, which limits its ability to lead to more long-term conclusions.
 
 
+
