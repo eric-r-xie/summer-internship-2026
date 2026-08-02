@@ -33,17 +33,17 @@ sleep_tbl <- stages |>
   mutate(participant_id = sleep_json$header$user_id) |>
   mutate(
     start = ymd_hms(start_date_time, tz = "UTC"),
-    end   = ymd_hms(end_date_time, tz = "UTC"),
+    end = ymd_hms(end_date_time, tz = "UTC"),
     duration_min = as.numeric(difftime(end, start, units = "mins")),
     sleep_night = as_date(if_else(hour(start) < 18, start - days(1), start))
   ) |>
   group_by(participant_id, sleep_night) |>
   summarise(
-    bedtime               = min(start),
-    wake_time              = max(end),
-    total_sleep_time_min  = sum(duration_min[sleep_stage_state != "awake"]),
-    time_in_bed_min        = as.numeric(difftime(max(end), min(start), units = "mins")),
-    awake_after_onset_min  = sum(duration_min[sleep_stage_state == "awake"]),
+    bedtime = min(start),
+    wake_time = max(end),
+    total_sleep_time_min = sum(duration_min[sleep_stage_state != "awake"]),
+    time_in_bed_min = as.numeric(difftime(max(end), min(start), units = "mins")),
+    awake_after_onset_min = sum(duration_min[sleep_stage_state == "awake"]),
     pct_light = sum(duration_min[sleep_stage_state == "light"]) / sum(duration_min) * 100,
     pct_deep  = sum(duration_min[sleep_stage_state == "deep"])  / sum(duration_min) * 100,
     pct_rem   = sum(duration_min[sleep_stage_state == "rem"])   / sum(duration_min) * 100,
@@ -70,7 +70,7 @@ steps_raw <- pa_json$body$activity |>
 
 steps_daily <- steps_raw |>
   mutate(
-    date  = as_date(ymd_hms(start_date_time, tz = "UTC")),
+    date = as_date(ymd_hms(start_date_time, tz = "UTC")),
     steps = as.numeric(base_movement_quantity_value)
   ) |>
   group_by(date) |>
@@ -134,16 +134,19 @@ person_night_tbl <- sleep_tbl |>
     cgm_date      = sleep_night + days(1)
   ) |>
   left_join(daily_activity_tbl, by = c("participant_id", "activity_date" = "date")) |>
-  left_join(glucose_daily,      by = c("cgm_date" = "date")) |>
+  left_join(glucose_daily, by = c("cgm_date" = "date")) |>
   arrange(sleep_night)
 
 kable(person_night_tbl, digits = 1)
 ```
 
+- On 9/8, the participant had an unusually high percentage of time awake during the night (almost 30%)
+- On 9/16 and 9/11, the participant had unusually short sleep nights (less than 300 minutes)
+
 ## Slopegraph of Good vs. Bad Nights of Sleep
 ```{r}
 # check data availability
-participant_ids <- am$person_id[1:8]
+participant_ids <- am$person_id[1:20]
 
 availability <- tibble(
   id = participant_ids,
@@ -161,7 +164,8 @@ available_ids <- availability |>
   filter(sleep_exists, glucose_exists) |>
   pull(id)
 
-cat("Participants with both files available:", length(available_ids), "of", length(participant_ids), "\n")
+cat("Participants with both files available:", 
+    length(available_ids), "of", length(participant_ids), "\n")
 
 person_night_list <- list()
 
@@ -179,14 +183,14 @@ for (id in available_ids) {
     mutate(participant_id = sleep_json$header$user_id) |>
     mutate(
       start = ymd_hms(start_date_time, tz = "UTC"),
-      end   = ymd_hms(end_date_time, tz = "UTC"),
+      end = ymd_hms(end_date_time, tz = "UTC"),
       duration_min = as.numeric(difftime(end, start, units = "mins")),
       sleep_night = as_date(if_else(hour(start) < 18, start - days(1), start))
     ) |>
     group_by(participant_id, sleep_night) |>
     summarise(
       total_sleep_time_min = sum(duration_min[sleep_stage_state != "awake"]),
-      time_in_bed_min       = as.numeric(difftime(max(end), min(start), units = "mins")),
+      time_in_bed_min = as.numeric(difftime(max(end), min(start), units = "mins")),
       .groups = "drop"
     ) |>
     mutate(sleep_efficiency_pct = round(total_sleep_time_min / time_in_bed_min * 100, 2))
@@ -209,13 +213,6 @@ for (id in available_ids) {
 
 person_night_all <- bind_rows(person_night_list)
 
-if (nrow(person_night_all) == 0) {
-  stop("person_night_all is empty, check the availability table above.")
-}
-
-cat("Built table with", nrow(person_night_all), "rows across",
-    n_distinct(person_night_all$participant_id), "participants\n")
-
 # classify and plot
 sleep_classified <- person_night_all |>
   group_by(participant_id) |>
@@ -227,7 +224,8 @@ sleep_classified <- person_night_all |>
 
 slope_data <- sleep_classified |>
   group_by(participant_id, sleep_group) |>
-  summarise(avg_next_day_glucose = mean(mean_glucose_mg_dl, na.rm = TRUE), .groups = "drop")
+  summarise(avg_next_day_glucose = mean(mean_glucose_mg_dl, 
+                                        na.rm = TRUE), .groups = "drop")
 
 ggplot(slope_data, aes(x = sleep_group, y = avg_next_day_glucose, group = participant_id)) +
   geom_line(color = "gray60", linewidth = 0.7) +
@@ -237,6 +235,9 @@ ggplot(slope_data, aes(x = sleep_group, y = avg_next_day_glucose, group = partic
   theme_minimal(base_size = 12) +
   theme(panel.grid.major.x = element_blank())
 ```
+
+- For the 20 participants, sleep quality didn't really correlate with next-day glucose levels.
+- However, for participants with higher glucose levels, sleep quality had a stronger affect on their glucose levels.
 
 ## Boxplot of within-person glucose differences
 ```{r}
@@ -257,17 +258,19 @@ ggplot(glucose_diff, aes(x = "", y = diff_glucose)) +
   theme(axis.text.x = element_blank())
 ```
 
+- For the dataset of 20 participants, glucose differences had limited impact from sleep quality (the median of the box hovered roughly around 0 glucose difference)
+
 ## Plot stratified by study group
 ```{r}
 participants_tbl <- read_tsv("data/mini/participants_mini.tsv") |>
   select(person_id, study_group)
 
-## strip "AIREADI-" prefix so IDs match participants_tbl's plain numeric person_id
+# strip "AIREADI-" prefix so IDs match participants_tbl's plain numeric person_id
 glucose_diff_grouped <- glucose_diff |>
   mutate(person_id = as.numeric(str_remove(participant_id, "AIREADI-"))) |>
   left_join(participants_tbl, by = "person_id")
 
-## boxplot of within-person glucose differences, stratified by study group
+# boxplot
 ggplot(glucose_diff_grouped, aes(x = study_group, y = diff_glucose)) +
   geom_boxplot(fill = "lightblue", outlier.shape = NA) +
   geom_jitter(width = 0.1, size = 2, color = "steelblue", alpha = 0.7) +
@@ -280,6 +283,10 @@ ggplot(glucose_diff_grouped, aes(x = study_group, y = diff_glucose)) +
   theme_minimal(base_size = 12) +
   theme(axis.text.x = element_text(angle = 20, hjust = 1))
 ```
+
+- Not enough participants in the insulin dependent study group
+- The third study group had large variation in the data points (many are at a large distance from the median)
+- In comparison, the first and fourth study groups have data points closer to the median
 
 ## Example participant figure showing sleep nights and next-day glucose
 ```{r}
@@ -307,6 +314,10 @@ ggplot(example_participant, aes(x = sleep_night, y = value)) +
   theme_minimal(base_size = 12) +
   theme(strip.text = element_text(face = "bold"))
 ```
+
+Note: next-day glucose level isn't available for the last night
+
+- For Participant 1029, next-day avgerage glucose levels somewhat correlated with total sleep time, but had less fluctuation
 
 ## Limitations
 

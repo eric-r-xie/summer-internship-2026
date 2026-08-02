@@ -197,17 +197,17 @@ dbl (14): person_id, heartrate_record_count, average_heartrate_bpm, stress_l...
 <span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">participant_id =</span> sleep_json<span class="sc">$</span>header<span class="sc">$</span>user_id) <span class="sc">|&gt;</span></span>
 <span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
 <span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">start =</span> <span class="fu">ymd_hms</span>(start_date_time, <span class="at">tz =</span> <span class="st">"UTC"</span>),</span>
-<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">end   =</span> <span class="fu">ymd_hms</span>(end_date_time, <span class="at">tz =</span> <span class="st">"UTC"</span>),</span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">end =</span> <span class="fu">ymd_hms</span>(end_date_time, <span class="at">tz =</span> <span class="st">"UTC"</span>),</span>
 <span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">duration_min =</span> <span class="fu">as.numeric</span>(<span class="fu">difftime</span>(end, start, <span class="at">units =</span> <span class="st">"mins"</span>)),</span>
 <span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">sleep_night =</span> <span class="fu">as_date</span>(<span class="fu">if_else</span>(<span class="fu">hour</span>(start) <span class="sc">&lt;</span> <span class="dv">18</span>, start <span class="sc">-</span> <span class="fu">days</span>(<span class="dv">1</span>), start))</span>
 <span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
 <span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(participant_id, sleep_night) <span class="sc">|&gt;</span></span>
 <span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
-<span id="cb12-19"><a href="#cb12-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">bedtime               =</span> <span class="fu">min</span>(start),</span>
-<span id="cb12-20"><a href="#cb12-20" aria-hidden="true" tabindex="-1"></a>    <span class="at">wake_time              =</span> <span class="fu">max</span>(end),</span>
-<span id="cb12-21"><a href="#cb12-21" aria-hidden="true" tabindex="-1"></a>    <span class="at">total_sleep_time_min  =</span> <span class="fu">sum</span>(duration_min[sleep_stage_state <span class="sc">!=</span> <span class="st">"awake"</span>]),</span>
-<span id="cb12-22"><a href="#cb12-22" aria-hidden="true" tabindex="-1"></a>    <span class="at">time_in_bed_min        =</span> <span class="fu">as.numeric</span>(<span class="fu">difftime</span>(<span class="fu">max</span>(end), <span class="fu">min</span>(start), <span class="at">units =</span> <span class="st">"mins"</span>)),</span>
-<span id="cb12-23"><a href="#cb12-23" aria-hidden="true" tabindex="-1"></a>    <span class="at">awake_after_onset_min  =</span> <span class="fu">sum</span>(duration_min[sleep_stage_state <span class="sc">==</span> <span class="st">"awake"</span>]),</span>
+<span id="cb12-19"><a href="#cb12-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">bedtime =</span> <span class="fu">min</span>(start),</span>
+<span id="cb12-20"><a href="#cb12-20" aria-hidden="true" tabindex="-1"></a>    <span class="at">wake_time =</span> <span class="fu">max</span>(end),</span>
+<span id="cb12-21"><a href="#cb12-21" aria-hidden="true" tabindex="-1"></a>    <span class="at">total_sleep_time_min =</span> <span class="fu">sum</span>(duration_min[sleep_stage_state <span class="sc">!=</span> <span class="st">"awake"</span>]),</span>
+<span id="cb12-22"><a href="#cb12-22" aria-hidden="true" tabindex="-1"></a>    <span class="at">time_in_bed_min =</span> <span class="fu">as.numeric</span>(<span class="fu">difftime</span>(<span class="fu">max</span>(end), <span class="fu">min</span>(start), <span class="at">units =</span> <span class="st">"mins"</span>)),</span>
+<span id="cb12-23"><a href="#cb12-23" aria-hidden="true" tabindex="-1"></a>    <span class="at">awake_after_onset_min =</span> <span class="fu">sum</span>(duration_min[sleep_stage_state <span class="sc">==</span> <span class="st">"awake"</span>]),</span>
 <span id="cb12-24"><a href="#cb12-24" aria-hidden="true" tabindex="-1"></a>    <span class="at">pct_light =</span> <span class="fu">sum</span>(duration_min[sleep_stage_state <span class="sc">==</span> <span class="st">"light"</span>]) <span class="sc">/</span> <span class="fu">sum</span>(duration_min) <span class="sc">*</span> <span class="dv">100</span>,</span>
 <span id="cb12-25"><a href="#cb12-25" aria-hidden="true" tabindex="-1"></a>    <span class="at">pct_deep  =</span> <span class="fu">sum</span>(duration_min[sleep_stage_state <span class="sc">==</span> <span class="st">"deep"</span>])  <span class="sc">/</span> <span class="fu">sum</span>(duration_min) <span class="sc">*</span> <span class="dv">100</span>,</span>
 <span id="cb12-26"><a href="#cb12-26" aria-hidden="true" tabindex="-1"></a>    <span class="at">pct_rem   =</span> <span class="fu">sum</span>(duration_min[sleep_stage_state <span class="sc">==</span> <span class="st">"rem"</span>])   <span class="sc">/</span> <span class="fu">sum</span>(duration_min) <span class="sc">*</span> <span class="dv">100</span>,</span>
@@ -234,7 +234,7 @@ dbl (14): person_id, heartrate_record_count, average_heartrate_bpm, stress_l...
 <span id="cb12-47"><a href="#cb12-47" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb12-48"><a href="#cb12-48" aria-hidden="true" tabindex="-1"></a>steps_daily <span class="ot">&lt;-</span> steps_raw <span class="sc">|&gt;</span></span>
 <span id="cb12-49"><a href="#cb12-49" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb12-50"><a href="#cb12-50" aria-hidden="true" tabindex="-1"></a>    <span class="at">date  =</span> <span class="fu">as_date</span>(<span class="fu">ymd_hms</span>(start_date_time, <span class="at">tz =</span> <span class="st">"UTC"</span>)),</span>
+<span id="cb12-50"><a href="#cb12-50" aria-hidden="true" tabindex="-1"></a>    <span class="at">date =</span> <span class="fu">as_date</span>(<span class="fu">ymd_hms</span>(start_date_time, <span class="at">tz =</span> <span class="st">"UTC"</span>)),</span>
 <span id="cb12-51"><a href="#cb12-51" aria-hidden="true" tabindex="-1"></a>    <span class="at">steps =</span> <span class="fu">as.numeric</span>(base_movement_quantity_value)</span>
 <span id="cb12-52"><a href="#cb12-52" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
 <span id="cb12-53"><a href="#cb12-53" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(date) <span class="sc">|&gt;</span></span>
@@ -298,7 +298,7 @@ dbl (14): person_id, heartrate_record_count, average_heartrate_bpm, stress_l...
 <span id="cb12-111"><a href="#cb12-111" aria-hidden="true" tabindex="-1"></a>    <span class="at">cgm_date      =</span> sleep_night <span class="sc">+</span> <span class="fu">days</span>(<span class="dv">1</span>)</span>
 <span id="cb12-112"><a href="#cb12-112" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
 <span id="cb12-113"><a href="#cb12-113" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(daily_activity_tbl, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">"participant_id"</span>, <span class="st">"activity_date"</span> <span class="ot">=</span> <span class="st">"date"</span>)) <span class="sc">|&gt;</span></span>
-<span id="cb12-114"><a href="#cb12-114" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(glucose_daily,      <span class="at">by =</span> <span class="fu">c</span>(<span class="st">"cgm_date"</span> <span class="ot">=</span> <span class="st">"date"</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb12-114"><a href="#cb12-114" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(glucose_daily, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">"cgm_date"</span> <span class="ot">=</span> <span class="st">"date"</span>)) <span class="sc">|&gt;</span></span>
 <span id="cb12-115"><a href="#cb12-115" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(sleep_night)</span>
 <span id="cb12-116"><a href="#cb12-116" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb12-117"><a href="#cb12-117" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(person_night_tbl, <span class="at">digits =</span> <span class="dv">1</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -575,12 +575,16 @@ dbl (14): person_id, heartrate_record_count, average_heartrate_bpm, stress_l...
 </table>
 </div>
 </div>
+<ul>
+<li>On 9/8, the participant had an unusually high percentage of time awake during the night (almost 30%)</li>
+<li>On 9/16 and 9/11, the participant had unusually short sleep nights (less than 300 minutes)</li>
+</ul>
 </section>
 <section id="slopegraph-of-good-vs.-bad-nights-of-sleep" class="level2">
 <h2 class="anchored" data-anchor-id="slopegraph-of-good-vs.-bad-nights-of-sleep">Slopegraph of Good vs.&nbsp;Bad Nights of Sleep</h2>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># check data availability</span></span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>participant_ids <span class="ot">&lt;-</span> am<span class="sc">$</span>person_id[<span class="dv">1</span><span class="sc">:</span><span class="dv">8</span>]</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>participant_ids <span class="ot">&lt;-</span> am<span class="sc">$</span>person_id[<span class="dv">1</span><span class="sc">:</span><span class="dv">20</span>]</span>
 <span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>availability <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
 <span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">id =</span> participant_ids,</span>
@@ -594,25 +598,38 @@ dbl (14): person_id, heartrate_record_count, average_heartrate_bpm, stress_l...
 <span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(availability)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 8 × 5
-     id sleep_path                      glucose_path sleep_exists glucose_exists
-  &lt;dbl&gt; &lt;glue&gt;                          &lt;glue&gt;       &lt;lgl&gt;        &lt;lgl&gt;         
-1  1029 data/mini/sleep/garmin_vivosma… data/mini/d… TRUE         TRUE          
-2  1042 data/mini/sleep/garmin_vivosma… data/mini/d… TRUE         TRUE          
-3  1046 data/mini/sleep/garmin_vivosma… data/mini/d… TRUE         TRUE          
-4  1054 data/mini/sleep/garmin_vivosma… data/mini/d… TRUE         TRUE          
-5  1055 data/mini/sleep/garmin_vivosma… data/mini/d… TRUE         TRUE          
-6  1073 data/mini/sleep/garmin_vivosma… data/mini/d… TRUE         TRUE          
-7  1110 data/mini/sleep/garmin_vivosma… data/mini/d… TRUE         TRUE          
-8  1139 data/mini/sleep/garmin_vivosma… data/mini/d… TRUE         TRUE          </code></pre>
+<pre><code># A tibble: 20 × 5
+      id sleep_path                     glucose_path sleep_exists glucose_exists
+   &lt;dbl&gt; &lt;glue&gt;                         &lt;glue&gt;       &lt;lgl&gt;        &lt;lgl&gt;         
+ 1  1029 data/mini/sleep/garmin_vivosm… data/mini/d… TRUE         TRUE          
+ 2  1042 data/mini/sleep/garmin_vivosm… data/mini/d… TRUE         TRUE          
+ 3  1046 data/mini/sleep/garmin_vivosm… data/mini/d… TRUE         TRUE          
+ 4  1054 data/mini/sleep/garmin_vivosm… data/mini/d… TRUE         TRUE          
+ 5  1055 data/mini/sleep/garmin_vivosm… data/mini/d… TRUE         TRUE          
+ 6  1073 data/mini/sleep/garmin_vivosm… data/mini/d… TRUE         TRUE          
+ 7  1110 data/mini/sleep/garmin_vivosm… data/mini/d… TRUE         TRUE          
+ 8  1139 data/mini/sleep/garmin_vivosm… data/mini/d… TRUE         TRUE          
+ 9  1155 data/mini/sleep/garmin_vivosm… data/mini/d… TRUE         TRUE          
+10  1168 data/mini/sleep/garmin_vivosm… data/mini/d… TRUE         TRUE          
+11  1173 data/mini/sleep/garmin_vivosm… data/mini/d… TRUE         TRUE          
+12  1196 data/mini/sleep/garmin_vivosm… data/mini/d… TRUE         TRUE          
+13  1199 data/mini/sleep/garmin_vivosm… data/mini/d… TRUE         TRUE          
+14  1201 data/mini/sleep/garmin_vivosm… data/mini/d… TRUE         TRUE          
+15  1216 data/mini/sleep/garmin_vivosm… data/mini/d… TRUE         TRUE          
+16  1226 data/mini/sleep/garmin_vivosm… data/mini/d… TRUE         TRUE          
+17  1243 data/mini/sleep/garmin_vivosm… data/mini/d… TRUE         TRUE          
+18  1244 data/mini/sleep/garmin_vivosm… data/mini/d… TRUE         TRUE          
+19  1264 data/mini/sleep/garmin_vivosm… data/mini/d… TRUE         TRUE          
+20  1272 data/mini/sleep/garmin_vivosm… data/mini/d… TRUE         TRUE          </code></pre>
 </div>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>available_ids <span class="ot">&lt;-</span> availability <span class="sc">|&gt;</span></span>
 <span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(sleep_exists, glucose_exists) <span class="sc">|&gt;</span></span>
 <span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pull</span>(id)</span>
 <span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Participants with both files available:"</span>, <span class="fu">length</span>(available_ids), <span class="st">"of"</span>, <span class="fu">length</span>(participant_ids), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Participants with both files available:"</span>, </span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">length</span>(available_ids), <span class="st">"of"</span>, <span class="fu">length</span>(participant_ids), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Participants with both files available: 8 of 8 </code></pre>
+<pre><code>Participants with both files available: 20 of 20 </code></pre>
 </div>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>person_night_list <span class="ot">&lt;-</span> <span class="fu">list</span>()</span>
 <span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a></span>
@@ -630,14 +647,14 @@ dbl (14): person_id, heartrate_record_count, average_heartrate_bpm, stress_l...
 <span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">participant_id =</span> sleep_json<span class="sc">$</span>header<span class="sc">$</span>user_id) <span class="sc">|&gt;</span></span>
 <span id="cb17-15"><a href="#cb17-15" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(</span>
 <span id="cb17-16"><a href="#cb17-16" aria-hidden="true" tabindex="-1"></a>      <span class="at">start =</span> <span class="fu">ymd_hms</span>(start_date_time, <span class="at">tz =</span> <span class="st">"UTC"</span>),</span>
-<span id="cb17-17"><a href="#cb17-17" aria-hidden="true" tabindex="-1"></a>      <span class="at">end   =</span> <span class="fu">ymd_hms</span>(end_date_time, <span class="at">tz =</span> <span class="st">"UTC"</span>),</span>
+<span id="cb17-17"><a href="#cb17-17" aria-hidden="true" tabindex="-1"></a>      <span class="at">end =</span> <span class="fu">ymd_hms</span>(end_date_time, <span class="at">tz =</span> <span class="st">"UTC"</span>),</span>
 <span id="cb17-18"><a href="#cb17-18" aria-hidden="true" tabindex="-1"></a>      <span class="at">duration_min =</span> <span class="fu">as.numeric</span>(<span class="fu">difftime</span>(end, start, <span class="at">units =</span> <span class="st">"mins"</span>)),</span>
 <span id="cb17-19"><a href="#cb17-19" aria-hidden="true" tabindex="-1"></a>      <span class="at">sleep_night =</span> <span class="fu">as_date</span>(<span class="fu">if_else</span>(<span class="fu">hour</span>(start) <span class="sc">&lt;</span> <span class="dv">18</span>, start <span class="sc">-</span> <span class="fu">days</span>(<span class="dv">1</span>), start))</span>
 <span id="cb17-20"><a href="#cb17-20" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">|&gt;</span></span>
 <span id="cb17-21"><a href="#cb17-21" aria-hidden="true" tabindex="-1"></a>    <span class="fu">group_by</span>(participant_id, sleep_night) <span class="sc">|&gt;</span></span>
 <span id="cb17-22"><a href="#cb17-22" aria-hidden="true" tabindex="-1"></a>    <span class="fu">summarise</span>(</span>
 <span id="cb17-23"><a href="#cb17-23" aria-hidden="true" tabindex="-1"></a>      <span class="at">total_sleep_time_min =</span> <span class="fu">sum</span>(duration_min[sleep_stage_state <span class="sc">!=</span> <span class="st">"awake"</span>]),</span>
-<span id="cb17-24"><a href="#cb17-24" aria-hidden="true" tabindex="-1"></a>      <span class="at">time_in_bed_min       =</span> <span class="fu">as.numeric</span>(<span class="fu">difftime</span>(<span class="fu">max</span>(end), <span class="fu">min</span>(start), <span class="at">units =</span> <span class="st">"mins"</span>)),</span>
+<span id="cb17-24"><a href="#cb17-24" aria-hidden="true" tabindex="-1"></a>      <span class="at">time_in_bed_min =</span> <span class="fu">as.numeric</span>(<span class="fu">difftime</span>(<span class="fu">max</span>(end), <span class="fu">min</span>(start), <span class="at">units =</span> <span class="st">"mins"</span>)),</span>
 <span id="cb17-25"><a href="#cb17-25" aria-hidden="true" tabindex="-1"></a>      <span class="at">.groups =</span> <span class="st">"drop"</span></span>
 <span id="cb17-26"><a href="#cb17-26" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">|&gt;</span></span>
 <span id="cb17-27"><a href="#cb17-27" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">sleep_efficiency_pct =</span> <span class="fu">round</span>(total_sleep_time_min <span class="sc">/</span> time_in_bed_min <span class="sc">*</span> <span class="dv">100</span>, <span class="dv">2</span>))</span>
@@ -684,43 +701,53 @@ Caused by warning in `mean.default()`:
 ! argument is not numeric or logical: returning NA
 ℹ Run `dplyr::last_dplyr_warnings()` to see the 9 remaining warnings.</code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>person_night_all <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(person_night_list)</span>
-<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">nrow</span>(person_night_all) <span class="sc">==</span> <span class="dv">0</span>) {</span>
-<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stop</span>(<span class="st">"person_night_all is empty, check the availability table above."</span>)</span>
-<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Built table with"</span>, <span class="fu">nrow</span>(person_night_all), <span class="st">"rows across"</span>,</span>
-<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">n_distinct</span>(person_night_all<span class="sc">$</span>participant_id), <span class="st">"participants</span><span class="sc">\n</span><span class="st">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Built table with 86 rows across 8 participants</code></pre>
-</div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="co"># classify and plot</span></span>
-<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>sleep_classified <span class="ot">&lt;-</span> person_night_all <span class="sc">|&gt;</span></span>
-<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(participant_id) <span class="sc">|&gt;</span></span>
-<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">median_efficiency =</span> <span class="fu">median</span>(sleep_efficiency_pct, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">sleep_group =</span> <span class="fu">if_else</span>(sleep_efficiency_pct <span class="sc">&gt;=</span> median_efficiency, <span class="st">"Better sleep"</span>, <span class="st">"Worse sleep"</span>)</span>
-<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
-<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>()</span>
-<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a>slope_data <span class="ot">&lt;-</span> sleep_classified <span class="sc">|&gt;</span></span>
-<span id="cb23-11"><a href="#cb23-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(participant_id, sleep_group) <span class="sc">|&gt;</span></span>
-<span id="cb23-12"><a href="#cb23-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">avg_next_day_glucose =</span> <span class="fu">mean</span>(mean_glucose_mg_dl, <span class="at">na.rm =</span> <span class="cn">TRUE</span>), <span class="at">.groups =</span> <span class="st">"drop"</span>)</span>
-<span id="cb23-13"><a href="#cb23-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-14"><a href="#cb23-14" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(slope_data, <span class="fu">aes</span>(<span class="at">x =</span> sleep_group, <span class="at">y =</span> avg_next_day_glucose, <span class="at">group =</span> participant_id)) <span class="sc">+</span></span>
-<span id="cb23-15"><a href="#cb23-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">color =</span> <span class="st">"gray60"</span>, <span class="at">linewidth =</span> <span class="fl">0.7</span>) <span class="sc">+</span></span>
-<span id="cb23-16"><a href="#cb23-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="fl">2.5</span>, <span class="at">color =</span> <span class="st">"steelblue"</span>) <span class="sc">+</span></span>
-<span id="cb23-17"><a href="#cb23-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Next-Day Glucose: Worse-Sleep vs. Better-Sleep Nights"</span>,</span>
-<span id="cb23-18"><a href="#cb23-18" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="cn">NULL</span>, <span class="at">y =</span> <span class="st">"Average next-day glucose (mg/dL)"</span>) <span class="sc">+</span></span>
-<span id="cb23-19"><a href="#cb23-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>(<span class="at">base_size =</span> <span class="dv">12</span>) <span class="sc">+</span></span>
-<span id="cb23-20"><a href="#cb23-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">panel.grid.major.x =</span> <span class="fu">element_blank</span>())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stderr">
-<pre><code>Warning: Removed 6 rows containing missing values or values outside the scale range
+<pre><code>Warning: There were 11 warnings in `summarise()`.
+The first warning was:
+ℹ In argument: `mean_glucose_mg_dl = mean(blood_glucose_value, na.rm = TRUE)`.
+ℹ In group 1: `date = 2024-04-10`.
+Caused by warning in `mean.default()`:
+! argument is not numeric or logical: returning NA
+ℹ Run `dplyr::last_dplyr_warnings()` to see the 10 remaining warnings.</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: There were 11 warnings in `summarise()`.
+The first warning was:
+ℹ In argument: `mean_glucose_mg_dl = mean(blood_glucose_value, na.rm = TRUE)`.
+ℹ In group 1: `date = 2024-05-02`.
+Caused by warning in `mean.default()`:
+! argument is not numeric or logical: returning NA
+ℹ Run `dplyr::last_dplyr_warnings()` to see the 10 remaining warnings.</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>person_night_all <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(person_night_list)</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a><span class="co"># classify and plot</span></span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>sleep_classified <span class="ot">&lt;-</span> person_night_all <span class="sc">|&gt;</span></span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(participant_id) <span class="sc">|&gt;</span></span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">median_efficiency =</span> <span class="fu">median</span>(sleep_efficiency_pct, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">sleep_group =</span> <span class="fu">if_else</span>(sleep_efficiency_pct <span class="sc">&gt;=</span> median_efficiency, <span class="st">"Better sleep"</span>, <span class="st">"Worse sleep"</span>)</span>
+<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>()</span>
+<span id="cb23-11"><a href="#cb23-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-12"><a href="#cb23-12" aria-hidden="true" tabindex="-1"></a>slope_data <span class="ot">&lt;-</span> sleep_classified <span class="sc">|&gt;</span></span>
+<span id="cb23-13"><a href="#cb23-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(participant_id, sleep_group) <span class="sc">|&gt;</span></span>
+<span id="cb23-14"><a href="#cb23-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">avg_next_day_glucose =</span> <span class="fu">mean</span>(mean_glucose_mg_dl, </span>
+<span id="cb23-15"><a href="#cb23-15" aria-hidden="true" tabindex="-1"></a>                                        <span class="at">na.rm =</span> <span class="cn">TRUE</span>), <span class="at">.groups =</span> <span class="st">"drop"</span>)</span>
+<span id="cb23-16"><a href="#cb23-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-17"><a href="#cb23-17" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(slope_data, <span class="fu">aes</span>(<span class="at">x =</span> sleep_group, <span class="at">y =</span> avg_next_day_glucose, <span class="at">group =</span> participant_id)) <span class="sc">+</span></span>
+<span id="cb23-18"><a href="#cb23-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">color =</span> <span class="st">"gray60"</span>, <span class="at">linewidth =</span> <span class="fl">0.7</span>) <span class="sc">+</span></span>
+<span id="cb23-19"><a href="#cb23-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="fl">2.5</span>, <span class="at">color =</span> <span class="st">"steelblue"</span>) <span class="sc">+</span></span>
+<span id="cb23-20"><a href="#cb23-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Next-Day Glucose: Worse-Sleep vs. Better-Sleep Nights"</span>,</span>
+<span id="cb23-21"><a href="#cb23-21" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="cn">NULL</span>, <span class="at">y =</span> <span class="st">"Average next-day glucose (mg/dL)"</span>) <span class="sc">+</span></span>
+<span id="cb23-22"><a href="#cb23-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>(<span class="at">base_size =</span> <span class="dv">12</span>) <span class="sc">+</span></span>
+<span id="cb23-23"><a href="#cb23-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">panel.grid.major.x =</span> <span class="fu">element_blank</span>())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Removed 10 rows containing missing values or values outside the scale range
 (`geom_line()`).</code></pre>
 </div>
 <div class="cell-output cell-output-stderr">
-<pre><code>Warning: Removed 6 rows containing missing values or values outside the scale range
+<pre><code>Warning: Removed 10 rows containing missing values or values outside the scale range
 (`geom_point()`).</code></pre>
 </div>
 <div class="cell-output-display">
@@ -731,6 +758,10 @@ Caused by warning in `mean.default()`:
 </div>
 </div>
 </div>
+<ul>
+<li>For the 20 participants, sleep quality didn’t really correlate with next-day glucose levels.</li>
+<li>However, for participants with higher glucose levels, sleep quality had a stronger affect on their glucose levels.</li>
+</ul>
 </section>
 <section id="boxplot-of-within-person-glucose-differences" class="level2">
 <h2 class="anchored" data-anchor-id="boxplot-of-within-person-glucose-differences">Boxplot of within-person glucose differences</h2>
@@ -751,11 +782,11 @@ Caused by warning in `mean.default()`:
 <span id="cb26-14"><a href="#cb26-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>(<span class="at">base_size =</span> <span class="dv">12</span>) <span class="sc">+</span></span>
 <span id="cb26-15"><a href="#cb26-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">axis.text.x =</span> <span class="fu">element_blank</span>())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stderr">
-<pre><code>Warning: Removed 3 rows containing non-finite outside the scale range
+<pre><code>Warning: Removed 5 rows containing non-finite outside the scale range
 (`stat_boxplot()`).</code></pre>
 </div>
 <div class="cell-output cell-output-stderr">
-<pre><code>Warning: Removed 3 rows containing missing values or values outside the scale range
+<pre><code>Warning: Removed 5 rows containing missing values or values outside the scale range
 (`geom_point()`).</code></pre>
 </div>
 <div class="cell-output-display">
@@ -766,6 +797,9 @@ Caused by warning in `mean.default()`:
 </div>
 </div>
 </div>
+<ul>
+<li>For the dataset of 20 participants, glucose differences had limited impact from sleep quality (the median of the box hovered roughly around 0 glucose difference)</li>
+</ul>
 </section>
 <section id="plot-stratified-by-study-group" class="level2">
 <h2 class="anchored" data-anchor-id="plot-stratified-by-study-group">Plot stratified by study group</h2>
@@ -784,12 +818,12 @@ date (1): study_visit_date
 ℹ Use `spec()` to retrieve the full column specification for this data.
 ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="do">## strip "AIREADI-" prefix so IDs match participants_tbl's plain numeric person_id</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="co"># strip "AIREADI-" prefix so IDs match participants_tbl's plain numeric person_id</span></span>
 <span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>glucose_diff_grouped <span class="ot">&lt;-</span> glucose_diff <span class="sc">|&gt;</span></span>
 <span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">person_id =</span> <span class="fu">as.numeric</span>(<span class="fu">str_remove</span>(participant_id, <span class="st">"AIREADI-"</span>))) <span class="sc">|&gt;</span></span>
 <span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(participants_tbl, <span class="at">by =</span> <span class="st">"person_id"</span>)</span>
 <span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a><span class="do">## boxplot of within-person glucose differences, stratified by study group</span></span>
+<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a><span class="co"># boxplot</span></span>
 <span id="cb31-7"><a href="#cb31-7" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(glucose_diff_grouped, <span class="fu">aes</span>(<span class="at">x =</span> study_group, <span class="at">y =</span> diff_glucose)) <span class="sc">+</span></span>
 <span id="cb31-8"><a href="#cb31-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>(<span class="at">fill =</span> <span class="st">"lightblue"</span>, <span class="at">outlier.shape =</span> <span class="cn">NA</span>) <span class="sc">+</span></span>
 <span id="cb31-9"><a href="#cb31-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_jitter</span>(<span class="at">width =</span> <span class="fl">0.1</span>, <span class="at">size =</span> <span class="dv">2</span>, <span class="at">color =</span> <span class="st">"steelblue"</span>, <span class="at">alpha =</span> <span class="fl">0.7</span>) <span class="sc">+</span></span>
@@ -802,11 +836,11 @@ date (1): study_visit_date
 <span id="cb31-16"><a href="#cb31-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>(<span class="at">base_size =</span> <span class="dv">12</span>) <span class="sc">+</span></span>
 <span id="cb31-17"><a href="#cb31-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">angle =</span> <span class="dv">20</span>, <span class="at">hjust =</span> <span class="dv">1</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stderr">
-<pre><code>Warning: Removed 3 rows containing non-finite outside the scale range
+<pre><code>Warning: Removed 5 rows containing non-finite outside the scale range
 (`stat_boxplot()`).</code></pre>
 </div>
 <div class="cell-output cell-output-stderr">
-<pre><code>Warning: Removed 3 rows containing missing values or values outside the scale range
+<pre><code>Warning: Removed 5 rows containing missing values or values outside the scale range
 (`geom_point()`).</code></pre>
 </div>
 <div class="cell-output-display">
@@ -817,6 +851,11 @@ date (1): study_visit_date
 </div>
 </div>
 </div>
+<ul>
+<li>Not enough participants in the insulin dependent study group</li>
+<li>The third study group had large variation in the data points (many are at a large distance from the median)</li>
+<li>In comparison, the first and fourth study groups have data points closer to the median</li>
+</ul>
 </section>
 <section id="example-participant-figure-showing-sleep-nights-and-next-day-glucose" class="level2">
 <h2 class="anchored" data-anchor-id="example-participant-figure-showing-sleep-nights-and-next-day-glucose">Example participant figure showing sleep nights and next-day glucose</h2>
@@ -856,6 +895,10 @@ date (1): study_visit_date
 </div>
 </div>
 </div>
+<p>Note: next-day glucose level isn’t available for the last night</p>
+<ul>
+<li>For Participant 1029, next-day avgerage glucose levels somewhat correlated with total sleep time, but had less fluctuation</li>
+</ul>
 </section>
 <section id="limitations" class="level2">
 <h2 class="anchored" data-anchor-id="limitations">Limitations</h2>

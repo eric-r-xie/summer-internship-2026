@@ -56,8 +56,9 @@ kable(sleep_tbl, digits = 2)
 
 ##### Analysis
 - On 9/11, 9/13, and 9/16, Participant 1029 had very good sleep quality (sleep efficiency 100%)
-- However, on 9/16, Participant 1029 had less than 5 hours (300 minutes) of sleep time, much less than other nights.
+- However, on 9/16 and 9/11, Participant 1029 had less than 5 hours (300 minutes) of sleep time, much less than other nights.
 - On 9/9, the participant was almost 30% awake of the night time. 
+- On 9/9 and 9/13, the participant had little amounts of deep sleep (in the single digits range)
 
 ## Daily Activity Table
 
@@ -181,6 +182,10 @@ ggplot(glucose_during_sleep, aes(x = reading_time, y = glucose_mg_dl)) +
 
 - From nights 9/11 to 9/16, the graph was relatively constant (fluctuations in glucose is small)
 - 9/10 has the biggest glucose fluctuation
+
+## Questions
+
+##### I used 6pm as the cutoff for each night, but would there be a more standard convention?
 
 
 
