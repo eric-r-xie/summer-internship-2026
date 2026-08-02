@@ -1,5 +1,5 @@
 ---
-title: "Week 5: Integrating Sleep, Activity, and Glucose"
+title: "Week 4: Integrating Sleep, Activity, and Glucose"
 author: "Eric Xie"
 format:
   html:
@@ -54,6 +54,8 @@ participants <- read_tsv(
   clean_names()
 ```
 
+- clean_names() is a janitor function that standardizes column names into a consistent, lowercase, snake_case format
+
 ### Cohort Files
 ```{r}
 # cohort files
@@ -80,6 +82,9 @@ cohort_files <- tibble(dir_path = participant_dirs) |>
   ) |>
   filter(person_id %in% cgm_cohort, !is.na(json_path))
 ```
+
+- cgm_cohort filtered for participants with wearable_blood_glucose as true, and turned the data frame into a vector with person ids
+- cohort_files added folder name, person id, and json paths to the table with dir_path and ensured consistent formatting
 
 ### Timezone Tables
 ```{r}
@@ -109,16 +114,13 @@ site_region_map <- tribble(
 ### Function for clean_one_cgm
 ```{r}
 clean_one_cgm <- function(json_path) {
-
-  # Function structure (one call returning a named list of reading-level,
-  # day-count, DST, and QC tables) follows Eric's work
-  # JSON parsing with flatten = TRUE follows Shubho's work.
-
+  
+  # flattening into tables is quicker than iterating through nested objects
   raw <- fromJSON(
     json_path,
     flatten = TRUE
   )
-
+  
   person_id_header <- raw$header$patient_id
 
   pid <- as.numeric(
@@ -153,9 +155,9 @@ clean_one_cgm <- function(json_path) {
         as.numeric(glucose_value_original)
       ),
       glucose_unit = blood_glucose.unit
-    )
+    ) # each row represents one glucose reading
 
-  n_raw_egv <- nrow(egv)
+  n_raw_egv <- nrow(egv) # counts how many rows are in egv data frame
 
   # Step 3: infer the regional timezone from the JSON label and check it
   # against the clinical site.
@@ -216,7 +218,8 @@ clean_one_cgm <- function(json_path) {
     tz_site_consistent = tz_site_consistent,
     tz_flag_for_review = is.na(iana_zone) | !tz_site_consistent
   )
-
+  
+  # placeholder list in case of errors
   empty_result <- list(
     reading_level = tibble(),
     day_counts = tibble(),
@@ -592,7 +595,17 @@ write_csv(
 )
 ```
 
-- reading_level_all = one row per individual glucose reading (across all participants)
-- day_counts_all = one row per participant-day (across all participants)
+### Analysis
 
-## Reviewing Week 3 Solution Keys
+- `raw`: the parsed Json file, a nested list that was flattened into a table for easier iterating.
+- `egv`: filtered to valid glucose readings through `event_type == "EGV"`, where each row contains one raw estimated glucose reading. 
+- **Timezone Resolution**: matching the JSON header's timezone label against `tz_map`, and the participant's clinical site against `site_region_map` with key `person_id`. Each row contains one participant's timezone quality-control record.`iana_zone` is resolved to "NA" if the label doesn't match to any defined iana zone.
+- `egv_dedup`: drops duplicate timestamps by reference `(person_id, time_utc)`. Flags any inconsistent units and unusual glucose values.
+- `reading_level`: the final clean reading-level table, where each row is one unique glucose reading.
+- `day_counts`: built by `count(person_id, date_local)` on `reading_level`. Each row is one unique participant day. A day is only valid with more than 202 readings of the expected 288. 
+- `dst_notes`: DST-Transition days by participant, each row containing a participant-day that crossed the DST boundary.
+- `participant_day_summary`: final analysis table, with each row equal to one participant-day. Key = `(person_id, time_utc)`.
+
+
+
+
