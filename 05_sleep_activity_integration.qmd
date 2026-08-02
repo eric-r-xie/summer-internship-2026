@@ -1,0 +1,598 @@
+---
+title: "Week 5: Integrating Sleep, Activity, and Glucose"
+author: "Eric Xie"
+format:
+  html:
+    theme: cosmo
+    embed-resources: true
+    number-sections: true
+    toc: true
+    toc-depth: 4
+    toc-location: left
+    code-fold: false
+engine: knitr
+---
+
+## Load Packages
+```{r}
+library(tidyverse)
+library(here)
+library(knitr)
+library(kableExtra)
+library(janitor)
+library(jsonlite)
+```
+
+## Reviewing Week 2 Solution Keys for Participant-Day CGM Table
+
+### Analysis Parameters
+```{r}
+expected_readings_per_day <- 288
+min_readings_valid_day <- 202
+glucose_lower_bound <- 40
+glucose_upper_bound <- 400
+daytime_start_hour <- 6
+```
+
+### Dataset Path
+```{r}
+# dataset path
+dataset_version <- "v3-mini"
+
+data_dir <- here("data/mini")
+```
+
+### Read Participants Manifest Data
+```{r}
+participants <- read_tsv(
+  file.path(
+    data_dir,
+    "participants_mini.tsv"
+  ),
+  show_col_types = FALSE
+) |>
+  clean_names()
+```
+
+### Cohort Files
+```{r}
+# cohort files
+dexcom_dir <- file.path(
+  data_dir,
+  "dexcom_g6"
+)
+
+# define a vector for the cgm cohort
+cgm_cohort <- participants |>
+  filter(wearable_blood_glucose) |>
+  pull(person_id)
+
+participant_dirs <- list.dirs(dexcom_dir, recursive = FALSE, full.names = TRUE)
+
+cohort_files <- tibble(dir_path = participant_dirs) |>
+  mutate(
+    folder_name = basename(dir_path),
+    person_id = suppressWarnings(as.numeric(str_remove(folder_name, "AIREADI-"))),
+    json_path = map_chr(dir_path, function(one_dir) {
+      found <- list.files(one_dir, pattern = "\\.json$", full.names = TRUE)
+      if (length(found) >= 1) found[1] else NA_character_
+    })
+  ) |>
+  filter(person_id %in% cgm_cohort, !is.na(json_path))
+```
+
+### Timezone Tables
+```{r}
+participant_sites <- participants |>
+  select(person_id, clinical_site)
+
+tz_map <- tribble(
+  ~timezone_label_json, ~iana_zone,           ~expected_region,
+  "pst",                "America/Los_Angeles", "Pacific",
+  "pdt",                "America/Los_Angeles", "Pacific",
+  "mst",                "America/Denver",      "Mountain",
+  "mdt",                "America/Denver",      "Mountain",
+  "cst",                "America/Chicago",     "Central",
+  "cdt",                "America/Chicago",     "Central",
+  "est",                "America/New_York",    "Eastern",
+  "edt",                "America/New_York",    "Eastern"
+)
+
+site_region_map <- tribble(
+  ~clinical_site, ~site_region,
+  "UW",           "Pacific",
+  "UCSD",         "Pacific",
+  "UAB",          "Central"
+)
+```
+
+### Function for clean_one_cgm
+```{r}
+clean_one_cgm <- function(json_path) {
+
+  # Function structure (one call returning a named list of reading-level,
+  # day-count, DST, and QC tables) follows Eric's work
+  # JSON parsing with flatten = TRUE follows Shubho's work.
+
+  raw <- fromJSON(
+    json_path,
+    flatten = TRUE
+  )
+
+  person_id_header <- raw$header$patient_id
+
+  pid <- as.numeric(
+    str_remove(person_id_header, "AIREADI-")
+  )
+
+  tz_label <- str_to_lower(raw$header$timezone)
+
+  cgm_raw <- as_tibble(raw$body$cgm)
+
+  # Step 1: keep estimated glucose value events only.
+  # Step 2: timestamps end in "Z", so they are parsed as UTC.
+  #
+  # as.character() is applied to the glucose value before as.numeric()
+  # because Dexcom writes "Low" and "High" as sentinel strings. This makes
+  # the column character in some files and integer in others, and the two
+  # types cannot be combined across participants without an explicit cast.
+
+  egv <- cgm_raw |>
+    filter(event_type == "EGV") |>
+    transmute(
+      person_id = pid,
+      event_type,
+      timezone_label_json = tz_label,
+      time_utc = ymd_hms(
+        effective_time_frame.time_interval.start_date_time,
+        tz = "UTC",
+        quiet = TRUE
+      ),
+      glucose_value_original = as.character(blood_glucose.value),
+      glucose_value_numeric = suppressWarnings(
+        as.numeric(glucose_value_original)
+      ),
+      glucose_unit = blood_glucose.unit
+    )
+
+  n_raw_egv <- nrow(egv)
+
+  # Step 3: infer the regional timezone from the JSON label and check it
+  # against the clinical site.
+  #
+  # The JSON header says "pst" and the clinical site is UW.
+  # We interpret this as US Pacific Time and use "America/Los_Angeles"
+  # for its timezone and daylight-saving rules. R determines whether
+  # each individual timestamp is PST or PDT.
+  #
+  # A label that cannot be mapped at all means we cannot localize the
+  # readings, so the participant is flagged and returns no clean readings.
+  # A label that maps successfully but disagrees with the clinical site is
+  # also flagged for human review, rather than being silently overridden.
+
+  tz_match <- tz_map |>
+    filter(timezone_label_json == tz_label)
+
+  site_value <- participant_sites |>
+    filter(person_id == pid) |>
+    pull(clinical_site)
+
+  site_match <- site_region_map |>
+    filter(clinical_site %in% site_value)
+
+  iana_zone <- if (nrow(tz_match) == 1) {
+    tz_match$iana_zone
+  } else {
+    NA_character_
+  }
+
+  expected_region <- if (nrow(tz_match) == 1) {
+    tz_match$expected_region
+  } else {
+    NA_character_
+  }
+
+  site_region <- if (nrow(site_match) == 1) {
+    site_match$site_region
+  } else {
+    NA_character_
+  }
+
+  tz_site_consistent <- !is.na(expected_region) &
+    !is.na(site_region) &
+    expected_region == site_region
+
+  tz_qc <- tibble(
+    person_id = pid,
+    timezone_label_json = tz_label,
+    iana_zone = iana_zone,
+    clinical_site = if (length(site_value) == 1) {
+      site_value
+    } else {
+      NA_character_
+    },
+    expected_region = expected_region,
+    site_region = site_region,
+    tz_site_consistent = tz_site_consistent,
+    tz_flag_for_review = is.na(iana_zone) | !tz_site_consistent
+  )
+
+  empty_result <- list(
+    reading_level = tibble(),
+    day_counts = tibble(),
+    dst_notes = tibble(),
+    tz_qc = tz_qc,
+    qc_summary = tibble(
+      person_id = pid,
+      raw_egv_readings = n_raw_egv,
+      missing_timestamps = sum(is.na(egv$time_utc)),
+      missing_glucose = sum(is.na(egv$glucose_value_numeric)),
+      duplicate_timestamps = NA_integer_,
+      conflicting_duplicates = NA_integer_,
+      nonstandard_units = NA_integer_,
+      unusual_values = NA_integer_,
+      cleaned_readings = 0L,
+      valid_days = 0L,
+      excluded_duplicate_readings = NA_integer_,
+      excluded_missing_glucose = NA_integer_,
+      excluded_units = NA_integer_,
+      excluded_unusual = NA_integer_
+    )
+  )
+
+  if (is.na(iana_zone) || n_raw_egv == 0) {
+    return(empty_result)
+  }
+
+  # Step 4: convert to local time and derive the local calendar variables.
+  # timezone_abbreviation is taken per reading rather than from the header,
+  # so a participant recorded across a transition shows both PDT and PST.
+
+  egv <- egv |>
+    mutate(
+      time_local = with_tz(time_utc, tzone = iana_zone),
+      date_local = as_date(time_local),
+      hour_local = hour(time_local),
+      timezone_abbreviation = format(time_local, "%Z"),
+      is_dst = dst(time_local)
+    )
+
+  # Step 6: count missing timestamps and missing glucose values.
+  # "Low" and "High" become NA on conversion and are counted here.
+
+  n_missing_timestamps <- sum(is.na(egv$time_utc))
+
+  n_missing_glucose <- sum(is.na(egv$glucose_value_numeric))
+
+  # Step 7: a duplicate is the same participant ID and UTC timestamp.
+  # Duplicates that agree on glucose collapse to a single copy.
+  # Duplicates that disagree are flagged and excluded entirely, because
+  # there is no basis for choosing between the conflicting values.
+  #
+  # This rule is from Shubho's work. It is
+  # adopted here in preference to keeping the first copy, because the
+  # cohort does contain conflicting duplicates.
+
+  duplicate_groups <- egv |>
+    filter(!is.na(time_utc)) |>
+    group_by(person_id, time_utc) |>
+    summarise(
+      number_of_rows = n(),
+      number_of_distinct_values = n_distinct(glucose_value_numeric),
+      .groups = "drop"
+    ) |>
+    filter(number_of_rows > 1)
+
+  conflicting_keys <- duplicate_groups |>
+    filter(number_of_distinct_values > 1) |>
+    select(person_id, time_utc)
+
+  n_duplicate_timestamps <- nrow(duplicate_groups)
+
+  n_conflicting_duplicates <- nrow(conflicting_keys)
+
+  egv_timed <- egv |>
+    filter(!is.na(time_utc))
+
+  egv_dedup <- egv_timed |>
+    anti_join(
+      conflicting_keys,
+      by = c("person_id", "time_utc")
+    ) |>
+    distinct(person_id, time_utc, .keep_all = TRUE)
+
+  # Duplicate handling removes whole rows, and one conflicting group of two
+  # rows removes two readings. This row count, not the group count, is what
+  # the cohort funnel below needs in order to reconcile exactly.
+
+  n_duplicate_readings_removed <- nrow(egv_timed) - nrow(egv_dedup)
+
+  # Step 8: confirm that glucose is recorded in mg/dL. Any other unit is
+  # flagged and excluded, because the 40-400 range check below and every
+  # summary in this notebook assume mg/dL.
+
+  egv_dedup <- egv_dedup |>
+    mutate(
+      unit_flag = is.na(glucose_unit) | glucose_unit != "mg/dL"
+    )
+
+  # Step 9: flag values below 40 or above 400 mg/dL as unusual and exclude
+  # them. This is a data-processing rule, not a clinical definition.
+
+  egv_dedup <- egv_dedup |>
+    mutate(
+      unusual_value_flag = !is.na(glucose_value_numeric) &
+        (glucose_value_numeric < glucose_lower_bound |
+           glucose_value_numeric > glucose_upper_bound)
+    )
+
+  n_nonstandard_units <- sum(egv_dedup$unit_flag)
+
+  n_unusual <- sum(egv_dedup$unusual_value_flag)
+
+  # The three exclusion rules above can apply to the same reading, so the
+  # cohort funnel needs counts that charge each excluded reading to exactly
+  # one rule. These cascade in the same order the filter below applies.
+
+  n_excluded_missing_glucose <- sum(
+    is.na(egv_dedup$glucose_value_numeric)
+  )
+
+  n_excluded_units <- sum(
+    !is.na(egv_dedup$glucose_value_numeric) &
+      egv_dedup$unit_flag
+  )
+
+  n_excluded_unusual <- sum(
+    !is.na(egv_dedup$glucose_value_numeric) &
+      !egv_dedup$unit_flag &
+      egv_dedup$unusual_value_flag
+  )
+
+  # Step 10: the clean reading-level table. One row is one unique, usable
+  # glucose reading. The raw objects above are left unchanged.
+
+  reading_level <- egv_dedup |>
+    filter(
+      !is.na(glucose_value_numeric),
+      !unit_flag,
+      !unusual_value_flag
+    ) |>
+    select(
+      person_id,
+      event_type,
+      time_utc,
+      time_local,
+      date_local,
+      hour_local,
+      timezone_abbreviation,
+      timezone_label_json,
+      is_dst,
+      glucose_value_original,
+      glucose_value_numeric,
+      glucose_unit
+    )
+
+  # Step 11: count cleaned readings per local calendar day and mark a
+  # participant-day valid at 202 or more of the expected 288 readings.
+
+  day_counts <- reading_level |>
+    count(
+      person_id,
+      date_local,
+      name = "n_readings"
+    ) |>
+    mutate(
+      valid_day = n_readings >= min_readings_valid_day
+    )
+
+  # Step 12: flag local dates that span a daylight-saving-time transition.
+  # The valid-day threshold is deliberately left unchanged.
+
+  # Abbreviations are ordered by time rather than sorted alphabetically,
+  # so that a spring-forward date reads "PST to PDT" and a fall-back date
+  # reads "PDT to PST". Sorting would label both the same way.
+  #
+  # The true length of a local day is the distance between consecutive
+  # local midnights in the participant's own zone, which is 23 hours on a
+  # spring-forward date and 25 hours on a fall-back date. Midnight itself
+  # always exists, because US transitions occur at 2:00 AM local time.
+
+  dst_notes <- reading_level |>
+    group_by(person_id, date_local) |>
+    summarise(
+      abbreviations = paste(
+        unique(timezone_abbreviation[order(time_local)]),
+        collapse = " to "
+      ),
+      number_of_abbreviations = n_distinct(timezone_abbreviation),
+      .groups = "drop"
+    ) |>
+    filter(number_of_abbreviations > 1) |>
+    mutate(
+      day_length_hours = as.numeric(
+        difftime(
+          force_tz(as_datetime(date_local + 1), tzone = iana_zone),
+          force_tz(as_datetime(date_local), tzone = iana_zone),
+          units = "hours"
+        )
+      ),
+      transition = if_else(
+        day_length_hours < 24,
+        "Spring forward",
+        "Fall back"
+      ),
+      max_possible_readings = day_length_hours * 12,
+      qc_note = paste0(
+        transition,
+        " transition (",
+        abbreviations,
+        "). The local day is ",
+        day_length_hours,
+        " hours long, so at most ",
+        max_possible_readings,
+        " readings are possible instead of ",
+        expected_readings_per_day,
+        "."
+      )
+    )
+
+  day_counts <- day_counts |>
+    mutate(
+      crosses_dst = date_local %in% dst_notes$date_local
+    )
+
+  # The first block of columns is the quality-control summary requested for
+  # Table 1, and its schema and column names come from Eric's work.
+  # The excluded_* columns are the mutually exclusive cascade
+  # used by the cohort funnel, and are not displayed in Table 1.
+
+  qc_summary <- tibble(
+    person_id = pid,
+    raw_egv_readings = n_raw_egv,
+    missing_timestamps = n_missing_timestamps,
+    missing_glucose = n_missing_glucose,
+    duplicate_timestamps = n_duplicate_timestamps,
+    conflicting_duplicates = n_conflicting_duplicates,
+    nonstandard_units = n_nonstandard_units,
+    unusual_values = n_unusual,
+    cleaned_readings = nrow(reading_level),
+    valid_days = sum(day_counts$valid_day),
+    excluded_duplicate_readings = n_duplicate_readings_removed,
+    excluded_missing_glucose = n_excluded_missing_glucose,
+    excluded_units = n_excluded_units,
+    excluded_unusual = n_excluded_unusual
+  )
+
+  list(
+    reading_level = reading_level,
+    day_counts = day_counts,
+    dst_notes = dst_notes,
+    tz_qc = tz_qc,
+    qc_summary = qc_summary
+  )
+}
+```
+
+### Create Results
+```{r}
+safe_clean_one_cgm <- possibly(clean_one_cgm, otherwise = NULL)
+
+results_all <- map(
+  cohort_files$json_path,
+  safe_clean_one_cgm
+)
+
+reading_level_all <- results_all |>
+  map_dfr("reading_level")
+
+day_counts_all <- results_all |>
+  map_dfr("day_counts")
+
+valid_readings_all <- reading_level_all |>
+  inner_join(
+    day_counts_all |>
+      filter(valid_day) |>
+      select(person_id, date_local),
+    by = c("person_id", "date_local")
+  )
+
+participant_day_summary <- valid_readings_all |>
+  mutate(
+    period = if_else(
+      hour_local >= daytime_start_hour,
+      "daytime",
+      "nighttime"
+    )
+  ) |>
+  group_by(person_id, date_local) |>
+  summarise(
+    n_readings = n(),
+    pct_expected = n() / expected_readings_per_day * 100,
+    mean_glucose = mean(glucose_value_numeric),
+    sd_glucose = sd(glucose_value_numeric),
+    pct_70_180 = mean(
+      glucose_value_numeric >= 70 & glucose_value_numeric <= 180
+    ) * 100,
+    pct_above_180 = mean(glucose_value_numeric > 180) * 100,
+    pct_below_70 = mean(glucose_value_numeric < 70) * 100,
+    n_daytime = sum(period == "daytime"),
+    n_nighttime = sum(period == "nighttime"),
+    mean_glucose_daytime = mean(
+      glucose_value_numeric[period == "daytime"]
+    ),
+    mean_glucose_nighttime = mean(
+      glucose_value_numeric[period == "nighttime"]
+    ),
+    sd_glucose_daytime = sd(
+      glucose_value_numeric[period == "daytime"]
+    ),
+    sd_glucose_nighttime = sd(
+      glucose_value_numeric[period == "nighttime"]
+    ),
+    .groups = "drop"
+  ) |>
+  mutate(
+    across(
+      where(is.numeric),
+      ~ if_else(is.nan(.x), NA_real_, .x)
+    )
+  ) |>
+  left_join(
+    day_counts_all |>
+      select(person_id, date_local, crosses_dst),
+    by = c("person_id", "date_local")
+  )
+
+participant_day_summary |>
+  kable(
+    digits = 1,
+    col.names = c(
+      "Person ID",
+      "Local date",
+      "Readings",
+      "Expected (%)",
+      "Mean",
+      "SD",
+      "70-180 (%)",
+      ">180 (%)",
+      "<70 (%)",
+      "Day n",
+      "Night n",
+      "Day mean",
+      "Night mean",
+      "Day SD",
+      "Night SD",
+      "Crosses DST"
+    )
+  ) |>
+  kable_styling(
+    bootstrap_options = c("striped", "condensed"),
+    font_size = 11
+  ) |>
+  scroll_box(height = "400px")
+```
+
+### Save Results
+```{r}
+dir.create(
+  here("practice", "derived"),
+  recursive = TRUE,
+  showWarnings = FALSE
+)
+
+write_csv(
+  participant_day_summary,
+  here(
+    "practice",
+    "derived",
+    "week2_participant_day_cgm.csv"
+  ),
+  na = ""
+)
+```
+
+- reading_level_all = one row per individual glucose reading (across all participants)
+- day_counts_all = one row per participant-day (across all participants)
+
+## Reviewing Week 3 Solution Keys
