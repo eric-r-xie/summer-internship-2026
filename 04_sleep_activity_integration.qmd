@@ -606,6 +606,277 @@ write_csv(
 - `dst_notes`: DST-Transition days by participant, each row containing a participant-day that crossed the DST boundary.
 - `participant_day_summary`: final analysis table, with each row equal to one participant-day. Key = `(person_id, time_utc)`.
 
+## Timezone Tables
+```{r}
+participant_sites <- participants |>
+  select(person_id, clinical_site)
+
+tz_map <- tribble(
+  ~timezone_label_json, ~iana_zone,           ~expected_region,
+  "pst",                "America/Los_Angeles", "Pacific",
+  "pdt",                "America/Los_Angeles", "Pacific",
+  "mst",                "America/Denver",      "Mountain",
+  "mdt",                "America/Denver",      "Mountain",
+  "cst",                "America/Chicago",     "Central",
+  "cdt",                "America/Chicago",     "Central",
+  "est",                "America/New_York",    "Eastern",
+  "edt",                "America/New_York",    "Eastern"
+)
+
+site_region_map <- tribble(
+  ~clinical_site, ~site_region,
+  "UW",           "Pacific",
+  "UCSD",         "Pacific",
+  "UAB",          "Central"
+)
+```
+
+## Prepare and Join Daily Tables
+
+### Read Sleep Data
+```{r}
+sleep_dir <- file.path(data_dir, "sleep", "garmin_vivosmart5")
+
+sleep_participants_dir <- list.dirs(sleep_dir, 
+                              recursive = FALSE, 
+                              full.names = TRUE)
+
+sleep_files <- tibble(dir_path = sleep_participants_dir) |>
+  mutate(
+    folder_name = basename(dir_path),
+    person_id = as.numeric(folder_name),
+    json_path = map_chr(dir_path, function(one_dir) {
+      found <- list.files(one_dir, pattern = "\\.json$", full.names = TRUE)
+      if (length(found) >= 1) found[1] else NA_character_
+    })
+  )|>
+  filter(!is.na(json_path))
+```
+
+### Function to Create Sleep Table
+```{r}
+sleep_gap_minutes = 180
+minimum_main_sleep_minutes = 240
+maximum_main_sleep_minutes = 840
+
+create_sleep_tbl <- function(person_id, json_path) {
+  
+  raw_sleep <- fromJSON(json_path, flatten = TRUE)
+  sleep_body <- raw_sleep$body$sleep
+  
+  # timezone matching (part 1)
+  timezone_label <- tolower(as.character(raw_sleep$header$timezone)[1])
+  iana_zone <- tz_map |>
+    filter(timezone_label_json == !!timezone_label) |>
+    pull(iana_zone) |>
+    first(default = NA_character_)
+  
+  if (is.na(iana_zone)) {
+    return(tibble())
+  }
+
+  sleep_segments <- tibble(
+    person_id = person_id,
+    stage = str_to_lower(as.character(sleep_body$sleep_stage_state)),
+    start_utc = ymd_hms(
+      sleep_body$effective_time_frame.time_interval.start_date_time,
+      tz = "UTC",
+      quiet = TRUE
+      ),
+    end_utc = ymd_hms(
+      sleep_body$effective_time_frame.time_interval.end_date_time,
+      tz = "UTC",
+      quiet = TRUE
+      )
+    ) |>
+      mutate(
+      duration_minutes = as.numeric(
+        difftime(end_utc, start_utc, units = "mins")
+        )
+      )
+  
+  sleep_segments_with_episodes <- sleep_segments |>
+  arrange(person_id, start_utc, end_utc) |>
+  group_by(person_id) |>
+  mutate(
+    # Compare the current stage start with the previous stage end.
+    gap_minutes = as.numeric(
+      difftime(start_utc, lag(end_utc), units = "mins")
+    ),
+    # The first record and records after a long gap start new episodes.
+    starts_new_episode = is.na(gap_minutes) |
+      gap_minutes > sleep_gap_minutes,
+    episode_id = cumsum(starts_new_episode)
+  ) |>
+  ungroup()
+  
+  sleep_episodes <- sleep_segments_with_episodes |>
+    group_by(person_id, episode_id) |>
+    filter(any(stage != "awake")) |>   # drop all-awake episodes
+    summarise(
+      sleep_onset_utc = min(start_utc[stage != "awake"]),
+      final_sleep_end_utc = max(end_utc[stage != "awake"]),
+      total_sleep_time_minutes = sum(
+        duration_minutes[stage != "awake"], 
+        na.rm = TRUE),
+      n_segments = n(),
+      .groups = "drop"
+    ) |>
+    mutate(
+      sleep_night = as_date(with_tz(final_sleep_end_utc, iana_zone))
+    )
+}
+
+sleep_night_all <- map2_dfr(
+  sleep_files$person_id,
+  sleep_files$json_path,
+  create_sleep_tbl
+)
+
+sleep_night_summary <- sleep_night_all |> 
+  rename(date = sleep_night) |>
+  mutate(
+    total_sleep_hours = total_sleep_time_minutes / 60,
+    sleep_valid = total_sleep_time_minutes >= minimum_main_sleep_minutes,
+    total_sleep_time_minutes <= maximum_main_sleep_minutes
+  ) |>
+  select(
+    person_id, date,
+    total_sleep_time_minutes, total_sleep_hours,
+    sleep_valid, n_segments
+  )
+```
+
+Note: Code for calculating individual sleep segments and categorizing them into day groups referenced from Week 3 Solutions. 
+
+### Read Activity Data
+```{r}
+activity_dir <- file.path(data_dir, 
+                          "physical_activity", 
+                          "garmin_vivosmart5")
+
+activity_participants_dir <- list.dirs(activity_dir,
+                                       recursive = FALSE,
+                                       full.names = TRUE)
+
+activity_files <- tibble(dir_path = activity_participants_dir) |>
+  mutate(
+    folder_name = basename(dir_path),
+    person_id = as.numeric(folder_name),
+    json_path = map_chr(dir_path, function(one_dir) {
+      found <- list.files(one_dir, pattern = "\\.json$", full.names = TRUE)
+      if (length(found) >= 1) found[1] else NA_character_
+    })
+  )|>
+  filter(!is.na(json_path))
+```
+
+### Function to Create Activity Table
+
+```{r}
+minimum_activity_observation_hours <- 20
+
+create_activity_tbl <- function(person_id, json_path) {
+  
+  raw_activity <- fromJSON(json_path, flatten = TRUE)
+  activity_body <- raw_activity$body$activity
+  
+  timezone_label <- tolower(as.character(raw_activity$header$timezone)[1])
+  iana_zone <- tz_map |>
+    filter(timezone_label_json == timezone_label) |>
+    pull(iana_zone) |>
+    first(default = NA_character_)
+  
+  if (is.na(iana_zone)) {
+    return(tibble())
+  }
+  
+  activity_intervals <- tibble(
+    person_id = person_id,
+    start_utc = ymd_hms(
+      activity_body$effective_time_frame.time_interval.start_date_time,
+      tz = "UTC", quiet = TRUE
+    ),
+    end_utc = ymd_hms(
+      activity_body$effective_time_frame.time_interval.end_date_time,
+      tz = "UTC", quiet = TRUE
+    ),
+    steps = suppressWarnings(
+      as.numeric(activity_body$base_movement_quantity.value)
+    )
+  ) |>
+    filter(
+      !is.na(start_utc), !is.na(end_utc),
+      !is.na(steps), steps >= 0
+    ) |>
+    mutate(
+      date = as_date(with_tz(start_utc, iana_zone)),
+      observed_minutes = pmax(0, as.numeric(difftime(end_utc, start_utc, units = "mins")))
+    )
+  
+  activity_intervals |>
+    group_by(person_id, date) |>
+    summarise(
+      total_steps = sum(steps, na.rm = TRUE),
+      step_observation_hours = sum(observed_minutes, na.rm = TRUE) / 60,
+      n_records = n(),
+      .groups = "drop"
+    ) |>
+    mutate(
+      activity_valid = step_observation_hours >= minimum_activity_observation_hours &
+        total_steps > 0
+    )
+}
+
+safe_create_activity_tbl <- possibly(create_activity_tbl, otherwise = tibble())
+
+activity_daily_all <- map2_dfr(
+  activity_files$person_id,
+  activity_files$json_path,
+  safe_create_activity_tbl
+)
+```
+
+### Creating CGM Data Table
+```{r}
+cgm_daily_summary <- participant_day_summary |>
+  rename(date = date_local) |>
+  mutate(
+    glucose_cv = sd_glucose / mean_glucose * 100
+  ) |>
+  select(
+    person_id, date,
+    mean_glucose, sd_glucose, glucose_cv,
+    pct_70_180, n_readings, pct_expected
+  )
+```
+
+### Combine Sleep, Activity, and CGM Data Tables
+```{r}
+combined <- sleep_night_summary |>
+  inner_join(activity_daily_all, by = c("person_id", "date")) |>
+  inner_join(cgm_daily_summary, by = c("person_id", "date"))
+
+combined |>
+  arrange(person_id, date) |>
+  select(-n_segments, -step_observation_hours, -n_records) |>
+  kable(
+    digits = 1,
+    col.names = c(
+      "Person ID", "Date",
+      "Sleep (min)", "Sleep (hours)", "Sleep valid",
+      "Total steps", "Activity valid",
+      "Mean glucose", "Glucose SD", "Glucose CV (%)",
+      "70-180 (%)", "Readings", "Expected (%)"
+    )
+  ) |>
+  scroll_box(height = "600px")
+```
+
+
+
+
+
 
 
 
