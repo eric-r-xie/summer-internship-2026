@@ -1,0 +1,329 @@
+---
+title: "Week 4: Sleep Next Day Glucose"
+author: "Eric Xie"
+format:
+  html:
+    toc: true
+    toc-location: left
+---
+
+## Load Packages
+```{r}
+library(tidyverse)
+library(knitr)
+library(readr)
+library(jsonlite)
+library(kableExtra)
+```
+
+## Person-Night Table
+
+```{r}
+am <- read_tsv("data/mini/wearable_activity_monitor_mini.tsv")
+
+# sleep features
+sleep_path <- "data/mini/sleep/garmin_vivosmart5/1029/1029_sleep.json"
+sleep_json <- fromJSON(sleep_path)
+
+stages <- sleep_json$body$sleep |>
+  unnest_wider(effective_time_frame) |>
+  unnest_wider(time_interval)
+
+sleep_tbl <- stages |>
+  mutate(participant_id = sleep_json$header$user_id) |>
+  mutate(
+    start = ymd_hms(start_date_time, tz = "UTC"),
+    end = ymd_hms(end_date_time, tz = "UTC"),
+    duration_min = as.numeric(difftime(end, start, units = "mins")),
+    sleep_night = as_date(if_else(hour(start) < 18, start - days(1), start))
+  ) |>
+  group_by(participant_id, sleep_night) |>
+  summarise(
+    bedtime = min(start),
+    wake_time = max(end),
+    total_sleep_time_min = sum(duration_min[sleep_stage_state != "awake"]),
+    time_in_bed_min = as.numeric(difftime(max(end), min(start), units = "mins")),
+    awake_after_onset_min = sum(duration_min[sleep_stage_state == "awake"]),
+    pct_light = sum(duration_min[sleep_stage_state == "light"]) / sum(duration_min) * 100,
+    pct_deep  = sum(duration_min[sleep_stage_state == "deep"])  / sum(duration_min) * 100,
+    pct_rem   = sum(duration_min[sleep_stage_state == "rem"])   / sum(duration_min) * 100,
+    pct_awake = sum(duration_min[sleep_stage_state == "awake"]) / sum(duration_min) * 100,
+    .groups = "drop"
+  ) |>
+  mutate(sleep_efficiency_pct = round(total_sleep_time_min / time_in_bed_min * 100, 2)) |>
+  arrange(sleep_night)
+
+# Daily activity features (steps, calories, heart rate)
+pa_path  <- "data/mini/physical_activity/garmin_vivosmart5/1029/1029_activity.json"
+pac_path <- "data/mini/physical_activity_calorie/garmin_vivosmart5/1029/1029_calorie.json"
+hr_path  <- "data/mini/heart_rate/garmin_vivosmart5/1029/1029_heartrate.json"
+
+pa_json  <- fromJSON(pa_path)
+pac_json <- fromJSON(pac_path)
+hr_json  <- fromJSON(hr_path)
+
+# steps
+steps_raw <- pa_json$body$activity |>
+  unnest_wider(base_movement_quantity, names_sep = "_") |>
+  unnest_wider(effective_time_frame) |>
+  unnest_wider(time_interval)
+
+steps_daily <- steps_raw |>
+  mutate(
+    date = as_date(ymd_hms(start_date_time, tz = "UTC")),
+    steps = as.numeric(base_movement_quantity_value)
+  ) |>
+  group_by(date) |>
+  summarise(total_steps = sum(steps, na.rm = TRUE), .groups = "drop")
+
+# active calories
+cal_raw <- pac_json$body$activity |>
+  unnest_wider(calories_value, names_sep = "_") |>
+  unnest_wider(effective_time_frame)
+
+cal_daily <- cal_raw |>
+  mutate(date = as_date(ymd_hms(date_time, tz = "UTC"))) |>
+  group_by(date) |>
+  summarise(active_calories = sum(calories_value_value, na.rm = TRUE), .groups = "drop")
+
+# heart rate
+hr_raw <- hr_json$body$heart_rate |>
+  unnest_wider(heart_rate, names_sep = "_") |>
+  unnest_wider(effective_time_frame)
+
+hr_daily <- hr_raw |>
+  mutate(date = as_date(ymd_hms(date_time, tz = "UTC"))) |>
+  filter(heart_rate_value != 0) |>
+  group_by(date) |>
+  summarise(average_heartrate_bpm = mean(heart_rate_value, na.rm = TRUE),
+            .groups = "drop")
+
+daily_activity_tbl <- steps_daily |>
+  full_join(cal_daily, by = "date") |>
+  full_join(hr_daily, by = "date") |>
+  mutate(participant_id = pa_json$header$user_id, .before = 1) |>
+  arrange(date)
+
+# CGM daily features
+glucose_path <- "data/mini/dexcom_g6/1029/1029_DEX.json"
+glucose_json <- fromJSON(glucose_path)
+
+glucose_raw <- glucose_json$body$cgm |>
+  unnest_wider(blood_glucose, names_sep = "_") |>
+  unnest_wider(effective_time_frame) |>
+  unnest_wider(time_interval)
+
+glucose_tbl <- glucose_raw |>
+  mutate(reading_time = ymd_hms(start_date_time, tz = "UTC")) |>
+  select(reading_time, glucose_mg_dl = blood_glucose_value)
+
+glucose_daily <- glucose_tbl |>
+  mutate(date = as_date(reading_time)) |>
+  group_by(date) |>
+  summarise(
+    mean_glucose_mg_dl = mean(glucose_mg_dl, na.rm = TRUE),
+    sd_glucose_mg_dl = sd(glucose_mg_dl, na.rm = TRUE),
+    n_glucose_readings = n(),
+    .groups = "drop"
+  )
+
+# link all
+person_night_tbl <- sleep_tbl |>
+  mutate(
+    activity_date = sleep_night + days(1),
+    cgm_date      = sleep_night + days(1)
+  ) |>
+  left_join(daily_activity_tbl, by = c("participant_id", "activity_date" = "date")) |>
+  left_join(glucose_daily, by = c("cgm_date" = "date")) |>
+  arrange(sleep_night)
+
+kable(person_night_tbl, digits = 1)
+```
+
+- On 9/8, the participant had an unusually high percentage of time awake during the night (almost 30%)
+- On 9/16 and 9/11, the participant had unusually short sleep nights (less than 300 minutes)
+
+## Slopegraph of Good vs. Bad Nights of Sleep
+```{r}
+# check data availability
+participant_ids <- am$person_id[1:20]
+
+availability <- tibble(
+  id = participant_ids,
+  sleep_path   = glue::glue("data/mini/sleep/garmin_vivosmart5/{id}/{id}_sleep.json"),
+  glucose_path = glue::glue("data/mini/dexcom_g6/{id}/{id}_DEX.json")
+) |>
+  mutate(
+    sleep_exists   = file.exists(sleep_path),
+    glucose_exists = file.exists(glucose_path)
+  )
+
+print(availability)
+
+available_ids <- availability |>
+  filter(sleep_exists, glucose_exists) |>
+  pull(id)
+
+cat("Participants with both files available:", 
+    length(available_ids), "of", length(participant_ids), "\n")
+
+person_night_list <- list()
+
+for (id in available_ids) {
+
+  sleep_path   <- glue::glue("data/mini/sleep/garmin_vivosmart5/{id}/{id}_sleep.json")
+  glucose_path <- glue::glue("data/mini/dexcom_g6/{id}/{id}_DEX.json")
+
+  sleep_json <- fromJSON(sleep_path)
+  stages <- sleep_json$body$sleep |>
+    unnest_wider(effective_time_frame) |>
+    unnest_wider(time_interval)
+
+  sleep_tbl <- stages |>
+    mutate(participant_id = sleep_json$header$user_id) |>
+    mutate(
+      start = ymd_hms(start_date_time, tz = "UTC"),
+      end = ymd_hms(end_date_time, tz = "UTC"),
+      duration_min = as.numeric(difftime(end, start, units = "mins")),
+      sleep_night = as_date(if_else(hour(start) < 18, start - days(1), start))
+    ) |>
+    group_by(participant_id, sleep_night) |>
+    summarise(
+      total_sleep_time_min = sum(duration_min[sleep_stage_state != "awake"]),
+      time_in_bed_min = as.numeric(difftime(max(end), min(start), units = "mins")),
+      .groups = "drop"
+    ) |>
+    mutate(sleep_efficiency_pct = round(total_sleep_time_min / time_in_bed_min * 100, 2))
+
+  glucose_json <- fromJSON(glucose_path)
+  glucose_raw <- glucose_json$body$cgm |>
+    unnest_wider(blood_glucose, names_sep = "_") |>
+    unnest_wider(effective_time_frame) |>
+    unnest_wider(time_interval)
+
+  glucose_daily <- glucose_raw |>
+    mutate(date = as_date(ymd_hms(start_date_time, tz = "UTC"))) |>
+    group_by(date) |>
+    summarise(mean_glucose_mg_dl = mean(blood_glucose_value, na.rm = TRUE), .groups = "drop")
+
+  person_night_list[[as.character(id)]] <- sleep_tbl |>
+    mutate(cgm_date = sleep_night + days(1)) |>
+    left_join(glucose_daily, by = c("cgm_date" = "date"))
+}
+
+person_night_all <- bind_rows(person_night_list)
+
+# classify and plot
+sleep_classified <- person_night_all |>
+  group_by(participant_id) |>
+  mutate(
+    median_efficiency = median(sleep_efficiency_pct, na.rm = TRUE),
+    sleep_group = if_else(sleep_efficiency_pct >= median_efficiency, "Better sleep", "Worse sleep")
+  ) |>
+  ungroup()
+
+slope_data <- sleep_classified |>
+  group_by(participant_id, sleep_group) |>
+  summarise(avg_next_day_glucose = mean(mean_glucose_mg_dl, 
+                                        na.rm = TRUE), .groups = "drop")
+
+ggplot(slope_data, aes(x = sleep_group, y = avg_next_day_glucose, group = participant_id)) +
+  geom_line(color = "gray60", linewidth = 0.7) +
+  geom_point(size = 2.5, color = "steelblue") +
+  labs(title = "Next-Day Glucose: Worse-Sleep vs. Better-Sleep Nights",
+       x = NULL, y = "Average next-day glucose (mg/dL)") +
+  theme_minimal(base_size = 12) +
+  theme(panel.grid.major.x = element_blank())
+```
+
+- For the 20 participants, sleep quality didn't really correlate with next-day glucose levels.
+- However, for participants with higher glucose levels, sleep quality had a stronger affect on their glucose levels.
+
+## Boxplot of within-person glucose differences
+```{r}
+glucose_diff <- slope_data |>
+  pivot_wider(names_from = sleep_group, values_from = avg_next_day_glucose) |>
+  mutate(diff_glucose = `Worse sleep` - `Better sleep`)
+
+ggplot(glucose_diff, aes(x = "", y = diff_glucose)) +
+  geom_boxplot(fill = "lightblue", width = 0.3) +
+  geom_jitter(width = 0.05, size = 2, color = "steelblue", alpha = 0.7) +
+  geom_hline(yintercept = 0, linetype = "dashed", color = "gray40") +
+  labs(
+    title = "Within-Person Glucose Difference: Worse-Sleep vs. Better-Sleep Nights",
+    x = NULL,
+    y = "Glucose difference (Worse − Better sleep, mg/dL)"
+  ) +
+  theme_minimal(base_size = 12) +
+  theme(axis.text.x = element_blank())
+```
+
+- For the dataset of 20 participants, glucose differences had limited impact from sleep quality (the median of the box hovered roughly around 0 glucose difference)
+
+## Plot stratified by study group
+```{r}
+participants_tbl <- read_tsv("data/mini/participants_mini.tsv") |>
+  select(person_id, study_group)
+
+# strip "AIREADI-" prefix so IDs match participants_tbl's plain numeric person_id
+glucose_diff_grouped <- glucose_diff |>
+  mutate(person_id = as.numeric(str_remove(participant_id, "AIREADI-"))) |>
+  left_join(participants_tbl, by = "person_id")
+
+# boxplot
+ggplot(glucose_diff_grouped, aes(x = study_group, y = diff_glucose)) +
+  geom_boxplot(fill = "lightblue", outlier.shape = NA) +
+  geom_jitter(width = 0.1, size = 2, color = "steelblue", alpha = 0.7) +
+  geom_hline(yintercept = 0, linetype = "dashed", color = "gray40") +
+  labs(
+    title = "Within-Person Glucose Difference by Study Group",
+    x = NULL,
+    y = "Glucose difference (Worse − Better sleep, mg/dL)"
+  ) +
+  theme_minimal(base_size = 12) +
+  theme(axis.text.x = element_text(angle = 20, hjust = 1))
+```
+
+- Not enough participants in the insulin dependent study group
+- The third study group had large variation in the data points (many are at a large distance from the median)
+- In comparison, the first and fourth study groups have data points closer to the median
+
+## Example participant figure showing sleep nights and next-day glucose
+```{r}
+example_participant <- person_night_tbl |>
+  select(sleep_night, total_sleep_time_min, mean_glucose_mg_dl) |>
+  pivot_longer(
+    cols = c(total_sleep_time_min, mean_glucose_mg_dl),
+    names_to = "metric",
+    values_to = "value"
+  ) |>
+  mutate(metric = recode(metric,
+    total_sleep_time_min = "Total sleep (min)",
+    mean_glucose_mg_dl    = "Next-day avg. glucose (mg/dL)"
+  ))
+
+ggplot(example_participant, aes(x = sleep_night, y = value)) +
+  geom_line(color = "steelblue") +
+  geom_point(color = "steelblue", size = 2) +
+  facet_wrap(~ metric, ncol = 1, scales = "free_y") +
+  labs(
+    title = "Participant 1029 — Sleep Duration and Next-Day Glucose",
+    x = "Sleep night",
+    y = NULL
+  ) +
+  theme_minimal(base_size = 12) +
+  theme(strip.text = element_text(face = "bold"))
+```
+
+Note: next-day glucose level isn't available for the last night
+
+- For Participant 1029, next-day avgerage glucose levels somewhat correlated with total sleep time, but had less fluctuation
+
+## Limitations
+
+- No causal claim: all the data and graphs only visualize correlation but not causation. Therefore, we can only determine whether two events are associated with each other, but cannot prove that one causes the other.
+- No meal timestamps: glucose levels tested at a certain timestamp are heavily dependent on what and when the last meal was eaten. Without meal timestamps, glucose difference might also be affected by certain dietary habits / changes, not soley on sleep schedule.
+- Unavailable medication timing: glucose-lowering medications could affect tested glucose levels
+- AI-READI is cross-sectional: the dataset only captures the participants' data over a relatively short period of time, which limits its ability to lead to more long-term conclusions.
+
+

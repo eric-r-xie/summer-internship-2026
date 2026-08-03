@@ -1,0 +1,1257 @@
+---
+title: "Week 1: Cohort Assembly and Data Availability"
+subtitle: "Solutions for Analysis Tasks"
+author: "Tomoki and Joleen"
+date: today
+format:
+  html:
+    theme: cosmo
+    embed-resources: true
+    number-sections: true
+    toc: true
+    toc-depth: 4
+    toc-location: left
+    code-fold: false
+engine: knitr
+---
+
+# Preparation
+
+## Project Structure
+
+This solution file assumes the following project structure, based on the suggested GitHub repository structure provided in the internship planner:
+
+```text
+summer-internship-2026/
+├── README.md
+├── summer-internship-2026.Rproj
+├── data/
+│   ├── raw/
+│   │   ├── v3-mini/
+│   │   │   └── dataset/
+│   │   │       ├── participants.tsv
+│   │   │       ├── clinical_data/
+│   │   │       ├── wearable_blood_glucose/
+│   │   │       └── wearable_activity_monitor/
+│   │   └── v3/
+│   │       └── dataset/
+│   │           ├── participants.tsv
+│   │           ├── clinical_data/
+│   │           ├── wearable_blood_glucose/
+│   │           └── wearable_activity_monitor/
+│   └── processed/
+├── code/
+├── notebooks/
+├── figures/
+├── tables/
+├── slides/
+└── manuscript_notes/
+```
+
+**Do not upload private, sensitive, or restricted data to GitHub.**
+
+## Start a Clean R Session and Load Packages
+
+The following chunk removes objects left in the current global environment and loads the packages required for the analysis.
+
+```{r}
+#| message: false
+#| warning: false
+
+rm(list = ls())
+
+library(tidyverse)
+library(here)
+library(knitr)
+library(kableExtra)
+
+options(
+  dplyr.summarise.inform = FALSE,
+  scipen = 999
+)
+
+theme_set(theme_minimal())
+```
+
+## Select the Dataset Version
+
+The analysis uses the dataset selected below. To rerun the analysis on another dataset version, change only `dataset_version`.
+
+```{r}
+
+dataset_version <- "v3-mini"
+
+dataset_label <- case_when(
+  dataset_version == "v3-mini" ~ "AI-READI v3 mini dataset",
+  dataset_version == "v3" ~ "AI-READI v3 full dataset",
+  TRUE ~ dataset_version
+)
+
+data_dir <- here(
+  "data",
+  "raw",
+  dataset_version,
+  "dataset"
+)
+
+data_dir
+```
+
+The analysis uses the `r dataset_label`.
+
+# Read Data
+
+This section reads the participant file and the two wearable-data manifests required for the Week 1 analysis.
+
+## Participant Data
+
+```{r}
+
+# This file contains one row per participant and includes variables
+# such as study group and clinical site.
+
+participants <- read_tsv(
+  file.path(
+    data_dir,
+    "participants.tsv"
+  ),
+  show_col_types = FALSE
+)
+```
+
+## CGM Manifest
+
+```{r}
+
+# The manifest describes which participants have blood glucose data
+# and includes participant-level CGM summary measures.
+
+cgm_manifest <- read_tsv(
+  file.path(
+    data_dir,
+    "wearable_blood_glucose",
+    "manifest.tsv"
+  ),
+  show_col_types = FALSE
+)
+```
+
+## Activity-Monitor Manifest
+
+```{r}
+
+# The manifest describes which participants have wearable activity data
+# and includes participant-level activity summary measures.
+
+wearable_manifest <- read_tsv(
+  file.path(
+    data_dir,
+    "wearable_activity_monitor",
+    "manifest.tsv"
+  ),
+  show_col_types = FALSE
+)
+```
+
+## Define Values for File Validation
+
+The following chunk calculates values used in the written data-validation results. In a final analysis report, this setup code could be hidden, but it is shown here for instructional purposes. Using inline R code ensures that the reported counts update automatically when the dataset version changes.
+
+```{r}
+#| echo: true
+#| results: hide
+
+n_participant_rows <- nrow(participants)
+
+n_participants <- n_distinct(
+  participants$person_id,
+  na.rm = TRUE
+)
+
+n_missing_participant_ids <- sum(
+  is.na(participants$person_id)
+)
+
+n_duplicate_participant_ids <- sum(
+  duplicated(participants$person_id)
+)
+
+n_problem_participant_ids <- participants |>
+  count(
+    person_id,
+    name = "number_of_rows"
+  ) |>
+  filter(
+    is.na(person_id) |
+      number_of_rows > 1
+  ) |>
+  nrow()
+
+n_cgm_manifest_rows <- nrow(cgm_manifest)
+
+n_cgm_participants <- n_distinct(
+  cgm_manifest$person_id,
+  na.rm = TRUE
+)
+
+n_missing_cgm_ids <- sum(
+  is.na(cgm_manifest$person_id)
+)
+
+cgm_rows_per_person <- cgm_manifest |>
+  filter(!is.na(person_id)) |>
+  count(person_id)
+
+n_cgm_participants_with_one_row <- sum(
+  cgm_rows_per_person$n == 1
+)
+
+n_unmatched_cgm_ids <- cgm_manifest |>
+  distinct(person_id) |>
+  filter(!is.na(person_id)) |>
+  anti_join(
+    participants |>
+      distinct(person_id),
+    by = "person_id"
+  ) |>
+  nrow()
+
+n_wearable_manifest_rows <- nrow(wearable_manifest)
+
+n_wearable_participants <- n_distinct(
+  wearable_manifest$person_id,
+  na.rm = TRUE
+)
+
+n_missing_wearable_ids <- sum(
+  is.na(wearable_manifest$person_id)
+)
+
+wearable_rows_per_person <- wearable_manifest |>
+  filter(!is.na(person_id)) |>
+  count(person_id)
+
+n_wearable_participants_with_one_row <- sum(
+  wearable_rows_per_person$n == 1
+)
+
+n_unmatched_wearable_ids <- wearable_manifest |>
+  distinct(person_id) |>
+  filter(!is.na(person_id)) |>
+  anti_join(
+    participants |>
+      distinct(person_id),
+    by = "person_id"
+  ) |>
+  nrow()
+```
+
+# Inspect and Validate Data
+
+This section checks the structure and basic integrity of the participant and manifest files before constructing the analysis datasets.
+
+## Participant Data
+
+```{r}
+
+# Inspect variable names, data types, and example values.
+
+glimpse(participants)
+
+# Note: Do not print complete participant-level rows in a rendered file
+# that may be committed to GitHub. Use aggregate summaries instead.
+
+# participants |>
+#   slice_head(n = 5) |>
+#   kable()
+```
+
+```{r}
+
+# Confirm that the participant file contains one row per participant.
+
+participants |>
+  summarise(
+    number_of_rows = n(),
+    number_of_unique_participants = n_distinct(
+      person_id,
+      na.rm = TRUE
+    ),
+    number_of_missing_ids = sum(is.na(person_id)),
+    number_of_duplicate_ids = sum(duplicated(person_id))
+  )
+```
+
+The participant file contained `r n_participant_rows` rows representing `r n_participants` unique participants, with `r n_missing_participant_ids` missing participant IDs and `r n_duplicate_participant_ids` duplicated participant IDs.
+
+```{r}
+
+# Identify missing or duplicated participant IDs, if any.
+
+participants |>
+  count(
+    person_id,
+    name = "number_of_rows"
+  ) |>
+  filter(
+    is.na(person_id) |
+      number_of_rows > 1
+  )
+```
+
+The check returned `r n_problem_participant_ids` rows. A value of zero indicates that all participant IDs are present and that each participant appears only once in the participant file.
+
+## CGM Manifest
+
+```{r}
+
+# Inspect variable names, data types, and example values.
+
+glimpse(cgm_manifest)
+```
+
+```{r}
+
+# Summarize the size and participant coverage of the CGM manifest.
+
+cgm_manifest |>
+  summarise(
+    number_of_rows = n(),
+    number_of_unique_participants = n_distinct(
+      person_id,
+      na.rm = TRUE
+    ),
+    number_of_missing_ids = sum(is.na(person_id))
+  )
+```
+
+The CGM manifest contained `r n_cgm_manifest_rows` rows representing `r n_cgm_participants` unique participants, with `r n_missing_cgm_ids` missing participant IDs.
+
+```{r}
+
+# Examine how many CGM manifest rows are associated with each participant.
+
+cgm_manifest |>
+  filter(!is.na(person_id)) |>
+  count(
+    person_id,
+    name = "number_of_manifest_rows"
+  ) |>
+  count(
+    number_of_manifest_rows,
+    name = "number_of_participants"
+  ) |>
+  arrange(number_of_manifest_rows)
+```
+
+`r n_cgm_participants_with_one_row` of the `r n_cgm_participants` participants represented in the CGM manifest appeared exactly once.
+
+```{r}
+
+# Count CGM participant IDs that are not found in the participant file.
+
+cgm_manifest |>
+  distinct(person_id) |>
+  filter(!is.na(person_id)) |>
+  anti_join(
+    participants |>
+      distinct(person_id),
+    by = "person_id"
+  ) |>
+  summarise(
+    number_of_unmatched_ids = n()
+  )
+```
+
+The CGM manifest contained `r n_unmatched_cgm_ids` participant IDs that were not found in the participant file.
+
+## Activity-Monitor Manifest
+
+```{r}
+
+# Inspect variable names, data types, and example values.
+
+glimpse(wearable_manifest)
+```
+
+```{r}
+
+# Summarize the size and participant coverage of the activity-monitor manifest.
+
+wearable_manifest |>
+  summarise(
+    number_of_rows = n(),
+    number_of_unique_participants = n_distinct(
+      person_id,
+      na.rm = TRUE
+    ),
+    number_of_missing_ids = sum(is.na(person_id))
+  )
+```
+
+The activity-monitor manifest contained `r n_wearable_manifest_rows` rows representing `r n_wearable_participants` unique participants, with `r n_missing_wearable_ids` missing participant IDs.
+
+```{r}
+
+# Examine how many activity-monitor manifest rows are associated
+# with each participant.
+
+wearable_manifest |>
+  filter(!is.na(person_id)) |>
+  count(
+    person_id,
+    name = "number_of_manifest_rows"
+  ) |>
+  count(
+    number_of_manifest_rows,
+    name = "number_of_participants"
+  ) |>
+  arrange(number_of_manifest_rows)
+```
+
+`r n_wearable_participants_with_one_row` of the `r n_wearable_participants` participants represented in the activity-monitor manifest appeared exactly once.
+
+```{r}
+
+# Count activity-monitor participant IDs that are not found
+# in the participant file.
+
+wearable_manifest |>
+  distinct(person_id) |>
+  filter(!is.na(person_id)) |>
+  anti_join(
+    participants |>
+      distinct(person_id),
+    by = "person_id"
+  ) |>
+  summarise(
+    number_of_unmatched_ids = n()
+  )
+```
+
+The activity-monitor manifest contained `r n_unmatched_wearable_ids` participant IDs that were not found in the participant file.
+
+# Define the Analysis Cohort and Data Availability
+
+```{r}
+
+# Build a participant-level analysis table and add manifest summaries.
+
+analysis_cohort <- participants |>
+  transmute(
+    person_id,
+    age,
+    study_group,
+    clinical_site,
+    recommended_split,
+    cgm_available = wearable_blood_glucose,
+    wearable_available = wearable_activity_monitor,
+    clinical_available = clinical_data
+  ) |>
+  left_join(
+    cgm_manifest |>
+      select(
+        person_id,
+        average_cgm_glucose = average_glucose_level_mg_dl
+      ),
+    by = "person_id"
+  ) |>
+  left_join(
+    wearable_manifest |>
+      select(
+        person_id,
+        average_daily_activity
+      ),
+    by = "person_id"
+  )
+```
+
+In the wearable manifest, `average_daily_activity` represents average daily steps. The original variable name is retained here to remain consistent with the source data.
+
+## Define Values for Dynamic Reporting
+
+The following chunk calculates analysis-cohort values used in the written results. In a final analysis report, this setup code could be hidden, but it is shown here for instructional purposes. Using inline R code ensures that the reported values update automatically when the dataset version changes.
+
+```{r}
+#| echo: true
+#| results: hide
+
+n_analysis_rows <- nrow(analysis_cohort)
+
+n_analysis_participants <- n_distinct(
+  analysis_cohort$person_id,
+  na.rm = TRUE
+)
+
+n_missing_analysis_ids <- sum(
+  is.na(analysis_cohort$person_id)
+)
+
+n_duplicate_analysis_ids <- sum(
+  duplicated(analysis_cohort$person_id)
+)
+
+n_missing_cgm_summary <- sum(
+  is.na(analysis_cohort$average_cgm_glucose)
+)
+
+n_missing_activity_summary <- sum(
+  is.na(analysis_cohort$average_daily_activity)
+)
+
+n_cgm <- sum(
+  analysis_cohort$cgm_available,
+  na.rm = TRUE
+)
+
+n_wearable <- sum(
+  analysis_cohort$wearable_available,
+  na.rm = TRUE
+)
+
+n_clinical <- sum(
+  analysis_cohort$clinical_available,
+  na.rm = TRUE
+)
+
+n_cgm_wearable <- sum(
+  analysis_cohort$cgm_available &
+    analysis_cohort$wearable_available,
+  na.rm = TRUE
+)
+
+n_all_three <- sum(
+  analysis_cohort$cgm_available &
+    analysis_cohort$wearable_available &
+    analysis_cohort$clinical_available,
+  na.rm = TRUE
+)
+```
+
+```{r}
+
+# Confirm that the joins preserved one row per participant.
+
+analysis_cohort |>
+  summarise(
+    number_of_rows = n(),
+    number_of_unique_participants = n_distinct(
+      person_id,
+      na.rm = TRUE
+    ),
+    number_of_missing_ids = sum(is.na(person_id)),
+    number_of_duplicate_ids = sum(duplicated(person_id))
+  )
+```
+
+The joined analysis cohort contained `r n_analysis_rows` rows representing `r n_analysis_participants` unique participants, with `r n_missing_analysis_ids` missing participant IDs and `r n_duplicate_analysis_ids` duplicated participant IDs.
+
+```{r}
+
+# Check whether the manifest summaries were successfully matched
+# to all participants.
+
+analysis_cohort |>
+  summarise(
+    number_missing_cgm_summary = sum(
+      is.na(average_cgm_glucose)
+    ),
+    number_missing_activity_summary = sum(
+      is.na(average_daily_activity)
+    )
+  )
+```
+
+The joined cohort contained `r n_missing_cgm_summary` participants without a CGM summary and `r n_missing_activity_summary` participants without an activity summary.
+
+## Order the Study Groups
+
+The study-group variable is converted to an ordered factor so that tables and figures present the groups from healthy participants to participants requiring insulin.
+
+```{r}
+
+analysis_cohort <- analysis_cohort |>
+  mutate(
+    study_group = factor(
+      study_group,
+      levels = c(
+        "healthy",
+        "pre_diabetes_lifestyle_controlled",
+        "oral_medication_and_or_non_insulin_injectable_medication_controlled",
+        "insulin_dependent"
+      )
+    )
+  )
+```
+
+# Produce the Required Outputs
+
+## Table 1: Participant Counts by Study Group
+
+```{r}
+
+# Count participants in each study group.
+
+table1 <- analysis_cohort |>
+  count(
+    study_group,
+    name = "number_of_participants"
+  )
+
+table1 |>
+  kable(
+    col.names = c(
+      "Study group",
+      "Number of participants"
+    )
+  )
+```
+
+Table 1 shows the number of participants in each study group in the `r dataset_label`. It allows us to assess whether all study groups are represented and whether the cohort is evenly distributed across groups.
+
+## Table 2: Participant Counts by Study Group and Clinical Site
+
+```{r}
+
+# Create a two-way table of participant counts by study group
+# and clinical site.
+
+table2 <- analysis_cohort |>
+  count(
+    study_group,
+    clinical_site,
+    name = "number_of_participants"
+  ) |>
+  pivot_wider(
+    names_from = clinical_site,
+    values_from = number_of_participants,
+    values_fill = 0
+  )
+
+table2 |>
+  kable(
+    col.names = c(
+      "Study group",
+      names(table2)[-1]
+    )
+  )
+```
+
+Table 2 shows the distribution of participants across study groups and clinical sites in the `r dataset_label`. It allows us to assess whether study-group representation differs across sites and whether any site-by-group cells contain few or no participants.
+
+## Table 3: Data Availability Summary
+
+```{r}
+
+# Summarize availability of the three main data modalities.
+
+table3 <- tibble(
+  data_available = c(
+    "CGM data",
+    "Wearable data",
+    "Clinical data",
+    "CGM plus wearable data",
+    "CGM plus wearable plus clinical data"
+  ),
+  number_of_participants = c(
+    n_cgm,
+    n_wearable,
+    n_clinical,
+    n_cgm_wearable,
+    n_all_three
+  )
+)
+
+table3 |>
+  kable(
+    col.names = c(
+      "Data availability",
+      "Number of participants"
+    )
+  )
+```
+
+In the `r dataset_label`, `r n_cgm` participants had CGM data, `r n_wearable` had wearable data, and `r n_clinical` had clinical data. A total of `r n_cgm_wearable` participants had both CGM and wearable data, and `r n_all_three` had all three modalities available.
+
+## Figure 1: Modality Availability Heatmap
+
+```{r}
+
+# Reshape modality availability into long format for plotting.
+
+modality_availability <- analysis_cohort |>
+  select(
+    person_id,
+    cgm_available,
+    wearable_available,
+    clinical_available
+  ) |>
+  pivot_longer(
+    cols = -person_id,
+    names_to = "modality",
+    values_to = "available"
+  ) |>
+  mutate(
+    modality = factor(
+      modality,
+      levels = c(
+        "clinical_available",
+        "wearable_available",
+        "cgm_available"
+      ),
+      labels = c(
+        "Clinical",
+        "Wearable",
+        "CGM"
+      )
+    )
+  )
+```
+
+```{r}
+
+# Create a participant-by-modality availability heatmap.
+
+ggplot(
+  modality_availability,
+  aes(
+    x = modality,
+    y = factor(person_id),
+    fill = available
+  )
+) +
+  geom_tile(
+    color = "white",
+    linewidth = 0.1
+  ) +
+  scale_fill_manual(
+    values = c(
+      "TRUE" = "steelblue",
+      "FALSE" = "grey90"
+    ),
+    labels = c(
+      "FALSE" = "Unavailable",
+      "TRUE" = "Available"
+    )
+  ) +
+  labs(
+    title = "Figure 1: Modality Availability",
+    x = NULL,
+    y = "Participant",
+    fill = NULL
+  ) +
+  theme(
+    axis.text.y = element_blank(),
+    axis.ticks.y = element_blank()
+  )
+```
+
+Figure 1 shows participant-level availability of CGM, wearable, and clinical data in the `r dataset_label`. Of the `r n_analysis_participants` participants in the analysis cohort, `r n_all_three` had all three modalities available.
+
+## Figure 2: Average CGM Glucose by Study Group
+
+```{r}
+
+# Compare participant-level average CGM glucose across study groups.
+# Red diamonds indicate the mean within each study group.
+
+ggplot(
+  analysis_cohort,
+  aes(
+    x = study_group,
+    y = average_cgm_glucose
+  )
+) +
+  geom_boxplot() +
+  geom_jitter(
+    width = 0.15,
+    alpha = 0.4,
+    size = 1.5
+  ) +
+  stat_summary(
+    aes(shape = "Mean"),
+    fun = mean,
+    geom = "point",
+    size = 3,
+    color = "red",
+    fill = "red"
+  ) +
+  scale_shape_manual(
+    values = c("Mean" = 23),
+    name = NULL
+  ) +
+  labs(
+    x = "Study group",
+    y = "Average CGM glucose (mg/dL)"
+  ) +
+  theme(
+    axis.text.x = element_text(
+      angle = 30,
+      hjust = 1
+    )
+  )
+```
+
+Because the study-group labels are long, placing them on the x-axis makes the figure difficult to read. Reversing the x- and y-axes is a useful alternative because it gives the labels more horizontal space.
+
+```{r}
+
+ggplot(
+  analysis_cohort,
+  aes(
+    x = average_cgm_glucose,
+    y = study_group
+  )
+) +
+  geom_boxplot() +
+  geom_jitter(
+    height = 0.15,
+    alpha = 0.4,
+    size = 1.5
+  ) +
+  stat_summary(
+    aes(shape = "Mean"),
+    fun = mean,
+    geom = "point",
+    size = 3,
+    color = "red",
+    fill = "red"
+  ) +
+  scale_shape_manual(
+    values = c("Mean" = 23),
+    name = NULL
+  ) +
+  labs(
+    x = "Average CGM glucose (mg/dL)",
+    y = "Study group"
+  )
+```
+
+The boxplots show the distribution of participant-level average CGM glucose within each study group. Individual participants are shown as jittered points, and red diamonds indicate the group means.
+
+## Figure 3: Average Daily Steps by Study Group
+
+```{r}
+
+# Compare participant-level average daily steps across study groups.
+# Red diamonds indicate the mean within each study group.
+
+ggplot(
+  analysis_cohort,
+  aes(
+    x = study_group,
+    y = average_daily_activity
+  )
+) +
+  geom_boxplot() +
+  geom_jitter(
+    width = 0.15,
+    alpha = 0.4,
+    size = 1.5
+  ) +
+  stat_summary(
+    aes(shape = "Mean"),
+    fun = mean,
+    geom = "point",
+    size = 3,
+    color = "red",
+    fill = "red"
+  ) +
+  scale_shape_manual(
+    values = c("Mean" = 23),
+    name = NULL
+  ) +
+  labs(
+    x = "Study group",
+    y = "Average daily steps"
+  ) +
+  theme(
+    axis.text.x = element_text(
+      angle = 30,
+      hjust = 1
+    )
+  )
+```
+
+Because the study-group names are long, the axes can also be reversed to improve readability.
+
+```{r}
+
+ggplot(
+  analysis_cohort,
+  aes(
+    x = average_daily_activity,
+    y = study_group
+  )
+) +
+  geom_boxplot() +
+  geom_jitter(
+    height = 0.15,
+    alpha = 0.4,
+    size = 1.5
+  ) +
+  stat_summary(
+    aes(shape = "Mean"),
+    fun = mean,
+    geom = "point",
+    size = 3,
+    color = "red",
+    fill = "red"
+  ) +
+  scale_shape_manual(
+    values = c("Mean" = 23),
+    name = NULL
+  ) +
+  labs(
+    x = "Average daily steps",
+    y = "Study group"
+  )
+```
+
+The boxplots show the distribution of participant-level average daily steps within each study group. Individual participants are shown as jittered points, and red diamonds indicate the group means.
+
+# Join and Data Quality Checks
+
+```{r}
+
+# Summarize row counts and unique participant counts before and after joins.
+
+after_cgm_join <- participants |>
+  left_join(
+    cgm_manifest |>
+      select(
+        person_id,
+        average_glucose_level_mg_dl
+      ),
+    by = "person_id"
+  )
+
+join_qc <- tibble(
+  step = c(
+    "Participant file",
+    "After CGM join",
+    "After activity-monitor join"
+  ),
+  number_of_rows = c(
+    nrow(participants),
+    nrow(after_cgm_join),
+    nrow(analysis_cohort)
+  ),
+  number_of_unique_participants = c(
+    n_distinct(participants$person_id),
+    n_distinct(after_cgm_join$person_id),
+    n_distinct(analysis_cohort$person_id)
+  )
+)
+
+joins_preserved_rows <- all(
+  join_qc$number_of_rows ==
+    join_qc$number_of_rows[1]
+)
+
+joins_preserved_participants <- all(
+  join_qc$number_of_unique_participants ==
+    join_qc$number_of_unique_participants[1]
+)
+
+join_qc |>
+  kable(
+    col.names = c(
+      "Step",
+      "Number of rows",
+      "Number of unique participants"
+    )
+  )
+```
+
+`r if (joins_preserved_rows && joins_preserved_participants) "The number of rows and unique participants remained unchanged after both joins. This indicates that the manifests were joined without duplicating or unexpectedly dropping participants." else "The number of rows or unique participants changed after at least one join. The affected join should be investigated for duplicated keys or unmatched participants."`
+
+## Duplicate IDs and Unexpected Participant Loss
+
+```{r}
+# Check for duplicated participant IDs and participants lost after joining.
+
+join_issue_summary <- tibble(
+  check = c(
+    "Duplicated IDs in participant file",
+    "Duplicated IDs after CGM join",
+    "Duplicated IDs after activity-monitor join",
+    "Participants lost after CGM join",
+    "Participants lost after activity-monitor join"
+  ),
+  number = c(
+    sum(duplicated(participants$person_id)),
+    sum(duplicated(after_cgm_join$person_id)),
+    sum(duplicated(analysis_cohort$person_id)),
+    n_distinct(participants$person_id) -
+      n_distinct(after_cgm_join$person_id),
+    n_distinct(participants$person_id) -
+      n_distinct(analysis_cohort$person_id)
+  )
+)
+
+join_issue_summary |>
+  kable(
+    col.names = c(
+      "Quality-control check",
+      "Number"
+    )
+  )
+```
+
+`r if (all(join_issue_summary$number == 0)) "No duplicated participant IDs were introduced by either join, and no participants were lost." else "At least one duplicated-ID or participant-loss check was nonzero and should be investigated."`
+
+## Missing Values
+
+```{r}
+# Count missing values in each variable of the analysis cohort.
+
+missingness_summary <- analysis_cohort |>
+  summarise(
+    across(
+      everything(),
+      ~ sum(is.na(.x))
+    )
+  ) |>
+  pivot_longer(
+    cols = everything(),
+    names_to = "variable",
+    values_to = "number_missing"
+  ) |>
+  mutate(
+    percent_missing =
+      100 * number_missing / nrow(analysis_cohort)
+  ) |>
+  arrange(
+    desc(number_missing),
+    variable
+  )
+
+missingness_summary |>
+  kable(
+    col.names = c(
+      "Variable",
+      "Number missing",
+      "Percent missing"
+    ),
+    digits = 1
+  )
+```
+
+The participant-level analysis cohort contained `r sum(missingness_summary$number_missing > 0)` variables with missing values in the `r dataset_label`.
+
+# Analysis Cohort Decisions
+
+This section defines the participant groups that are usable for the next stages of analysis. The CGM-only cohort is intended for analyses based on glucose data, while the CGM plus wearable cohort is intended for analyses that relate glucose measures to activity or sleep measures.
+
+```{r}
+# Define the two analysis cohorts required for the Week 1 assignment.
+
+cgm_only_cohort <- analysis_cohort |>
+  filter(cgm_available)
+
+cgm_plus_wearable_cohort <- analysis_cohort |>
+  filter(
+    cgm_available,
+    wearable_available
+  )
+```
+
+```{r}
+# Summarize the size and study-group coverage of each analysis cohort.
+
+cohort_summary <- bind_rows(
+  cgm_only_cohort |>
+    count(
+      study_group,
+      name = "number_of_participants"
+    ) |>
+    mutate(cohort = "CGM-only cohort"),
+
+  cgm_plus_wearable_cohort |>
+    count(
+      study_group,
+      name = "number_of_participants"
+    ) |>
+    mutate(cohort = "CGM plus wearable cohort")
+) |>
+  select(
+    cohort,
+    study_group,
+    number_of_participants
+  )
+
+cohort_summary |>
+  pivot_wider(
+    names_from = study_group,
+    values_from = number_of_participants,
+    values_fill = 0
+  ) |>
+  kable(
+    col.names = c(
+      "Analysis cohort",
+      levels(analysis_cohort$study_group)
+    )
+  )
+```
+
+```{r}
+n_cgm_only_cohort <- nrow(cgm_only_cohort)
+
+n_cgm_plus_wearable_cohort <- nrow(
+  cgm_plus_wearable_cohort
+)
+```
+
+## CGM-Only Cohort
+
+The CGM-only cohort included `r n_cgm_only_cohort` participants across all four study groups. This cohort can support analyses of CGM-derived glucose patterns. Analyses using wearable or clinical variables would require separately confirming that those data are available for the selected participants.
+
+## CGM Plus Wearable Cohort
+
+The CGM plus wearable cohort included `r n_cgm_plus_wearable_cohort` participants across all four study groups. This cohort can support analyses relating glucose patterns to wearable-derived activity and sleep measures.
+
+# Mini Versus Full Dataset Comparison
+
+The following code compares the mini and full datasets without duplicating the full analysis workflow. A single function reads the same three files from each dataset version, applies the same participant-level joins and availability summaries, and returns one row of results. The two rows are then combined into a single comparison table, which keeps the comparison consistent and makes the code easier to maintain.
+
+```{r}
+#| echo: true
+#| message: false
+#| warning: false
+
+summarize_dataset <- function(version) {
+
+  comparison_data_dir <- here(
+    "data",
+    "raw",
+    version,
+    "dataset"
+  )
+
+  comparison_participants <- read_tsv(
+    file.path(
+      comparison_data_dir,
+      "participants.tsv"
+    ),
+    show_col_types = FALSE
+  )
+
+  comparison_cgm <- read_tsv(
+    file.path(
+      comparison_data_dir,
+      "wearable_blood_glucose",
+      "manifest.tsv"
+    ),
+    show_col_types = FALSE
+  )
+
+  comparison_wearable <- read_tsv(
+    file.path(
+      comparison_data_dir,
+      "wearable_activity_monitor",
+      "manifest.tsv"
+    ),
+    show_col_types = FALSE
+  )
+
+  comparison_participants |>
+    transmute(
+      person_id,
+      study_group,
+      cgm_available = wearable_blood_glucose,
+      wearable_available = wearable_activity_monitor,
+      clinical_available = clinical_data
+    ) |>
+    left_join(
+      comparison_cgm |>
+        select(
+          person_id,
+          average_cgm_glucose =
+            average_glucose_level_mg_dl
+        ),
+      by = "person_id"
+    ) |>
+    left_join(
+      comparison_wearable |>
+        select(
+          person_id,
+          average_daily_activity
+        ),
+      by = "person_id"
+    ) |>
+    summarise(
+      dataset = case_when(
+        version == "v3-mini" ~ "Mini",
+        version == "v3" ~ "Full"
+      ),
+      participants = n_distinct(
+        person_id,
+        na.rm = TRUE
+      ),
+      study_groups = n_distinct(
+        study_group,
+        na.rm = TRUE
+      ),
+      cgm_available_count = sum(
+        cgm_available,
+        na.rm = TRUE
+      ),
+      wearable_available_count = sum(
+        wearable_available,
+        na.rm = TRUE
+      ),
+      clinical_available_count = sum(
+        clinical_available,
+        na.rm = TRUE
+      ),
+      cgm_plus_wearable = sum(
+        cgm_available &
+          wearable_available,
+        na.rm = TRUE
+      ),
+      all_three_modalities = sum(
+        cgm_available &
+          wearable_available &
+          clinical_available,
+        na.rm = TRUE
+      ),
+      missing_cgm_summaries = sum(
+        is.na(average_cgm_glucose)
+      ),
+      missing_activity_summaries = sum(
+        is.na(average_daily_activity)
+      )
+    )
+}
+
+dataset_comparison <- bind_rows(
+  summarize_dataset("v3-mini"),
+  summarize_dataset("v3")
+)
+
+mini_results <- dataset_comparison |>
+  filter(dataset == "Mini")
+
+full_results <- dataset_comparison |>
+  filter(dataset == "Full")
+
+dataset_comparison |>
+  kable(
+    col.names = c(
+      "Dataset",
+      "Participants",
+      "Study groups",
+      "CGM available",
+      "Wearable available",
+      "Clinical available",
+      "CGM plus wearable",
+      "All three modalities",
+      "Missing CGM summaries",
+      "Missing activity summaries"
+    )
+  )
+```
+
+The full dataset included `r full_results$participants` participants, compared with `r mini_results$participants` in the mini dataset, and both datasets contained `r full_results$study_groups` study groups. All participants in the mini dataset had CGM, wearable, and clinical data. In the full dataset, `r full_results$cgm_available_count` participants had CGM data, `r full_results$wearable_available_count` had wearable data, and `r full_results$cgm_plus_wearable` had both. Clinical data were available for all `r full_results$clinical_available_count` participants. These results show that the mini dataset preserves the broad cohort structure while providing complete modality coverage for developing and testing the analysis workflow. The full dataset is required for describing the actual cohort and accounting for incomplete CGM and wearable availability.
+
