@@ -1130,7 +1130,15 @@ The spearman correlation appears to be weak-moderate negative, while the p-value
 
 ## Conclusion
 
+In conclusion, the *daily steps-glucose CV* relationship is much stronger, though it's correlation is still limited in magnitude. 
 
+The near-zero spearman correlation of the *sleep hours-glucose CV* relationship indicates minimal correlation, while the moderately negative spearman value of the *daily steps-glucose CV* relationship suggests that glucose CV decreases as daily steps increases.
+
+Glucose CV just measures how much glucose values vary, while time in range measures the time a person stays in the healthy range of glucose values. CV is not as dependent on weather the person is healthy or not, it's relative to the person's average.
+
+Some unmeasured factors that could have potential impact on the relationships include meal timing/composition, medication timing, stress levels, and device-wearing compliance among participants. All of these factors could affect the measured glucose values and its spread across time. 
+
+This analysis cannot prove causation because it only provides observational correlation, not biological research or more comprehensive testing methods to isolate certain variables for testing. 
 
 
 
