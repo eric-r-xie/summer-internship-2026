@@ -633,6 +633,8 @@ site_region_map <- tribble(
 
 ## Prepare and Join Daily Tables
 
+This analysis uses the AI-READI v3 mini dataset.
+
 ### Read Sleep Data
 ```{r}
 sleep_dir <- file.path(data_dir, "sleep", "garmin_vivosmart5")
@@ -653,7 +655,12 @@ sleep_files <- tibble(dir_path = sleep_participants_dir) |>
   filter(!is.na(json_path))
 ```
 
+A table of json path files for sleep data of each participant is saved as `sleep_files`.
+
 ### Function to Create Sleep Table
+
+This section incorporates user-defined analysis parameters regarding sleep data. 
+
 ```{r}
 sleep_gap_minutes = 180
 minimum_main_sleep_minutes = 240
@@ -664,7 +671,7 @@ create_sleep_tbl <- function(person_id, json_path) {
   raw_sleep <- fromJSON(json_path, flatten = TRUE)
   sleep_body <- raw_sleep$body$sleep
   
-  # timezone matching (part 1)
+  # timezone matching
   timezone_label <- tolower(as.character(raw_sleep$header$timezone)[1])
   iana_zone <- tz_map |>
     filter(timezone_label_json == !!timezone_label) |>
@@ -733,13 +740,16 @@ sleep_night_all <- map2_dfr(
   create_sleep_tbl
 )
 
-sleep_night_summary <- sleep_night_all |> 
+sleep_night_summary <- sleep_night_all |>
   rename(date = sleep_night) |>
   mutate(
     total_sleep_hours = total_sleep_time_minutes / 60,
-    sleep_valid = total_sleep_time_minutes >= minimum_main_sleep_minutes,
-    total_sleep_time_minutes <= maximum_main_sleep_minutes
+    sleep_valid = total_sleep_time_minutes >= minimum_main_sleep_minutes &
+      total_sleep_time_minutes <= maximum_main_sleep_minutes
   ) |>
+  group_by(person_id, date) |>
+  slice_max(total_sleep_time_minutes, n = 1, with_ties = FALSE) |>
+  ungroup() |>
   select(
     person_id, date,
     total_sleep_time_minutes, total_sleep_hours,
@@ -748,6 +758,8 @@ sleep_night_summary <- sleep_night_all |>
 ```
 
 Note: Code for calculating individual sleep segments and categorizing them into day groups referenced from Week 3 Solutions. 
+
+A sleep segment is characterized as a new day when the time difference from its last sleep segment is over 180 minutes / 3 hours (user-defined).
 
 ### Read Activity Data
 ```{r}
@@ -837,6 +849,8 @@ activity_daily_all <- map2_dfr(
 )
 ```
 
+Similar code logic to function for creating sleep data table.
+
 ### Creating CGM Data Table
 ```{r}
 cgm_daily_summary <- participant_day_summary |>
@@ -872,6 +886,249 @@ combined |>
   ) |>
   scroll_box(height = "600px")
 ```
+
+Glucose CV (coefficient of variation) was calculated with `glucose CV (%) = glucose SD / mean glucose × 100`. Overall, glucose CV seemed to be relatively low (<30%).
+
+### Unmatched participant-dates
+```{r}
+sleep_missing_from_activity <- sleep_night_summary |>
+  anti_join(activity_daily_all, by = c("person_id", "date"))
+
+activity_missing_from_sleep <- activity_daily_all |>
+  anti_join(sleep_night_summary, by = c("person_id", "date"))
+
+combined_missing_from_cgm <- sleep_night_summary |>
+  inner_join(activity_daily_all, by = c("person_id", "date")) |>
+  anti_join(cgm_daily_summary, by = c("person_id", "date"))
+
+nrow(sleep_missing_from_activity)
+nrow(activity_missing_from_sleep)
+nrow(combined_missing_from_cgm)
+```
+
+High amounts of participant-date rows in the activity table were missing in the sleep table. This could indicate limitations in the extensiveness of sleep monitoring for participants, which was essentially the smallest dataset out of the 3.
+
+### Row and participant counts, before and after joining
+```{r}
+tibble(
+  data = c("sleep", "activity", "cgm", "combined"),
+  n_rows = c(nrow(sleep_night_summary), nrow(activity_daily_all),
+             nrow(cgm_daily_summary), nrow(combined)),
+  n_participants = c(n_distinct(sleep_night_summary$person_id),
+                      n_distinct(activity_daily_all$person_id),
+                      n_distinct(cgm_daily_summary$person_id),
+                      n_distinct(combined$person_id))
+) |>
+  kable(
+    col.names = c(
+      "Data Parameter", "Rows", "Participants"
+    )
+  )
+```
+
+### Confirming unique person_id + date keys
+
+This is a quick quality control check to confirm that all the participant-date rows in the combined table are unique.
+
+```{r}
+combined |>
+  count(person_id, date) |>
+  filter(n > 1)
+
+sleep_night_summary |> count(person_id, date) |> filter(n > 1)
+activity_daily_all |> count(person_id, date) |> filter(n > 1)
+cgm_daily_summary |> count(person_id, date) |> filter(n > 1)
+```
+
+Conclusion: Zero duplicate `person_id + date` keys, indicating full uniqueness.
+
+Here, we don't join by participant `person_id` because each row of the table is a unique `person_id + date`. There are multiple repeated participant `person_id` keys throughout (and that's how it should be in this context of analysis).
+
+## Participant-Level Analysis Table
+
+### Filter Linked Days
+```{r}
+valid_linked_days <- combined |>
+  filter(
+    sleep_valid,
+    activity_valid
+  )
+# CGM was already filtered for valid previously with "valid_day == TRUE"
+```
+
+A linked day refers to a participant-day where all three metrics (sleep, activity, and CGM) are available for the participant.
+
+### Collapse to One Row Per Participant
+```{r}
+participant_typical_summary <- valid_linked_days |>
+  group_by(person_id) |>
+  summarise(
+    n_valid_days = n(),
+    typical_sleep_hours = median(total_sleep_hours, na.rm = TRUE),
+    typical_daily_steps = median(total_steps, na.rm = TRUE),
+    typical_glucose_cv = median(glucose_cv, na.rm = TRUE),
+    typical_time_in_range = median(pct_70_180, na.rm = TRUE),
+    .groups = "drop"
+  ) |>
+  filter(n_valid_days >= 4)
+
+participant_typical_summary |>
+  kable(
+    digits = 1,
+    col.names = c(
+      "Person ID", "Valid days",
+      "Typical sleep (hrs)", "Typical steps",
+      "Typical glucose CV (%)", "Typical time in range (%)"
+    )
+  ) |>
+  kable_styling(bootstrap_options = c("striped", "condensed"), 
+                font_size = 11)|>
+  scroll_box(height = "600px")
+```
+
+### Explanation
+`summarize()` collapsed the table from one unique row per **participant-day** to one unique row per **participant-day**. As such, instead of displaying glucose data for each participant-day, the table now displays a median glucose value for the entire span of days for each participant. 
+
+The median is useful because it provides a general overview of the glucose values over a period of time, and also compromises for outliers.
+
+## Visualize and Summarize the Relationships
+
+### Left Joining Study Groups
+```{r}
+participant_typical_summary <- participant_typical_summary |>
+  left_join(
+    participants |> select(person_id, study_group), 
+    by = "person_id"
+  )
+```
+
+The code above left joins a column depicting the study groups of each of the participants.
+
+### Scatterplot #1: Typical Sleep Duration vs. Typical Calendar-Day Glucose CV
+```{r}
+#| fig-width: 7.5
+#| fig-height: 4
+#| out-width:
+
+group_labels <- c(
+  "healthy" = "Healthy",
+  "insulin_dependent" = "Insulin Dependent",
+  "oral_medication_and_or_non_insulin_injectable_medication_controlled" = "Oral/Non-Insulin Medication",
+  "pre_diabetes_lifestyle_controlled" = "Pre-Diabetes (Lifestyle)"
+)
+
+ggplot(participant_typical_summary, 
+       aes(x = typical_sleep_hours, y = typical_glucose_cv)) +
+  geom_point(aes(color = study_group)) +
+  geom_smooth(method = "loess", se = TRUE, color = "steelblue") +
+  labs(
+    title = "Typical Sleep Duration vs. Typical Calendar-Day Glucose CV",
+    x = "Typical Sleep Duration (hours)",
+    y = "Typical Glucose CV (%)",
+    color = "Study Group"
+  ) +
+  scale_color_discrete(labels = group_labels) +
+  scale_shape_discrete(labels = group_labels) +
+  theme_minimal(base_size = 12)
+```
+
+The trend line depicted above is a **LOESS curve** (LOcally Estimated Scatterplot Smoothing), a flexible curved trend line that can bend to follow the local shape of the data. 
+
+The shaded gray area represents the **95% confidence band**. This confidence band is **narrower towards  the middle** of the sleep-duration range, reflecting the larger concentration of participants there, allowing the model to have more data to estimate the trend confidently. Towards the extremes, where fewer participants are represented, the band widens considerably, indicating greater uncertainty in the estimated trend.
+
+For the `insulin_dependent` study group, their typical glucose CV values tend to be **higher than the average** regardless of sleep duration, which is reasonable as that group struggles the most with diabetes control (requiring insulin to manage blood glucose)
+
+### Calculations for Scatterplot #1
+
+```{r}
+sleep_cv_cor <- cor.test(
+  participant_typical_summary$typical_sleep_hours,
+  participant_typical_summary$typical_glucose_cv,
+  method = "spearman"
+)
+
+sleep_cv_cor
+
+nrow(participant_typical_summary)
+```
+
+::: {.callout-note}
+**Spearman Correlation:** 0.000629
+
+**P-Value:** 0.9954
+
+**Number of Participants:** 86
+
+Spearman Correlation indicates how strongly two variables move in the same direction (values being closer to +1 indicates strong positive correlation, closer to -1 indicates strong negative correlation).
+
+P-value denotes the probability of a correlation this strong under the assumption that there was no relationship. 
+
+Together, a small spearman correlation combined with a large p-value suggests that there is no relationship in the scatterplot.
+:::
+
+### Scatterplot #2: Typical Daily Steps vs. Typical Calendar-Day Glucose CV
+```{r}
+#| fig-width: 7.5
+#| fig-height: 4
+#| out-width:
+
+group_labels <- c(
+  "healthy" = "Healthy",
+  "insulin_dependent" = "Insulin Dependent",
+  "oral_medication_and_or_non_insulin_injectable_medication_controlled" = "Oral/Non-Insulin Medication",
+  "pre_diabetes_lifestyle_controlled" = "Pre-Diabetes (Lifestyle)"
+)
+
+ggplot(participant_typical_summary, 
+       aes(x = typical_daily_steps, y = typical_glucose_cv)) +
+  geom_point(aes(color = study_group)) +
+  geom_smooth(method = "loess", se = TRUE, color = "steelblue") +
+  labs(
+    title = "Typical Daily Steps vs. Typical Calendar-Day Glucose CV",
+    x = "Typical Daily Steps",
+    y = "Typical Glucose CV (%)",
+    color = "Study Group"
+  ) +
+  scale_color_discrete(labels = group_labels) +
+  scale_shape_discrete(labels = group_labels) +
+  theme_minimal(base_size = 12)
+```
+
+The trend line depicted above is a **LOESS curve** (LOcally Estimated Scatterplot Smoothing), a flexible curved trend line that can bend to follow the local shape of the data. 
+
+The shaded gray area represents the **95% confidence band**. This confidence band is **narrower towards  the middle** of the sleep-duration range, reflecting the larger concentration of participants there, allowing the model to have more data to estimate the trend confidently. Towards the extremes, where fewer participants are represented, the band widens considerably, indicating greater uncertainty in the estimated trend.
+
+In the early-middle stages of the scatterplot, there seems to be a negative relationship, but this correlation apparently reverses towards the later stages. However, that is likely due to outlier data in the late-middle stage (the last data points of the set, the two orange dots) and statistically insignificant.
+
+### Calculations for Scatterplot #2
+
+```{r}
+sleep_cv_cor <- cor.test(
+  participant_typical_summary$typical_daily_steps,
+  participant_typical_summary$typical_glucose_cv,
+  method = "spearman"
+)
+
+sleep_cv_cor
+
+nrow(participant_typical_summary)
+```
+
+::: {.callout-note}
+**Spearman Correlation:** -0.248
+
+**P-Value:** 0.02157
+
+**Number of Participants:** 86
+
+Spearman Correlation indicates how strongly two variables move in the same direction (values being closer to +1 indicates strong positive correlation, closer to -1 indicates strong negative correlation).
+
+P-value denotes the probability of a correlation this strong under the assumption that there was no relationship. 
+
+The spearman correlation appears to be weak-moderate negative, while the p-value is below the convention 0.05 threshold, meaning it can be considered statistically significant. Together, they could indicate that more daily steps could be associated with lower glucose CV, which might be biologically possible.
+:::
+
+## Conclusion
 
 
 
